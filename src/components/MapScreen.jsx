@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { MODULES } from '../data/lessons'
 
-const EX_ICONS = ['✏️', '🔄', '🎧']
+const EX_ICONS = ['✏️', '🔄', '🎧', '✍️']
 
 export default function MapScreen({ level, progress, onStart, onBack }) {
   const { completed } = progress
@@ -53,12 +53,12 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
       <div className="modules-list">
         {levelModules.map((mod, idx) => {
           const prevEvalDone = idx === 0 || completed.includes(levelModules[idx - 1].evaluation.id)
-          const ex1Done  = completed.includes(mod.exercises[0].id)
-          const ex2Done  = completed.includes(mod.exercises[1].id)
-          const ex3Done  = completed.includes(mod.exercises[2].id)
+          const exDone   = mod.exercises.map(ex => completed.includes(ex.id))
           const evalDone = completed.includes(mod.evaluation.id)
-          const modProgress = [ex1Done, ex2Done, ex3Done, evalDone].filter(Boolean).length
-          const modDone   = modProgress === 4
+          const ex3Done  = exDone[2] ?? false
+          const modProgress = [...exDone, evalDone].filter(Boolean).length
+          const modTotal    = mod.exercises.length + 1
+          const modDone     = evalDone
           const modLocked = !prevEvalDone
           const isOpen    = expanded.has(mod.id)
 
@@ -87,7 +87,7 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
                 <div className="mod-progress-bar">
                   <div
                     className="mod-progress-fill"
-                    style={{ width: `${(modProgress / 4) * 100}%`, background: mod.color }}
+                    style={{ width: `${(modProgress / modTotal) * 100}%`, background: mod.color }}
                   />
                 </div>
                 <div className="module-header">
@@ -105,7 +105,7 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
                   <div className="mod-badge">
                     {modDone
                       ? <span className="badge-done">✓</span>
-                      : <span className="badge-count">{modProgress}/4</span>
+                      : <span className="badge-count">{modProgress}/{modTotal}</span>
                     }
                   </div>
                   <span className={`mod-chevron ${isOpen ? 'chevron-open' : ''}`}>›</span>
@@ -129,8 +129,8 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
                   </button>
 
                   {mod.exercises.map((ex, i) => {
-                    const prevDone = i === 0 ? true : completed.includes(mod.exercises[i - 1].id)
-                    const thisDone = completed.includes(ex.id)
+                    const prevDone = i === 0 ? true : exDone[i - 1]
+                    const thisDone = exDone[i]
                     return (
                       <button
                         key={ex.id}

@@ -27,6 +27,19 @@ function makeListeningQ(vocab, item) {
   return { type: 'listening', question: 'Ouça e selecione a tradução', speakFr: item.fr, options, correct: options.indexOf(ans) }
 }
 
+function makeTypingQ(item) {
+  return { type: 'typing', pt: item.pt, correct: item.fr, speakFr: item.fr }
+}
+
+function genTypingExercise(vocab) {
+  return {
+    number:    4,
+    title:     'Exercício 4',
+    subtitle:  'Escrita em francês ✍️',
+    questions: shuffle(vocab.map(item => makeTypingQ(item))),
+  }
+}
+
 function genExercises(vocab) {
   return [
     {
@@ -62,64 +75,64 @@ function genEvalQuestions(vocab) {
 
 const VOCAB = {
   m1: [
-    { fr: 'Bonjour',          pt: 'Olá / Bom dia',     note: 'Cumprimento mais comum, usado até ~18h' },
-    { fr: 'Bonsoir',          pt: 'Boa tarde / noite',  note: 'Usado a partir do fim da tarde' },
-    { fr: 'Bonne nuit',       pt: 'Boa noite',          note: 'Só ao se despedir para dormir' },
-    { fr: 'Au revoir',        pt: 'Tchau / Até logo',   note: 'Despedida formal e informal' },
-    { fr: 'Merci',            pt: 'Obrigado(a)',         note: null },
-    { fr: "S'il vous plaît",  pt: 'Por favor',          note: 'Forma formal; "s\'il te plaît" é informal' },
-    { fr: 'Oui',              pt: 'Sim',                note: null },
-    { fr: 'Non',              pt: 'Não',                note: null },
-    { fr: 'Excusez-moi',      pt: 'Com licença',        note: 'Também usado para pedir desculpa' },
-    { fr: 'De rien',          pt: 'De nada',            note: 'Resposta para "Merci"' },
+    { fr: 'Bonjour',          pt: 'Olá / Bom dia',     note: 'Cumprimento mais comum, usado até ~18h',         sentence: 'Bonjour ! Comment tu t\'appelles ?' },
+    { fr: 'Bonsoir',          pt: 'Boa tarde / noite',  note: 'Usado a partir do fim da tarde',                 sentence: 'Bonsoir madame, une table pour deux ?' },
+    { fr: 'Bonne nuit',       pt: 'Boa noite',          note: 'Só ao se despedir para dormir',                  sentence: 'Bonne nuit ! Dors bien.' },
+    { fr: 'Au revoir',        pt: 'Tchau / Até logo',   note: 'Despedida formal e informal',                    sentence: 'Au revoir et à bientôt !' },
+    { fr: 'Merci',            pt: 'Obrigado(a)',         note: null,                                             sentence: 'Merci beaucoup pour votre aide !' },
+    { fr: "S'il vous plaît",  pt: 'Por favor',          note: 'Forma formal; "s\'il te plaît" é informal',     sentence: 'Un café, s\'il vous plaît.' },
+    { fr: 'Oui',              pt: 'Sim',                note: null,                                             sentence: 'Oui, je comprends très bien.' },
+    { fr: 'Non',              pt: 'Não',                note: null,                                             sentence: 'Non merci, je n\'ai pas faim.' },
+    { fr: 'Excusez-moi',      pt: 'Com licença',        note: 'Também usado para pedir desculpa',               sentence: 'Excusez-moi, où est la gare ?' },
+    { fr: 'De rien',          pt: 'De nada',            note: 'Resposta para "Merci"',                          sentence: 'De rien, c\'était avec plaisir !' },
   ],
   m2: [
-    { fr: 'Un',    pt: 'Um',    note: null },
-    { fr: 'Deux',  pt: 'Dois',  note: null },
-    { fr: 'Trois', pt: 'Três',  note: null },
-    { fr: 'Quatre',pt: 'Quatro',note: null },
-    { fr: 'Cinq',  pt: 'Cinco', note: null },
-    { fr: 'Six',   pt: 'Seis',  note: null },
-    { fr: 'Sept',  pt: 'Sete',  note: null },
-    { fr: 'Huit',  pt: 'Oito',  note: null },
-    { fr: 'Neuf',  pt: 'Nove',  note: null },
-    { fr: 'Dix',   pt: 'Dez',   note: null },
+    { fr: 'Un',    pt: 'Um',    note: null, sentence: 'J\'ai un chien et deux chats.' },
+    { fr: 'Deux',  pt: 'Dois',  note: null, sentence: 'Deux cafés, s\'il vous plaît.' },
+    { fr: 'Trois', pt: 'Três',  note: null, sentence: 'Il faut trois heures pour y aller.' },
+    { fr: 'Quatre',pt: 'Quatro',note: null, sentence: 'Il y a quatre saisons dans l\'année.' },
+    { fr: 'Cinq',  pt: 'Cinco', note: null, sentence: 'Je reviens dans cinq minutes.' },
+    { fr: 'Six',   pt: 'Seis',  note: null, sentence: 'Il est six heures du matin.' },
+    { fr: 'Sept',  pt: 'Sete',  note: null, sentence: 'Il y a sept jours dans une semaine.' },
+    { fr: 'Huit',  pt: 'Oito',  note: null, sentence: 'Il a huit ans.' },
+    { fr: 'Neuf',  pt: 'Nove',  note: null, sentence: 'Il reste neuf jours de vacances.' },
+    { fr: 'Dix',   pt: 'Dez',   note: null, sentence: 'J\'ai dix doigts.' },
   ],
   m3: [
-    { fr: 'Rouge',  pt: 'Vermelho', note: null },
-    { fr: 'Bleu',   pt: 'Azul',    note: null },
-    { fr: 'Vert',   pt: 'Verde',   note: null },
-    { fr: 'Jaune',  pt: 'Amarelo', note: null },
-    { fr: 'Blanc',  pt: 'Branco',  note: null },
-    { fr: 'Noir',   pt: 'Preto',   note: null },
-    { fr: 'Rose',   pt: 'Rosa',    note: 'Também é a palavra para "rosa" (flor)' },
-    { fr: 'Orange', pt: 'Laranja', note: 'Invariável — não muda com gênero' },
-    { fr: 'Violet', pt: 'Roxo',    note: null },
-    { fr: 'Marron', pt: 'Marrom',  note: 'Invariável — não muda com gênero' },
+    { fr: 'Rouge',  pt: 'Vermelho', note: null,                                    sentence: 'La voiture rouge est très belle.' },
+    { fr: 'Bleu',   pt: 'Azul',    note: null,                                    sentence: 'Le ciel est bleu aujourd\'hui.' },
+    { fr: 'Vert',   pt: 'Verde',   note: null,                                    sentence: 'L\'herbe est verte au printemps.' },
+    { fr: 'Jaune',  pt: 'Amarelo', note: null,                                    sentence: 'Le soleil est jaune et brillant.' },
+    { fr: 'Blanc',  pt: 'Branco',  note: null,                                    sentence: 'La neige est blanche et froide.' },
+    { fr: 'Noir',   pt: 'Preto',   note: null,                                    sentence: 'Le café est noir et fort.' },
+    { fr: 'Rose',   pt: 'Rosa',    note: 'Também é a palavra para "rosa" (flor)', sentence: 'Elle porte une robe rose.' },
+    { fr: 'Orange', pt: 'Laranja', note: 'Invariável — não muda com gênero',      sentence: 'J\'aime le jus d\'orange.' },
+    { fr: 'Violet', pt: 'Roxo',    note: null,                                    sentence: 'Il a peint les murs en violet.' },
+    { fr: 'Marron', pt: 'Marrom',  note: 'Invariável — não muda com gênero',      sentence: 'J\'ai les cheveux marron.' },
   ],
   m4: [
-    { fr: 'Père',       pt: 'Pai',    note: null },
-    { fr: 'Mère',       pt: 'Mãe',    note: null },
-    { fr: 'Frère',      pt: 'Irmão',  note: null },
-    { fr: 'Sœur',       pt: 'Irmã',   note: null },
-    { fr: 'Grand-père', pt: 'Avô',    note: null },
-    { fr: 'Grand-mère', pt: 'Avó',    note: null },
-    { fr: 'Fils',       pt: 'Filho',  note: 'O "s" final é mudo' },
-    { fr: 'Fille',      pt: 'Filha',  note: 'Também significa "menina"' },
-    { fr: 'Oncle',      pt: 'Tio',    note: null },
-    { fr: 'Tante',      pt: 'Tia',    note: null },
+    { fr: 'Père',       pt: 'Pai',    note: null,                        sentence: 'Mon père travaille à Paris.' },
+    { fr: 'Mère',       pt: 'Mãe',    note: null,                        sentence: 'Ma mère fait la cuisine.' },
+    { fr: 'Frère',      pt: 'Irmão',  note: null,                        sentence: 'Mon frère a vingt ans.' },
+    { fr: 'Sœur',       pt: 'Irmã',   note: null,                        sentence: 'Ma sœur étudie la médecine.' },
+    { fr: 'Grand-père', pt: 'Avô',    note: null,                        sentence: 'Mon grand-père a soixante-dix ans.' },
+    { fr: 'Grand-mère', pt: 'Avó',    note: null,                        sentence: 'Ma grand-mère fait de bons gâteaux.' },
+    { fr: 'Fils',       pt: 'Filho',  note: 'O "s" final é mudo',        sentence: 'Leur fils joue au football.' },
+    { fr: 'Fille',      pt: 'Filha',  note: 'Também significa "menina"', sentence: 'Sa fille est très intelligente.' },
+    { fr: 'Oncle',      pt: 'Tio',    note: null,                        sentence: 'Mon oncle habite à Lyon.' },
+    { fr: 'Tante',      pt: 'Tia',    note: null,                        sentence: 'Ma tante est médecin.' },
   ],
   m5: [
-    { fr: 'Lundi',       pt: 'Segunda-feira', note: null },
-    { fr: 'Mardi',       pt: 'Terça-feira',   note: null },
-    { fr: 'Mercredi',    pt: 'Quarta-feira',  note: null },
-    { fr: 'Jeudi',       pt: 'Quinta-feira',  note: null },
-    { fr: 'Vendredi',    pt: 'Sexta-feira',   note: null },
-    { fr: 'Samedi',      pt: 'Sábado',        note: 'Faz parte do week-end' },
-    { fr: 'Dimanche',    pt: 'Domingo',       note: 'Faz parte do week-end' },
-    { fr: "Aujourd'hui", pt: 'Hoje',          note: null },
-    { fr: 'Demain',      pt: 'Amanhã',        note: null },
-    { fr: 'Hier',        pt: 'Ontem',         note: null },
+    { fr: 'Lundi',       pt: 'Segunda-feira', note: null,                       sentence: 'Le lundi, je vais à l\'école.' },
+    { fr: 'Mardi',       pt: 'Terça-feira',   note: null,                       sentence: 'Mardi, j\'ai rendez-vous chez le médecin.' },
+    { fr: 'Mercredi',    pt: 'Quarta-feira',  note: null,                       sentence: 'Le mercredi, les enfants n\'ont pas école.' },
+    { fr: 'Jeudi',       pt: 'Quinta-feira',  note: null,                       sentence: 'Jeudi, on se retrouve au café ?' },
+    { fr: 'Vendredi',    pt: 'Sexta-feira',   note: null,                       sentence: 'Le vendredi soir, je sors avec mes amis.' },
+    { fr: 'Samedi',      pt: 'Sábado',        note: 'Faz parte do week-end',    sentence: 'Samedi, on fait les courses ensemble.' },
+    { fr: 'Dimanche',    pt: 'Domingo',       note: 'Faz parte do week-end',    sentence: 'Le dimanche, toute la famille se réunit.' },
+    { fr: "Aujourd'hui", pt: 'Hoje',          note: null,                       sentence: 'Aujourd\'hui, il fait très beau !' },
+    { fr: 'Demain',      pt: 'Amanhã',        note: null,                       sentence: 'Demain, c\'est mon anniversaire.' },
+    { fr: 'Hier',        pt: 'Ontem',         note: null,                       sentence: 'Hier, j\'ai vu un très bon film.' },
   ],
   m6: [
     { fr: 'Pain',    pt: 'Pão',       note: 'O "pain" francês (baguete) é famoso' },
@@ -1200,7 +1213,7 @@ export const LEVELS = [
 
 export const MODULES = DEFS.map(def => {
   const vocab = VOCAB[def.vocabKey]
-  const gens  = genExercises(vocab)
+  const gens  = [...genExercises(vocab), genTypingExercise(vocab)]
   return {
     id:          def.id,
     number:      def.number,

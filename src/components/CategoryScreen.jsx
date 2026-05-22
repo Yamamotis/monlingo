@@ -31,7 +31,7 @@ function getToday() { return new Date().toISOString().slice(0, 10) }
 
 export default function CategoryScreen({
   progress, user,
-  onSelectCategory, onOpenProfile, onOpenLeaderboard, onStartReview, onStartDaily,
+  onSelectCategory, onOpenProfile, onOpenLeaderboard, onStartReview, onStartDaily, onOpenDictionary,
 }) {
   const { completed = [], xp = 0, streak = 0, wrongWords = [], lastStudyDate,
           hearts = 5, dailyMission } = progress
@@ -174,6 +174,21 @@ export default function CategoryScreen({
             </button>
           )
         })}
+
+        {/* Card de Dicionário */}
+        <button className="dictionary-card" onClick={onOpenDictionary}>
+          <div className="lb-card-icon-wrap" style={{ background: '#1CB0F622', border: '2px solid #1CB0F655' }}>
+            <span>📖</span>
+          </div>
+          <div className="level-body">
+            <div className="level-top-row">
+              <span className="level-name">Meu Dicionário</span>
+              <span className="dict-card-badge">Vocabulário</span>
+            </div>
+            <p className="level-sub">Todas as palavras que você já aprendeu</p>
+          </div>
+          <span className="level-chevron">›</span>
+        </button>
 
         {/* Card de Ranking */}
         <button className="leaderboard-card" onClick={onOpenLeaderboard}>

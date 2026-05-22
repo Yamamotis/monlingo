@@ -19,6 +19,7 @@ import LeaderboardScreen  from './components/LeaderboardScreen'
 import RedeemScreen       from './components/RedeemScreen'
 import AdminScreen        from './components/AdminScreen'
 import CategoryScreen     from './components/CategoryScreen'
+import DictionaryScreen  from './components/DictionaryScreen'
 import PlacementTest      from './components/PlacementTest'
 import LevelUpModal       from './components/LevelUpModal'
 
@@ -264,6 +265,7 @@ export default function App() {
           onOpenLeaderboard={() => setScreen('leaderboard')}
           onStartReview={handleStartReview}
           onStartDaily={handleStartDaily}
+          onOpenDictionary={() => setScreen('dictionary')}
           {...shared}
         />
       )}
@@ -325,6 +327,12 @@ export default function App() {
       )}
       {screen === 'admin' && authUser.email === ADMIN_EMAIL && (
         <AdminScreen onBack={() => setScreen('profile')} />
+      )}
+      {screen === 'dictionary' && (
+        <DictionaryScreen
+          progress={progress}
+          onBack={() => setScreen('levels')}
+        />
       )}
 
       {/* Level-up modal — rendered above everything */}

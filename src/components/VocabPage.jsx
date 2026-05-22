@@ -30,6 +30,7 @@ export default function VocabPage({ mod, item, onContinue, onExit }) {
               <span className="vocab-arrow">→</span>
               <div className="vocab-right">
                 <span className="vocab-pt">{v.pt}</span>
+                {v.sentence && <span className="vocab-sentence">"{v.sentence}"</span>}
                 {v.note && <span className="vocab-note">💡 {v.note}</span>}
               </div>
             </div>

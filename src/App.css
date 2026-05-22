@@ -481,6 +481,72 @@ input { -webkit-tap-highlight-color: transparent; }
 .redeem-features-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .redeem-features-list li { font-size: 15px; font-weight: 700; color: var(--text); }
 
+/* ── Typing Exercise ── */
+.typing-ex { display: flex; flex-direction: column; gap: 16px; padding: 8px 0; }
+.typing-prompt { font-size: 14px; font-weight: 700; color: var(--text-light); margin: 0; text-align: center; }
+.typing-pt { font-size: 22px; font-weight: 900; color: var(--text); text-align: center; padding: 12px 16px; background: var(--surface-hi); border-radius: 14px; }
+.typing-input-wrap { display: flex; align-items: center; gap: 8px; }
+.typing-input {
+  flex: 1; background: var(--surface-hi); border: 2px solid var(--border);
+  border-radius: 14px; color: var(--text); font-size: 18px; font-weight: 700;
+  padding: 14px 16px; outline: none; width: 100%; box-sizing: border-box;
+  font-family: inherit;
+}
+.typing-input:focus { border-color: #CE82FF; }
+.typing-input-wrap.typing-ok .typing-input { border-color: var(--green); background: #58CC0211; }
+.typing-input-wrap.typing-err .typing-input { border-color: #FF4B4B; background: #FF4B4B11; }
+.typing-correct-answer { font-size: 14px; color: var(--text-light); margin: 0; text-align: center; }
+.typing-correct-answer strong { color: var(--text); }
+.btn-typing-check {
+  background: #CE82FF; color: #fff; border: none; border-radius: 14px;
+  font-size: 16px; font-weight: 800; padding: 14px; cursor: pointer;
+  box-shadow: 0 4px 0 #9c50d0; transition: transform 0.1s;
+}
+.btn-typing-check:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+.btn-typing-check:not(:disabled):active { transform: translateY(2px); box-shadow: 0 2px 0 #9c50d0; }
+
+/* ── VocabPage sentences ── */
+.vocab-sentence { font-size: 12px; font-style: italic; color: #1CB0F6; display: block; margin-top: 2px; }
+
+/* ── Dictionary Screen ── */
+.dict-screen { display: flex; flex-direction: column; min-height: 100dvh; }
+.dict-body { flex: 1; display: flex; flex-direction: column; gap: 14px; padding: 16px 16px 32px; }
+.dict-stats { text-align: center; }
+.dict-count { font-size: 14px; color: var(--text-light); }
+.dict-count strong { color: var(--text); font-size: 18px; }
+.dict-search-wrap { position: relative; }
+.dict-search {
+  width: 100%; box-sizing: border-box; background: var(--surface-hi);
+  border: 2px solid var(--border); border-radius: 14px; color: var(--text);
+  font-size: 15px; padding: 12px 40px 12px 16px; outline: none;
+}
+.dict-search:focus { border-color: #1CB0F6; }
+.dict-search-clear {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--text-light); font-size: 16px; cursor: pointer;
+}
+.dict-empty { text-align: center; padding: 40px 20px; color: var(--text-light); display: flex; flex-direction: column; gap: 8px; align-items: center; font-size: 15px; }
+.dict-empty span { font-size: 36px; }
+.dict-list { display: flex; flex-direction: column; gap: 10px; }
+.dict-row { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.dict-row-main { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.dict-fr-wrap { display: flex; align-items: center; gap: 8px; }
+.dict-fr { font-size: 17px; font-weight: 900; color: var(--text); }
+.dict-pt { font-size: 14px; color: var(--text-light); font-weight: 600; text-align: right; flex: 1; }
+.dict-sentence { font-size: 12px; font-style: italic; color: #1CB0F6; margin: 0; }
+.dict-note { font-size: 12px; color: var(--text-light); margin: 0; }
+.dict-mod-tag { font-size: 11px; font-weight: 700; border-radius: 8px; padding: 3px 10px; border: 1px solid; align-self: flex-start; }
+
+/* ── Dictionary card ── */
+.dictionary-card {
+  display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(135deg, #1CB0F622, #1CB0F611);
+  border: 2px solid #1CB0F655; border-radius: 20px; padding: 16px;
+  cursor: pointer; text-align: left; width: 100%; transition: border-color 0.15s;
+}
+.dictionary-card:hover { border-color: #1CB0F6; }
+.dict-card-badge { font-size: 11px; font-weight: 800; color: #1CB0F6; background: #1CB0F622; border: 1px solid #1CB0F644; border-radius: 8px; padding: 3px 10px; white-space: nowrap; }
+
 /* ── Admin Screen ── */
 .admin-screen { display: flex; flex-direction: column; min-height: 100dvh; }
 .admin-body { flex: 1; padding: 20px; display: flex; flex-direction: column; gap: 20px; max-width: 600px; margin: 0 auto; width: 100%; box-sizing: border-box; }
