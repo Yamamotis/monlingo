@@ -635,6 +635,166 @@ const VOCAB = {
     { fr: 'Malheureusement',     pt: 'Infelizmente',         note: null },
     { fr: 'Heureusement',        pt: 'Felizmente',           note: null },
   ],
+
+  // ── Avançado ───────────────────────────────────────────────────────────────
+
+  m45: [
+    { fr: 'Je mangeais',                pt: 'Eu comia',                  note: 'Imparfait — hábito ou descrição no passado' },
+    { fr: 'Il faisait beau',            pt: 'Estava bonito (o tempo)',   note: 'Clima sempre no imparfait' },
+    { fr: 'Quand j\'étais enfant',      pt: 'Quando eu era criança',     note: 'Situação duradoura no passado' },
+    { fr: 'Elle lisait souvent',        pt: 'Ela lia frequentemente',    note: 'Ação repetida = imparfait' },
+    { fr: 'Nous habitions à Paris',     pt: 'Morávamos em Paris',        note: null },
+    { fr: 'Tu dormais encore',          pt: 'Você ainda dormia',         note: null },
+    { fr: 'Ils jouaient ensemble',      pt: 'Eles brincavam juntos',     note: null },
+    { fr: 'Je pensais à toi',           pt: 'Eu pensava em você',        note: null },
+    { fr: 'C\'était magnifique',        pt: 'Era magnífico',             note: 'être no imparfait: j\'étais, c\'était' },
+    { fr: 'Il pleuvait beaucoup',       pt: 'Chovia muito',              note: null },
+  ],
+
+  m46: [
+    { fr: 'Il faut que je parte',       pt: 'É preciso que eu parta',    note: 'falloir que → sempre subjonctif' },
+    { fr: 'Je veux que tu viennes',     pt: 'Quero que você venha',      note: 'vouloir que → subjonctif' },
+    { fr: 'Bien que ce soit difficile', pt: 'Embora seja difícil',       note: 'bien que → sempre subjonctif' },
+    { fr: 'Pour que tu comprennes',     pt: 'Para que você entenda',     note: 'pour que → subjonctif' },
+    { fr: 'Je doute qu\'il soit là',    pt: 'Duvido que ele esteja lá',  note: 'douter que → subjonctif' },
+    { fr: 'Je suis content que tu sois là', pt: 'Estou feliz que você esteja aqui', note: 'emoção + que → subjonctif' },
+    { fr: 'À moins qu\'il ne pleuve',   pt: 'A menos que chova',         note: 'à moins que → subjonctif' },
+    { fr: 'Je regrette que tu partes',  pt: 'Lamento que você parta',    note: null },
+    { fr: 'Il est important qu\'on fasse attention', pt: 'É importante que prestemos atenção', note: null },
+    { fr: 'C\'est dommage qu\'il ne puisse pas', pt: 'É uma pena que ele não possa', note: 'pouvoir → puisse (irregular)' },
+  ],
+
+  m47: [
+    { fr: 'Il dit qu\'il est fatigué',         pt: 'Ele diz que está cansado',        note: 'presente → presente no discurso indireto' },
+    { fr: 'Elle a dit qu\'elle viendrait',     pt: 'Ela disse que viria',             note: 'presente → condicional no passado' },
+    { fr: 'Il m\'a demandé si j\'aimais',      pt: 'Ele me perguntou se eu gostava', note: 'si transforma em imparfait' },
+    { fr: 'Je lui ai dit de partir',           pt: 'Eu disse a ele para partir',      note: 'imperativo → de + infinitivo' },
+    { fr: 'Il a demandé ce que je faisais',    pt: 'Ele perguntou o que eu fazia',    note: 'qu\'est-ce que → ce que' },
+    { fr: 'Elle a expliqué qu\'elle ne savait pas', pt: 'Ela explicou que não sabia', note: null },
+    { fr: 'Il a annoncé qu\'il démissionnait', pt: 'Ele anunciou que iria demitir',   note: null },
+    { fr: 'Elle m\'a demandé où j\'habitais',  pt: 'Ela me perguntou onde eu morava', note: 'où se mantém no indireto' },
+    { fr: 'Il a répondu qu\'il n\'était pas sûr', pt: 'Ele respondeu que não tinha certeza', note: null },
+    { fr: 'Je lui ai dit que j\'avais faim',   pt: 'Eu disse que estava com fome',    note: 'j\'ai faim → j\'avais faim' },
+  ],
+
+  m48: [
+    { fr: 'J\'avais mangé',                    pt: 'Eu tinha comido',             note: 'avoir/être imparfait + particípio' },
+    { fr: 'Elle était déjà partie',            pt: 'Ela já tinha partido',        note: 'être + parti(e) — verbo de movimento' },
+    { fr: 'Il avait déjà fini',                pt: 'Ele já tinha terminado',      note: null },
+    { fr: 'Nous avions oublié',                pt: 'Tínhamos esquecido',          note: null },
+    { fr: 'Tu avais dit que…',                 pt: 'Você tinha dito que…',        note: null },
+    { fr: 'Ils étaient arrivés avant moi',     pt: 'Eles tinham chegado antes de mim', note: null },
+    { fr: 'Elle avait préparé le repas',       pt: 'Ela tinha preparado a refeição', note: null },
+    { fr: 'Je n\'avais pas compris',           pt: 'Eu não tinha entendido',      note: null },
+    { fr: 'Il avait vécu à Paris',             pt: 'Ele havia vivido em Paris',   note: 'vivre → vécu' },
+    { fr: 'Quand je suis arrivé, il était déjà parti', pt: 'Quando cheguei, ele já tinha ido', note: 'uso clássico do plus-que-parfait' },
+  ],
+
+  m49: [
+    { fr: 'Cependant',              pt: 'Contudo / Porém',              note: 'adversativo formal' },
+    { fr: 'Néanmoins',              pt: 'Todavia / No entanto',         note: 'mais forte que "mais"' },
+    { fr: 'Par conséquent',         pt: 'Por conseguinte / Portanto',   note: 'conclusão lógica' },
+    { fr: 'En revanche',            pt: 'Em contrapartida',             note: null },
+    { fr: 'Puisque',                pt: 'Já que / Uma vez que',         note: 'causa evidente' },
+    { fr: 'Afin de',                pt: 'A fim de / Para',              note: 'finalidade + infinitivo' },
+    { fr: 'Bien que',               pt: 'Embora',                       note: 'concessão + subjonctif' },
+    { fr: 'En outre',               pt: 'Além disso / Ademais',         note: 'adição formal' },
+    { fr: 'D\'une part… d\'autre part', pt: 'Por um lado… por outro',  note: 'estrutura de dissertação' },
+    { fr: 'À condition que',        pt: 'Desde que / Contanto que',     note: 'condição + subjonctif' },
+  ],
+
+  m50: [
+    { fr: 'Avoir le cafard',        pt: 'Estar deprimido / Na fossa',   note: 'lit: ter a barata' },
+    { fr: 'Il pleut des cordes',    pt: 'Está chovendo muito',          note: 'lit: chove cordas' },
+    { fr: 'Poser un lapin',         pt: 'Dar um bolo / Não aparecer',   note: 'lit: colocar um coelho' },
+    { fr: 'Casser les pieds',       pt: 'Chatear / Irritar',            note: 'lit: quebrar os pés' },
+    { fr: 'Avoir d\'autres chats à fouetter', pt: 'Ter coisas mais urgentes', note: 'lit: ter outros gatos para chicotear' },
+    { fr: 'Mettre les pieds dans le plat', pt: 'Meter os pés pelas mãos', note: 'lit: colocar os pés no prato' },
+    { fr: 'Donner sa langue au chat', pt: 'Desistir de adivinhar',      note: 'lit: dar a língua ao gato' },
+    { fr: 'Casser la croûte',       pt: 'Comer algo rápido',            note: 'lit: quebrar a casca' },
+    { fr: 'Avoir le bras long',     pt: 'Ter influência / Ser poderoso', note: 'lit: ter o braço comprido' },
+    { fr: 'Prendre la poudre d\'escampette', pt: 'Fugir / Sumir',      note: 'lit: tomar o pó da fuga' },
+  ],
+
+  // ── Avançado 2 ─────────────────────────────────────────────────────────────
+
+  m51: [
+    { fr: 'Candidature',            pt: 'Candidatura',                  note: null },
+    { fr: 'Entretien d\'embauche',  pt: 'Entrevista de emprego',        note: null },
+    { fr: 'Contrat',                pt: 'Contrato',                     note: null },
+    { fr: 'Prime',                  pt: 'Bônus / Gratificação',         note: null },
+    { fr: 'Licenciement',           pt: 'Demissão',                     note: 'Démission = pedido de demissão' },
+    { fr: 'Promotion',              pt: 'Promoção',                     note: null },
+    { fr: 'Formation',              pt: 'Treinamento / Formação',       note: null },
+    { fr: 'Délai',                  pt: 'Prazo',                        note: null },
+    { fr: 'Bilan',                  pt: 'Balanço / Relatório',          note: null },
+    { fr: 'Négociation',            pt: 'Negociação',                   note: null },
+  ],
+
+  m52: [
+    { fr: 'Gouvernement',           pt: 'Governo',                      note: null },
+    { fr: 'Élection',               pt: 'Eleição',                      note: null },
+    { fr: 'Démocratie',             pt: 'Democracia',                   note: null },
+    { fr: 'Citoyen',                pt: 'Cidadão',                      note: 'Feminino: citoyenne' },
+    { fr: 'Loi',                    pt: 'Lei',                          note: null },
+    { fr: 'Droits',                 pt: 'Direitos',                     note: 'Droit (singular) = direito / direção' },
+    { fr: 'Égalité',                pt: 'Igualdade',                    note: 'Devise da França: Liberté, Égalité, Fraternité' },
+    { fr: 'Liberté',                pt: 'Liberdade',                    note: null },
+    { fr: 'Immigration',            pt: 'Imigração',                    note: null },
+    { fr: 'Manifestation',          pt: 'Manifestação / Protesto',      note: 'Familiar: "manif"' },
+  ],
+
+  m53: [
+    { fr: 'Tableau',                pt: 'Quadro / Pintura',             note: null },
+    { fr: 'Sculpture',              pt: 'Escultura',                    note: null },
+    { fr: 'Exposition',             pt: 'Exposição',                    note: null },
+    { fr: 'Chef-d\'œuvre',          pt: 'Obra-prima',                   note: 'Plural: chefs-d\'œuvre' },
+    { fr: 'Patrimoine',             pt: 'Patrimônio',                   note: null },
+    { fr: 'Littérature',            pt: 'Literatura',                   note: null },
+    { fr: 'Poésie',                 pt: 'Poesia',                       note: null },
+    { fr: 'Spectacle',              pt: 'Espetáculo',                   note: null },
+    { fr: 'Galerie',                pt: 'Galeria',                      note: null },
+    { fr: 'Critique',               pt: 'Crítica / Crítico',            note: null },
+  ],
+
+  m54: [
+    { fr: 'Il convient de',         pt: 'Convém / É adequado',          note: 'formal — convenir de + infinitivo' },
+    { fr: 'Suite à',                pt: 'Em decorrência de / Após',     note: 'formal' },
+    { fr: 'Dans le cadre de',       pt: 'No âmbito de',                 note: null },
+    { fr: 'À cet égard',            pt: 'A esse respeito',              note: null },
+    { fr: 'En ce qui concerne',     pt: 'No que diz respeito a',        note: null },
+    { fr: 'Il s\'avère que',        pt: 'Verifica-se que / Resulta que', note: null },
+    { fr: 'Compte tenu de',         pt: 'Levando em conta',             note: null },
+    { fr: 'Ainsi',                  pt: 'Assim / Dessa forma',          note: 'conectivo conclusivo formal' },
+    { fr: 'Toutefois',              pt: 'Contudo / Entretanto',         note: 'adversativo formal' },
+    { fr: 'En définitive',          pt: 'Em definitivo / No final',     note: null },
+  ],
+
+  m55: [
+    { fr: 'Le bœuf bourguignon',    pt: 'Boeuf bourguignon',            note: 'Ensopado de carne com vinho tinto' },
+    { fr: 'La quiche lorraine',     pt: 'Quiche lorraine',              note: 'Torta salgada com bacon e nata' },
+    { fr: 'Le croissant',           pt: 'Croissant',                    note: 'Símbolo da padaria francesa' },
+    { fr: 'La crêpe',               pt: 'Crepe',                        note: 'Doce ou salgada — Bretanha' },
+    { fr: 'Le coq au vin',          pt: 'Frango ao vinho',              note: 'Prato tradicional francês' },
+    { fr: 'La baguette',            pt: 'Baguete',                      note: 'Pão francês típico — 250g, 65cm' },
+    { fr: 'La soupe à l\'oignon',   pt: 'Sopa de cebola',              note: 'Prato clássico da culinária francesa' },
+    { fr: 'Le foie gras',           pt: 'Foie gras',                    note: 'Fígado de pato ou ganso — iguaria' },
+    { fr: 'La ratatouille',         pt: 'Ratatouille',                  note: 'Ensopado de legumes da Provence' },
+    { fr: 'Le macaron',             pt: 'Macaron',                      note: 'Biscoito de amêndoa — não confundir com macaroon' },
+  ],
+
+  m56: [
+    { fr: 'Qui ne risque rien n\'a rien',   pt: 'Quem não arrisca, não petisca',   note: 'Provérbio — coragem recompensada' },
+    { fr: 'Mieux vaut tard que jamais',     pt: 'Antes tarde do que nunca',        note: null },
+    { fr: 'Les absents ont toujours tort',  pt: 'Os ausentes estão sempre errados', note: 'Quem não está não se defende' },
+    { fr: 'Vouloir c\'est pouvoir',         pt: 'Querer é poder',                  note: null },
+    { fr: 'Après la pluie, le beau temps',  pt: 'Depois da tempestade, a bonança', note: null },
+    { fr: 'Chacun voit midi à sa porte',    pt: 'Cada um cuida do seu',            note: 'lit: cada um vê o meio-dia à sua porta' },
+    { fr: 'Nul n\'est prophète en son pays', pt: 'Ninguém é profeta em sua terra', note: null },
+    { fr: 'Il ne faut pas vendre la peau de l\'ours avant de l\'avoir tué', pt: 'Não venda a pele do urso antes de matá-lo', note: 'Equivale a "não conte com o ovo antes de botar"' },
+    { fr: 'Les chiens aboient, la caravane passe', pt: 'Os cães ladram, a caravana passa', note: 'Indiferença às críticas' },
+    { fr: 'Petit à petit, l\'oiseau fait son nid', pt: 'Devagar se vai ao longe',  note: 'lit: pouco a pouco o pássaro faz seu ninho' },
+  ],
 }
 
 // ── Module definitions ─────────────────────────────────────────────────────────
@@ -691,6 +851,20 @@ const DEFS = [
   { id:'m42', number:42, title:'Natureza',           description:'A natureza e o meio ambiente em francês',     icon:'🌿', color:'#58CC02', vocabKey:'m42' },
   { id:'m43', number:43, title:'Esportes e Saúde',   description:'Atividades físicas e bem-estar',              icon:'🏃', color:'#FF4B4B', vocabKey:'m43' },
   { id:'m44', number:44, title:'Opiniões',           description:'Expresse ideias e pontos de vista',           icon:'💬', color:'#CE82FF', vocabKey:'m44' },
+  // ── Avançado ───────────────────────────────────────────────────────────────
+  { id:'m45', number:45, title:'Imparfait',          description:'Descreva hábitos e situações no passado',     icon:'🕰️', color:'#58CC02', vocabKey:'m45' },
+  { id:'m46', number:46, title:'Subjonctif',         description:'Expresse dúvida, desejo e necessidade',       icon:'🔀', color:'#FF4B4B', vocabKey:'m46' },
+  { id:'m47', number:47, title:'Discurso Indireto',  description:'Relate o que alguém disse',                   icon:'🗣️', color:'#1CB0F6', vocabKey:'m47' },
+  { id:'m48', number:48, title:'Plus-que-parfait',   description:'Ações passadas antes de outra ação passada',  icon:'⏪', color:'#FF9600', vocabKey:'m48' },
+  { id:'m49', number:49, title:'Conectores Lógicos', description:'Cependant, néanmoins, par conséquent…',       icon:'🔗', color:'#CE82FF', vocabKey:'m49' },
+  { id:'m50', number:50, title:'Expressões Idiomáticas', description:'Expressões típicas do francês falado',   icon:'🦉', color:'#FFC800', vocabKey:'m50' },
+  // ── Avançado 2 ─────────────────────────────────────────────────────────────
+  { id:'m51', number:51, title:'Negócios e Carreiras', description:'Vocabulário profissional avançado',         icon:'💼', color:'#1CB0F6', vocabKey:'m51' },
+  { id:'m52', number:52, title:'Política e Sociedade', description:'Vocabulário cívico e social',               icon:'🏛️', color:'#58CC02', vocabKey:'m52' },
+  { id:'m53', number:53, title:'Arte e Cultura',     description:'O universo artístico e cultural francês',     icon:'🎨', color:'#FF4B4B', vocabKey:'m53' },
+  { id:'m54', number:54, title:'Vocabulário Formal', description:'Expressões formais e de registro culto',      icon:'📜', color:'#CE82FF', vocabKey:'m54' },
+  { id:'m55', number:55, title:'Gastronomia Francesa', description:'Os pratos e iguarias da França',            icon:'🍽️', color:'#FF9600', vocabKey:'m55' },
+  { id:'m56', number:56, title:'Provérbios',         description:'A sabedoria popular em francês',              icon:'📖', color:'#FFC800', vocabKey:'m56' },
 ]
 
 export const LEVELS = [
@@ -753,10 +927,18 @@ export const LEVELS = [
   {
     id: 'advanced',
     name: 'Avançado',
-    subtitle: 'Em breve',
+    subtitle: 'Gramática B2: imparfait, subjonctif, discurso indireto',
     icon: '🏆',
     color: '#FFC800',
-    moduleIds: [],
+    moduleIds: ['m45', 'm46', 'm47', 'm48', 'm49', 'm50'],
+  },
+  {
+    id: 'advanced-2',
+    name: 'Avançado 2',
+    subtitle: 'Negócios, política, cultura e gastronomia francesa',
+    icon: '👑',
+    color: '#CE82FF',
+    moduleIds: ['m51', 'm52', 'm53', 'm54', 'm55', 'm56'],
   },
 ]
 
