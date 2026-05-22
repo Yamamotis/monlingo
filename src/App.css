@@ -334,6 +334,8 @@ input { -webkit-tap-highlight-color: transparent; }
   overflow: hidden;
 }
 .module-card.mod-done { border-color: var(--green-dark); }
+.module-card.mod-locked-full { opacity: 0.45; pointer-events: none; padding: 16px; }
+.module-card.mod-locked-full .mod-icon-locked { background: var(--surface-hi) !important; border-color: var(--border) !important; }
 .mod-progress-bar { height: 5px; background: var(--surface-hi); }
 .mod-progress-fill { height: 100%; transition: width 0.5s ease; border-radius: 0 3px 3px 0; }
 .module-header {

@@ -36,13 +36,32 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
       </div>
 
       <div className="modules-list">
-        {levelModules.map((mod) => {
+        {levelModules.map((mod, idx) => {
+          const prevEvalDone = idx === 0 || completed.includes(levelModules[idx - 1].evaluation.id)
           const ex1Done  = completed.includes(mod.exercises[0].id)
           const ex2Done  = completed.includes(mod.exercises[1].id)
           const ex3Done  = completed.includes(mod.exercises[2].id)
           const evalDone = completed.includes(mod.evaluation.id)
           const modProgress = [ex1Done, ex2Done, ex3Done, evalDone].filter(Boolean).length
           const modDone = modProgress === 4
+          const modLocked = !prevEvalDone
+
+          if (modLocked) {
+            return (
+              <div key={mod.id} className="module-card mod-locked-full">
+                <div className="module-header">
+                  <div className="mod-icon-wrap mod-icon-locked">
+                    <span className="mod-icon">🔒</span>
+                  </div>
+                  <div className="mod-meta">
+                    <span className="mod-number">Módulo {mod.number}</span>
+                    <h3 className="mod-title">{mod.title}</h3>
+                    <p className="mod-desc">Conclua a avaliação do módulo anterior</p>
+                  </div>
+                </div>
+              </div>
+            )
+          }
 
           return (
             <div key={mod.id} className={`module-card mod-open ${modDone ? 'mod-done' : ''}`}>
