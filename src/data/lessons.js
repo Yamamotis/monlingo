@@ -475,6 +475,166 @@ const VOCAB = {
     { fr: 'Je me promène',        pt: 'Eu passeio',           note: 'se promener = passear' },
     { fr: 'Il se repose',         pt: 'Ele descansa',         note: 'se reposer = descansar' },
   ],
+
+  // ── Intermediário 3 ────────────────────────────────────────────────────────
+
+  m33: [
+    { fr: 'Je vais manger',          pt: 'Eu vou comer',          note: 'aller + infinitivo = futuro próximo' },
+    { fr: 'Tu vas partir',           pt: 'Você vai partir',       note: null },
+    { fr: 'Il va venir demain',      pt: 'Ele vai vir amanhã',    note: null },
+    { fr: 'Nous allons voyager',     pt: 'Nós vamos viajar',      note: null },
+    { fr: 'Vous allez étudier',      pt: 'Vocês vão estudar',     note: null },
+    { fr: 'Ils vont arriver',        pt: 'Eles vão chegar',       note: null },
+    { fr: 'Je vais me coucher',      pt: 'Eu vou me deitar',      note: 'futuro + reflexivo' },
+    { fr: 'Elle va se marier',       pt: 'Ela vai se casar',      note: null },
+    { fr: 'On va sortir ce soir',    pt: 'A gente vai sair hoje', note: null },
+    { fr: 'Je ne vais pas manger',   pt: 'Eu não vou comer',      note: 'ne...pas envolve o verbo aller' },
+  ],
+
+  m34: [
+    { fr: 'Mange !',           pt: 'Come!',               note: 'Imperativo tu — sem "s" final' },
+    { fr: 'Parle !',           pt: 'Fala!',               note: null },
+    { fr: 'Écoute !',          pt: 'Escuta!',             note: null },
+    { fr: 'Viens ici !',       pt: 'Vem aqui!',           note: 'venir → viens (irregular)' },
+    { fr: 'Allez-y !',         pt: 'Vá em frente!',       note: 'Imperativo vous com hífen' },
+    { fr: 'Asseyez-vous !',    pt: 'Sentem-se!',          note: 'asseoir (reflexivo) imperativo' },
+    { fr: 'Ne parle pas !',    pt: 'Não fale!',           note: 'ne...pas no imperativo negativo' },
+    { fr: 'Soyez prudent !',   pt: 'Seja cuidadoso!',     note: 'être → soyez (irregular)' },
+    { fr: 'Allons-y !',        pt: 'Vamos!',              note: 'Imperativo nous — convite' },
+    { fr: 'Fais attention !',  pt: 'Presta atenção!',     note: 'faire → fais (irregular)' },
+  ],
+
+  m35: [
+    { fr: 'Plus grand que',    pt: 'Maior que',           note: 'plus + adjetivo + que' },
+    { fr: 'Moins cher que',    pt: 'Mais barato que',     note: 'moins + adjetivo + que' },
+    { fr: 'Aussi rapide que',  pt: 'Tão rápido quanto',   note: 'aussi + adjetivo + que' },
+    { fr: 'Le plus beau',      pt: 'O mais bonito',       note: 'le/la/les + plus + adjetivo' },
+    { fr: 'La meilleure',      pt: 'A melhor',            note: 'bon → meilleur (irregular)' },
+    { fr: 'Pire que',          pt: 'Pior que',            note: 'mauvais → pire (irregular)' },
+    { fr: 'Plus de travail',   pt: 'Mais trabalho',       note: 'plus de + substantivo' },
+    { fr: 'Moins de temps',    pt: 'Menos tempo',         note: 'moins de + substantivo' },
+    { fr: 'Autant que',        pt: 'Tanto quanto',        note: null },
+    { fr: 'Le moins cher',     pt: 'O mais barato',       note: 'superlativo com moins' },
+  ],
+
+  m36: [
+    { fr: 'Sur',           pt: 'Sobre / Em cima de',  note: null },
+    { fr: 'Sous',          pt: 'Embaixo de',           note: null },
+    { fr: 'Dans',          pt: 'Dentro de',            note: null },
+    { fr: 'Devant',        pt: 'Na frente de',         note: null },
+    { fr: 'Derrière',      pt: 'Atrás de',             note: null },
+    { fr: 'À côté de',     pt: 'Ao lado de',           note: null },
+    { fr: 'Entre',         pt: 'Entre',                note: null },
+    { fr: 'Loin de',       pt: 'Longe de',             note: null },
+    { fr: 'Près de',       pt: 'Perto de',             note: null },
+    { fr: 'En face de',    pt: 'Em frente a',          note: null },
+  ],
+
+  m37: [
+    { fr: 'Beaucoup de',   pt: 'Muito(a/s)',            note: 'Não muda com gênero/número' },
+    { fr: 'Peu de',        pt: 'Pouco(a/s)',            note: null },
+    { fr: 'Assez de',      pt: 'Bastante / Suficiente', note: null },
+    { fr: 'Trop de',       pt: 'Demais / Em excesso',   note: null },
+    { fr: 'Combien de',    pt: 'Quantos / Quantas',     note: null },
+    { fr: 'Quelques',      pt: 'Alguns / Algumas',      note: null },
+    { fr: 'Plusieurs',     pt: 'Vários / Várias',       note: null },
+    { fr: 'Tout',          pt: 'Todo / Tudo',           note: 'Feminino: toute; plural: tous/toutes' },
+    { fr: 'Chaque',        pt: 'Cada',                  note: 'Invariável' },
+    { fr: 'Aucun(e)',      pt: 'Nenhum / Nenhuma',      note: 'Sempre com ne: il n\'y a aucun' },
+  ],
+
+  m38: [
+    { fr: 'Je voudrais',         pt: 'Eu gostaria',           note: 'vouloir — condicional' },
+    { fr: "J'aimerais",          pt: 'Eu adoraria',           note: 'aimer — condicional' },
+    { fr: 'Je pourrais',         pt: 'Eu poderia',            note: 'pouvoir — condicional' },
+    { fr: 'Il faudrait',         pt: 'Seria necessário',      note: 'falloir — impessoal' },
+    { fr: 'Ce serait bien',      pt: 'Seria bom',             note: 'être — condicional' },
+    { fr: "J'irais",             pt: 'Eu iria',               note: 'aller — condicional' },
+    { fr: 'Tu devrais',          pt: 'Você deveria',          note: 'devoir — condicional (conselho)' },
+    { fr: 'Nous pourrions',      pt: 'Nós poderíamos',        note: null },
+    { fr: 'Ce serait parfait',   pt: 'Seria perfeito',        note: null },
+    { fr: "J'aurais besoin de",  pt: 'Eu precisaria de',      note: 'avoir besoin de — condicional' },
+  ],
+
+  // ── Intermediário 4 ────────────────────────────────────────────────────────
+
+  m39: [
+    { fr: 'Téléphone portable',  pt: 'Celular',              note: null },
+    { fr: 'Ordinateur',          pt: 'Computador',           note: null },
+    { fr: 'Application',         pt: 'Aplicativo',           note: null },
+    { fr: 'Message',             pt: 'Mensagem',             note: null },
+    { fr: 'Réseau social',       pt: 'Rede social',          note: null },
+    { fr: 'Mot de passe',        pt: 'Senha',                note: 'Literal: "palavra de passe"' },
+    { fr: 'Télécharger',         pt: 'Baixar / Descarregar', note: null },
+    { fr: 'Envoyer',             pt: 'Enviar',               note: null },
+    { fr: 'Rechercher',          pt: 'Pesquisar',            note: null },
+    { fr: 'Se connecter',        pt: 'Conectar-se / Fazer login', note: null },
+  ],
+
+  m40: [
+    { fr: 'Argent',              pt: 'Dinheiro',             note: null },
+    { fr: 'Prix',                pt: 'Preço',                note: null },
+    { fr: 'Facture',             pt: 'Nota fiscal / Conta',  note: null },
+    { fr: 'Carte de crédit',     pt: 'Cartão de crédito',    note: null },
+    { fr: 'Monnaie',             pt: 'Troco / Moeda',        note: null },
+    { fr: 'Soldes',              pt: 'Liquidação',           note: 'Sempre plural em francês' },
+    { fr: 'Réduction',           pt: 'Desconto',             note: null },
+    { fr: 'Dépenser',            pt: 'Gastar',               note: null },
+    { fr: 'Économiser',          pt: 'Economizar',           note: null },
+    { fr: 'Acheter',             pt: 'Comprar',              note: null },
+  ],
+
+  m41: [
+    { fr: 'Passeport',           pt: 'Passaporte',           note: null },
+    { fr: 'Valise',              pt: 'Mala',                 note: null },
+    { fr: 'Réservation',         pt: 'Reserva',              note: null },
+    { fr: 'Vol',                 pt: 'Voo',                  note: 'Também significa "roubo"' },
+    { fr: 'Billet',              pt: 'Passagem / Bilhete',   note: null },
+    { fr: 'Guide touristique',   pt: 'Guia turístico',       note: null },
+    { fr: 'Carte',               pt: 'Mapa / Cartão',        note: null },
+    { fr: 'Frontière',           pt: 'Fronteira',            note: null },
+    { fr: 'Douane',              pt: 'Alfândega',            note: null },
+    { fr: 'Office de tourisme',  pt: 'Centro de turismo',    note: null },
+  ],
+
+  m42: [
+    { fr: 'Forêt',               pt: 'Floresta',             note: null },
+    { fr: 'Montagne',            pt: 'Montanha',             note: null },
+    { fr: 'Rivière',             pt: 'Rio',                  note: 'Fleuve = rio que desemboca no mar' },
+    { fr: 'Mer',                 pt: 'Mar',                  note: null },
+    { fr: 'Plage',               pt: 'Praia',                note: null },
+    { fr: 'Arbre',               pt: 'Árvore',               note: null },
+    { fr: 'Fleur',               pt: 'Flor',                 note: null },
+    { fr: 'Environnement',       pt: 'Meio ambiente',        note: null },
+    { fr: 'Pollution',           pt: 'Poluição',             note: null },
+    { fr: 'Recyclage',           pt: 'Reciclagem',           note: 'Recycler = reciclar' },
+  ],
+
+  m43: [
+    { fr: 'Nager',               pt: 'Nadar',                note: null },
+    { fr: 'Courir',              pt: 'Correr',               note: null },
+    { fr: 'Jouer au football',   pt: 'Jogar futebol',        note: 'jouer à + esporte' },
+    { fr: 'Faire du vélo',       pt: 'Andar de bicicleta',   note: 'faire de + atividade' },
+    { fr: 'Faire de la gym',     pt: 'Fazer academia',       note: null },
+    { fr: "S'étirer",            pt: 'Alongar-se',           note: null },
+    { fr: 'Être en forme',       pt: 'Estar em forma',       note: null },
+    { fr: 'Perdre du poids',     pt: 'Perder peso',          note: null },
+    { fr: 'Se reposer',          pt: 'Descansar',            note: null },
+    { fr: 'Rester actif',        pt: 'Manter-se ativo',      note: null },
+  ],
+
+  m44: [
+    { fr: 'Je pense que',        pt: 'Eu acho que',          note: 'penser que + indicativo' },
+    { fr: 'Je crois que',        pt: 'Eu acredito que',      note: null },
+    { fr: 'À mon avis',          pt: 'Na minha opinião',     note: null },
+    { fr: 'Je suis d\'accord',   pt: 'Concordo',             note: null },
+    { fr: 'Je ne suis pas d\'accord', pt: 'Discordo',        note: null },
+    { fr: 'C\'est important',    pt: 'É importante',         note: null },
+    { fr: 'Ça dépend',           pt: 'Depende',              note: null },
+    { fr: 'Selon moi',           pt: 'Segundo minha opinião', note: null },
+    { fr: 'Malheureusement',     pt: 'Infelizmente',         note: null },
+    { fr: 'Heureusement',        pt: 'Felizmente',           note: null },
+  ],
 }
 
 // ── Module definitions ─────────────────────────────────────────────────────────
@@ -517,6 +677,20 @@ const DEFS = [
   { id:'m24', number:30, title:'Lazer',              description:'Hobbies e atividades de lazer',               icon:'🎭', color:'#CE82FF', vocabKey:'m24' },
   { id:'m25', number:31, title:'A Cidade',           description:'Navegue pela cidade em francês',              icon:'🏙️', color:'#FF9600', vocabKey:'m25' },
   { id:'m29', number:32, title:'Verbos Reflexivos',  description:'Ações que você faz a si mesmo',               icon:'↩️', color:'#CE82FF', vocabKey:'m29' },
+  // ── Intermediário 3 ────────────────────────────────────────────────────────
+  { id:'m33', number:33, title:'Futuro Próximo',     description:'Fale sobre o que vai acontecer em breve',     icon:'🔮', color:'#58CC02', vocabKey:'m33' },
+  { id:'m34', number:34, title:'Imperativo',         description:'Dê ordens e faça pedidos em francês',         icon:'📢', color:'#FF4B4B', vocabKey:'m34' },
+  { id:'m35', number:35, title:'Comparativos',       description:'Compare coisas usando mais, menos e igual',   icon:'⚖️', color:'#1CB0F6', vocabKey:'m35' },
+  { id:'m36', number:36, title:'Preposições de Lugar', description:'Indique onde as coisas estão',              icon:'📍', color:'#FF9600', vocabKey:'m36' },
+  { id:'m37', number:37, title:'Quantidades',        description:'Expresse quantidade em francês',              icon:'🔢', color:'#CE82FF', vocabKey:'m37' },
+  { id:'m38', number:38, title:'Condicional',        description:'Fale sobre possibilidades e desejos',         icon:'💭', color:'#FFC800', vocabKey:'m38' },
+  // ── Intermediário 4 ────────────────────────────────────────────────────────
+  { id:'m39', number:39, title:'Tecnologia',         description:'Vocabulário digital e da internet',           icon:'💻', color:'#1CB0F6', vocabKey:'m39' },
+  { id:'m40', number:40, title:'Compras e Dinheiro', description:'Vocabulário de lojas e finanças',             icon:'🛍️', color:'#58CC02', vocabKey:'m40' },
+  { id:'m41', number:41, title:'Viagens',            description:'Vocabulário essencial para viagens',          icon:'✈️', color:'#FF9600', vocabKey:'m41' },
+  { id:'m42', number:42, title:'Natureza',           description:'A natureza e o meio ambiente em francês',     icon:'🌿', color:'#58CC02', vocabKey:'m42' },
+  { id:'m43', number:43, title:'Esportes e Saúde',   description:'Atividades físicas e bem-estar',              icon:'🏃', color:'#FF4B4B', vocabKey:'m43' },
+  { id:'m44', number:44, title:'Opiniões',           description:'Expresse ideias e pontos de vista',           icon:'💬', color:'#CE82FF', vocabKey:'m44' },
 ]
 
 export const LEVELS = [
@@ -559,6 +733,22 @@ export const LEVELS = [
     icon: '🌳',
     color: '#FF4B4B',
     moduleIds: ['m21', 'm22', 'm23', 'm24', 'm25', 'm29'],
+  },
+  {
+    id: 'intermediate-3',
+    name: 'Intermediário 3',
+    subtitle: 'Futuro, imperativo, comparativos e condicional',
+    icon: '🌲',
+    color: '#58CC02',
+    moduleIds: ['m33', 'm34', 'm35', 'm36', 'm37', 'm38'],
+  },
+  {
+    id: 'intermediate-4',
+    name: 'Intermediário 4',
+    subtitle: 'Tecnologia, viagens, natureza e opiniões',
+    icon: '🌐',
+    color: '#1CB0F6',
+    moduleIds: ['m39', 'm40', 'm41', 'm42', 'm43', 'm44'],
   },
   {
     id: 'advanced',
