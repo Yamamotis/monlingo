@@ -354,6 +354,7 @@ input { -webkit-tap-highlight-color: transparent; }
 }
 .daily-mission-card:hover:not(:disabled) { border-color: #CE82FF; }
 .daily-mission-card.daily-done { opacity: 0.6; cursor: default; }
+.daily-mission-card.daily-locked { opacity: 0.5; cursor: default; background: var(--surface); border-color: var(--border); }
 .daily-icon-wrap { width: 48px; height: 48px; background: #CE82FF22; border: 2px solid #CE82FF55; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
 .daily-xp { font-size: 12px; font-weight: 800; color: #CE82FF; background: #CE82FF22; border: 1px solid #CE82FF44; border-radius: 8px; padding: 3px 10px; white-space: nowrap; }
 

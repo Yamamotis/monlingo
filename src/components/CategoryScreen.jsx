@@ -79,23 +79,30 @@ export default function CategoryScreen({
       <div className="category-list">
         {/* Missão do Dia */}
         <button
-          className={`daily-mission-card ${dailyDone ? 'daily-done' : ''}`}
-          onClick={!dailyDone ? onStartDaily : undefined}
-          disabled={dailyDone}
+          className={`daily-mission-card ${dailyDone ? 'daily-done' : ''} ${!isPremium ? 'daily-locked' : ''}`}
+          onClick={isPremium && !dailyDone ? onStartDaily : undefined}
+          disabled={!isPremium || dailyDone}
         >
           <div className="daily-icon-wrap">
-            <span>{dailyDone ? '✅' : '🎯'}</span>
+            <span>{!isPremium ? '🔒' : dailyDone ? '✅' : '🎯'}</span>
           </div>
           <div className="level-body">
             <div className="level-top-row">
               <span className="level-name">Missão do Dia</span>
-              <span className="daily-xp">{dailyDone ? 'Concluída' : '+50 XP'}</span>
+              {!isPremium
+                ? <span className="level-premium-badge">Premium</span>
+                : <span className="daily-xp">{dailyDone ? 'Concluída' : '+50 XP'}</span>
+              }
             </div>
             <p className="level-sub">
-              {dailyDone ? 'Volte amanhã para uma nova missão!' : '8 questões · exercício especial diário'}
+              {!isPremium
+                ? 'Exclusivo para assinantes Premium'
+                : dailyDone
+                  ? 'Volte amanhã para uma nova missão!'
+                  : '8 questões · exercício especial diário'}
             </p>
           </div>
-          {!dailyDone && <span className="level-chevron">›</span>}
+          {isPremium && !dailyDone && <span className="level-chevron">›</span>}
         </button>
 
         {wrongWords.length >= 3 && (
