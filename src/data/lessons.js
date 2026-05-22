@@ -541,7 +541,7 @@ export const MODULES = DEFS.map(def => {
       id: `${def.id}-lesson`,
       type: 'lesson',
       title: def.title,
-      xpReward: 30,
+      xpReward: 10,
       vocabulary: vocab,
       exercises: genExercises(vocab),
     },

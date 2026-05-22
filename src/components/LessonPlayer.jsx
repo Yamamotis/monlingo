@@ -4,7 +4,7 @@ import MultipleChoice   from './exercises/MultipleChoice'
 import ListeningExercise from './exercises/ListeningExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 
-export default function LessonPlayer({ mod, item, onComplete, onExit }) {
+export default function LessonPlayer({ mod, item, onComplete, onXpGain, onExit }) {
   const skipVocab = item.type === 'evaluation' || item.type === 'review'
   const isEval    = item.type === 'evaluation'
 
@@ -52,6 +52,7 @@ export default function LessonPlayer({ mod, item, onComplete, onExit }) {
       if (nextEx >= exercises.length) {
         onComplete(item.xpReward, { wrong: [...sessionWrong], correct: [...sessionCorrect] })
       } else {
+        onXpGain?.(10)
         setPhase('ex-done')
       }
     } else {
