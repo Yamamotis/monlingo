@@ -382,6 +382,60 @@ const VOCAB = {
     { fr: 'Parc',       pt: 'Parque',      note: null },
     { fr: 'Mairie',     pt: 'Prefeitura',  note: 'Sede do governo municipal' },
   ],
+
+  m26: [
+    { fr: 'Janvier',   pt: 'Janeiro',   note: null },
+    { fr: 'Février',   pt: 'Fevereiro', note: null },
+    { fr: 'Mars',      pt: 'Março',     note: null },
+    { fr: 'Avril',     pt: 'Abril',     note: null },
+    { fr: 'Mai',       pt: 'Maio',      note: null },
+    { fr: 'Juin',      pt: 'Junho',     note: null },
+    { fr: 'Juillet',   pt: 'Julho',     note: 'Pronuncia-se "juiê"' },
+    { fr: 'Août',      pt: 'Agosto',    note: 'O "t" final é pronunciado' },
+    { fr: 'Septembre', pt: 'Setembro',  note: null },
+    { fr: 'Octobre',   pt: 'Outubro',   note: null },
+    { fr: 'Novembre',  pt: 'Novembro',  note: null },
+    { fr: 'Décembre',  pt: 'Dezembro',  note: null },
+  ],
+
+  m27: [
+    { fr: 'Je ne sais pas',         pt: 'Eu não sei',              note: 'ne...pas = negação básica' },
+    { fr: 'Il ne mange pas',        pt: 'Ele não come',            note: null },
+    { fr: "Je n'aime pas ça",       pt: 'Eu não gosto disso',      note: "n' antes de vogal" },
+    { fr: 'Je ne comprends pas',    pt: 'Eu não entendo',          note: null },
+    { fr: 'Je ne veux pas',         pt: 'Eu não quero',            note: null },
+    { fr: "Il n'y a pas de pain",   pt: 'Não tem pão',             note: "Il n'y a pas = não há" },
+    { fr: 'Je ne fais jamais ça',   pt: 'Eu nunca faço isso',      note: 'ne...jamais = nunca' },
+    { fr: "Je n'ai plus faim",      pt: 'Não estou mais com fome', note: 'ne...plus = não mais' },
+    { fr: 'Je ne vois rien',        pt: 'Não vejo nada',           note: 'ne...rien = nada' },
+    { fr: "Ce n'est pas possible",  pt: 'Não é possível',          note: null },
+  ],
+
+  m28: [
+    { fr: "J'ai mangé",                pt: 'Eu comi',              note: 'avoir + particípio passado' },
+    { fr: 'Il a parlé',                pt: 'Ele falou',            note: null },
+    { fr: 'Elle est arrivée',          pt: 'Ela chegou',           note: 'verbos de movimento usam être' },
+    { fr: "J'ai vu un film",           pt: 'Eu vi um filme',       note: null },
+    { fr: 'Nous avons mangé',          pt: 'Nós comemos',          note: null },
+    { fr: 'Tu as dormi ?',             pt: 'Você dormiu?',         note: null },
+    { fr: "J'ai pris le bus",          pt: 'Eu peguei o ônibus',   note: 'prendre → pris (irregular)' },
+    { fr: 'Il a fait du sport',        pt: 'Ele fez esporte',      note: 'faire → fait (irregular)' },
+    { fr: "Je suis allé(e) au marché", pt: 'Eu fui ao mercado',    note: 'aller → allé, usa être' },
+    { fr: 'Nous sommes partis',        pt: 'Nós partimos',         note: 'partir → parti, usa être' },
+  ],
+
+  m29: [
+    { fr: 'Je me lève',           pt: 'Eu me levanto',        note: 'se lever = levantar-se' },
+    { fr: 'Je me couche',         pt: 'Eu me deito',          note: 'se coucher = deitar-se' },
+    { fr: 'Je me lave',           pt: 'Eu me lavo',           note: 'se laver = lavar-se' },
+    { fr: "Il s'appelle Pierre",  pt: 'Ele se chama Pierre',  note: "s' antes de vogal" },
+    { fr: "Je m'habille",         pt: 'Eu me visto',          note: "s'habiller = vestir-se" },
+    { fr: 'Elle se coiffe',       pt: 'Ela se penteia',       note: 'se coiffer = pentear-se' },
+    { fr: 'Nous nous réveillons', pt: 'Nós acordamos',        note: 'se réveiller = acordar-se' },
+    { fr: 'Tu te dépêches',       pt: 'Você se apressa',      note: 'se dépêcher = apressar-se' },
+    { fr: 'Je me promène',        pt: 'Eu passeio',           note: 'se promener = passear' },
+    { fr: 'Il se repose',         pt: 'Ele descansa',         note: 'se reposer = descansar' },
+  ],
 }
 
 // ── Module definitions ─────────────────────────────────────────────────────────
@@ -414,24 +468,28 @@ const DEFS = [
   { id:'m23', number:23, title:'Saúde',               description:'Vocabulário médico e de bem-estar',         icon:'🏥', color:'#58CC02', vocabKey:'m23' },
   { id:'m24', number:24, title:'Lazer',               description:'Hobbies e atividades de lazer',             icon:'🎭', color:'#CE82FF', vocabKey:'m24' },
   { id:'m25', number:25, title:'A Cidade',            description:'Navegue pela cidade em francês',            icon:'🏙️', color:'#FF9600', vocabKey:'m25' },
+  { id:'m26', number:26, title:'Meses do Ano',        description:'Os doze meses do ano em francês',           icon:'📆', color:'#FF9600', vocabKey:'m26' },
+  { id:'m27', number:27, title:'Negação',              description:'Como dizer "não", "nunca" e "nada"',        icon:'🚫', color:'#58CC02', vocabKey:'m27' },
+  { id:'m28', number:28, title:'Passado (Passé Composé)', description:'Fale sobre o que já aconteceu',         icon:'⏮️', color:'#1CB0F6', vocabKey:'m28' },
+  { id:'m29', number:29, title:'Verbos Reflexivos',   description:'Ações que você faz a si mesmo',             icon:'↩️', color:'#CE82FF', vocabKey:'m29' },
 ]
 
 export const LEVELS = [
   {
     id: 'beginner-1',
     name: 'Iniciante',
-    subtitle: 'Vocabulário essencial',
+    subtitle: 'Vocabulário A1 essencial + verbos básicos',
     icon: '🌱',
     color: '#58CC02',
-    moduleIds: ['m1', 'm2', 'm3', 'm4', 'm5'],
+    moduleIds: ['m1', 'm2', 'm3', 'm4', 'm5', 'm16'],
   },
   {
     id: 'beginner-2',
     name: 'Iniciante 2',
-    subtitle: 'Ampliando o vocabulário',
+    subtitle: 'Vocabulário A1 + horas, meses e mais',
     icon: '📗',
     color: '#1CB0F6',
-    moduleIds: ['m6', 'm7', 'm8', 'm9', 'm10'],
+    moduleIds: ['m6', 'm7', 'm8', 'm9', 'm10', 'm26'],
   },
   {
     id: 'beginner-3',
@@ -444,18 +502,18 @@ export const LEVELS = [
   {
     id: 'intermediate-1',
     name: 'Intermediário',
-    subtitle: 'Verbos, escola, transporte e mais',
+    subtitle: 'Vocabulário A2 + gramática (negação, passado)',
     icon: '🌿',
     color: '#FF9600',
-    moduleIds: ['m16', 'm17', 'm18', 'm19', 'm20'],
+    moduleIds: ['m17', 'm18', 'm19', 'm20', 'm27', 'm28'],
   },
   {
     id: 'intermediate-2',
     name: 'Intermediário 2',
-    subtitle: 'Trabalho, emoções, saúde e cidade',
+    subtitle: 'Vocabulário A2 + verbos reflexivos',
     icon: '🌳',
     color: '#FF4B4B',
-    moduleIds: ['m21', 'm22', 'm23', 'm24', 'm25'],
+    moduleIds: ['m21', 'm22', 'm23', 'm24', 'm25', 'm29'],
   },
   {
     id: 'advanced',
