@@ -4,12 +4,13 @@ import MultipleChoice   from './exercises/MultipleChoice'
 import ListeningExercise from './exercises/ListeningExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 
-export default function LessonPlayer({ mod, item, onComplete, onExit }) {
+export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, hearts = 5, onExit }) {
   const isVocab  = item.type === 'vocab'
   const isEval   = item.type === 'evaluation'
   const isReview = item.type === 'review'
+  const isDaily  = item.type === 'daily'
 
-  const exercises = isVocab ? [] : isReview
+  const exercises = isVocab ? [] : (isReview || isDaily)
     ? item.exercises
     : isEval
     ? [{ number: 1, title: 'Avaliação', subtitle: '10 questões finais', questions: item.questions }]
@@ -39,9 +40,10 @@ export default function LessonPlayer({ mod, item, onComplete, onExit }) {
     } else {
       playWrong()
       if (speakFr) setSessionWrong(prev => new Set([...prev, speakFr]))
+      onLoseHeart?.()
       const next = lives - 1
       setLives(next)
-      if (next <= 0) setPhase('failed')
+      if (next <= 0 || hearts - 1 <= 0) setPhase('failed')
       else setAnswerPhase('feedback')
     }
   }
@@ -121,9 +123,9 @@ export default function LessonPlayer({ mod, item, onComplete, onExit }) {
     )
   }
 
-  const barColor  = isEval ? '#FFC800' : item.type === 'review' ? '#1CB0F6' : mod.color
-  const badgeIcon = isEval ? '📝' : item.type === 'review' ? '🔄' : mod.icon
-  const badgeName = isEval ? 'Avaliação' : item.type === 'review' ? 'Revisão Rápida' : currentEx.title
+  const barColor  = isEval ? '#FFC800' : isDaily ? '#CE82FF' : isReview ? '#1CB0F6' : mod.color
+  const badgeIcon = isEval ? '📝' : isDaily ? '🎯' : isReview ? '🔄' : mod.icon
+  const badgeName = isEval ? 'Avaliação' : isDaily ? 'Missão do Dia' : isReview ? 'Revisão Rápida' : currentEx.title
 
   return (
     <div className="player-screen">

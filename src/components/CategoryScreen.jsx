@@ -27,11 +27,16 @@ function getYesterday() {
   return d.toISOString().slice(0, 10)
 }
 
+function getToday() { return new Date().toISOString().slice(0, 10) }
+
 export default function CategoryScreen({
   progress, user,
-  onSelectCategory, onOpenProfile, onOpenLeaderboard, onStartReview,
+  onSelectCategory, onOpenProfile, onOpenLeaderboard, onStartReview, onStartDaily,
 }) {
-  const { completed = [], xp = 0, streak = 0, wrongWords = [], lastStudyDate } = progress
+  const { completed = [], xp = 0, streak = 0, wrongWords = [], lastStudyDate,
+          hearts = 5, dailyMission } = progress
+  const today           = getToday()
+  const dailyDone       = dailyMission?.date === today && dailyMission?.completed
   const username     = user?.email?.split('@')[0] ?? ''
   const streakAtRisk = streak > 0 && lastStudyDate === getYesterday()
 
@@ -52,6 +57,10 @@ export default function CategoryScreen({
           <div className="xp-badge">
             <span>⭐</span>
             <AnimatedXP value={xp} />
+          </div>
+          <div className="hearts-badge" title={`${hearts}/5 corações`}>
+            <span>❤️</span>
+            <span className="streak-num">{hearts}</span>
           </div>
           <button className="btn-leaderboard" onClick={onOpenLeaderboard} title="Ranking">🏆</button>
           <button className="user-avatar-btn" onClick={onOpenProfile} title="Perfil">
@@ -75,6 +84,27 @@ export default function CategoryScreen({
       </div>
 
       <div className="category-list">
+        {/* Missão do Dia */}
+        <button
+          className={`daily-mission-card ${dailyDone ? 'daily-done' : ''}`}
+          onClick={!dailyDone ? onStartDaily : undefined}
+          disabled={dailyDone}
+        >
+          <div className="daily-icon-wrap">
+            <span>{dailyDone ? '✅' : '🎯'}</span>
+          </div>
+          <div className="level-body">
+            <div className="level-top-row">
+              <span className="level-name">Missão do Dia</span>
+              <span className="daily-xp">{dailyDone ? 'Concluída' : '+50 XP'}</span>
+            </div>
+            <p className="level-sub">
+              {dailyDone ? 'Volte amanhã para uma nova missão!' : '8 questões · exercício especial diário'}
+            </p>
+          </div>
+          {!dailyDone && <span className="level-chevron">›</span>}
+        </button>
+
         {wrongWords.length >= 3 && (
           <button className="review-card" onClick={onStartReview}>
             <div className="review-icon-wrap"><span>🔄</span></div>

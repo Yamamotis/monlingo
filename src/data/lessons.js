@@ -1239,6 +1239,37 @@ export function getAllVocab() {
   return DEFS.flatMap(def => VOCAB[def.vocabKey])
 }
 
+export function buildDailyItem(dateStr) {
+  const all  = getAllVocab()
+  const seed = parseInt(dateStr.replace(/-/g, ''), 10)
+  const pick = (arr, n) => {
+    const out = [], seen = new Set()
+    for (let i = 0; out.length < n && i < arr.length * 3; i++) {
+      const idx = (seed * 1664525 + i * 22695477 + 1013904223) % arr.length
+      if (!seen.has(idx)) { seen.add(idx); out.push(arr[Math.abs(idx)]) }
+    }
+    return out
+  }
+  const items     = pick(all, 8)
+  const questions = shuffle([
+    ...items.slice(0, 3).map(item => makeQ(all, item, 'fr-pt')),
+    ...items.slice(3, 6).map(item => makeQ(all, item, 'pt-fr')),
+    ...items.slice(6).map(item => makeListeningQ(all, item)),
+  ])
+  return {
+    id:       `daily-${dateStr}`,
+    type:     'daily',
+    title:    'Missão do Dia',
+    xpReward: 50,
+    exercises: [{
+      number:   1,
+      title:    'Missão do Dia',
+      subtitle: '8 questões · +50 XP bônus',
+      questions,
+    }],
+  }
+}
+
 export function buildReviewItem(wrongWords) {
   const all   = getAllVocab()
   const items = shuffle(wrongWords.map(fr => all.find(v => v.fr === fr)).filter(Boolean)).slice(0, 10)

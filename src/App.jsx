@@ -4,9 +4,10 @@ import { doc }                           from 'firebase/firestore'
 import { auth, db }                     from './firebase'
 import { doc as fbDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { ACHIEVEMENTS }                 from './data/achievements'
-import { buildReviewItem, LEVELS, MODULES } from './data/lessons'
+import { buildReviewItem, buildDailyItem, LEVELS, MODULES } from './data/lessons'
 import FrFlag             from './components/FrFlag'
-import LoginScreen        from './components/LoginScreen'
+import LandingScreen      from './components/LandingScreen'
+import SkeletonScreen     from './components/SkeletonScreen'
 import LevelSelectScreen  from './components/LevelSelectScreen'
 import MapScreen          from './components/MapScreen'
 import LessonPlayer       from './components/LessonPlayer'
@@ -21,8 +22,13 @@ import CategoryScreen     from './components/CategoryScreen'
 import PlacementTest      from './components/PlacementTest'
 import LevelUpModal       from './components/LevelUpModal'
 
-const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL ?? ''
-const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null, achievements: [], wrongWords: [], weeklyXP: 0, weekStart: '', isPremium: false }
+const ADMIN_EMAIL  = import.meta.env.VITE_ADMIN_EMAIL ?? ''
+const MAX_HEARTS   = 5
+const EMPTY = {
+  completed: [], xp: 0, streak: 0, lastStudyDate: null,
+  achievements: [], wrongWords: [], weeklyXP: 0, weekStart: '',
+  isPremium: false, hearts: MAX_HEARTS, heartsDate: '',
+}
 const REVIEW_MOD = { id: 'review', number: 0, title: 'Revisão', icon: '🔄', color: '#1CB0F6' }
 
 function getWeekStart() {
@@ -45,15 +51,16 @@ function getYesterday() {
 
 export default function App() {
   const [authUser, setAuthUser]         = useState(undefined)
-  const [screen, setScreen]               = useState('levels')
-  const [activeLevel, setActiveLevel]     = useState(null)
-  const [activeModule, setActiveModule]   = useState(null)
-  const [activeItem, setActiveItem]       = useState(null)
+  const [screen, setScreen]                 = useState('levels')
+  const [activeLevel, setActiveLevel]       = useState(null)
+  const [activeModule, setActiveModule]     = useState(null)
+  const [activeItem, setActiveItem]         = useState(null)
   const [activeCategory, setActiveCategory] = useState(null)
-  const [progress, setProgress]           = useState(EMPTY)
-  const [lastResult, setLastResult]       = useState(null)
-  const [toastQueue, setToastQueue]       = useState([])
-  const [levelUpLevel, setLevelUpLevel]   = useState(null)
+  const [progress, setProgress]             = useState(EMPTY)
+  const [progressLoaded, setProgressLoaded] = useState(false)
+  const [lastResult, setLastResult]         = useState(null)
+  const [toastQueue, setToastQueue]         = useState([])
+  const [levelUpLevel, setLevelUpLevel]     = useState(null)
   const readyToSave = useRef(false)
 
 
@@ -63,15 +70,18 @@ export default function App() {
       if (user) {
         try {
           const snap = await getDoc(fbDoc(db, 'users', user.uid))
+          const today = getToday()
           if (snap.exists()) {
-            // Usuário existente — marca onboarding como já feito
-            setProgress({ ...EMPTY, ...snap.data().progress, onboardingDone: true })
+            const saved = snap.data().progress ?? {}
+            // Resetar corações se mudou o dia
+            const hearts = saved.heartsDate === today ? (saved.hearts ?? MAX_HEARTS) : MAX_HEARTS
+            setProgress({ ...EMPTY, ...saved, onboardingDone: true, hearts, heartsDate: today })
           } else {
-            // Novo usuário — verá o onboarding
-            setProgress({ ...EMPTY, onboardingDone: false })
+            setProgress({ ...EMPTY, onboardingDone: false, hearts: MAX_HEARTS, heartsDate: today })
           }
         } catch { setProgress(EMPTY) }
         readyToSave.current = true
+        setProgressLoaded(true)
       } else {
         setProgress(EMPTY)
       }
@@ -85,8 +95,23 @@ export default function App() {
     setDoc(fbDoc(db, 'users', authUser.uid), { progress }, { merge: true }).catch(() => {})
   }, [progress])
 
-  const handleSelectCategory = (cat) => { setActiveCategory(cat); setScreen('sublevel') }
+  const handleSelectCategory = (cat)   => { setActiveCategory(cat); setScreen('sublevel') }
   const handleSelectLevel    = (level) => { setActiveLevel(level); setScreen('level') }
+
+  const handleStartDaily = () => {
+    const item = buildDailyItem(getToday())
+    setActiveModule({ id: 'daily', number: 0, title: 'Missão do Dia', icon: '🎯', color: '#CE82FF' })
+    setActiveItem(item)
+    setScreen('lesson')
+  }
+
+  const handleLoseHeart = () => {
+    setProgress(prev => ({
+      ...prev,
+      hearts:    Math.max(0, (prev.hearts ?? MAX_HEARTS) - 1),
+      heartsDate: getToday(),
+    }))
+  }
 
   const handleStart = (mod, item) => {
     setActiveModule(mod); setActiveItem(item); setScreen('lesson')
@@ -154,6 +179,10 @@ export default function App() {
     })
     if (justFinishedLevel) setLevelUpLevel(justFinishedLevel)
 
+    if (activeItem.type === 'daily') {
+      newProgress.dailyMission = { date: getToday(), completed: true }
+    }
+
     if (activeItem.type === 'exercise') {
       setScreen('level')
     } else {
@@ -197,7 +226,8 @@ export default function App() {
       </div>
     )
   }
-  if (!authUser) return <LoginScreen />
+  if (!authUser) return <LandingScreen />
+  if (!progressLoaded) return <SkeletonScreen />
 
   const shared = { user: authUser, onLogout: handleLogout }
 
@@ -222,6 +252,7 @@ export default function App() {
           onOpenProfile={() => setScreen('profile')}
           onOpenLeaderboard={() => setScreen('leaderboard')}
           onStartReview={handleStartReview}
+          onStartDaily={handleStartDaily}
           {...shared}
         />
       )}
@@ -248,7 +279,9 @@ export default function App() {
           mod={activeModule}
           item={activeItem}
           onComplete={handleComplete}
-          onExit={() => setScreen('level')}
+          onLoseHeart={handleLoseHeart}
+          hearts={progress.hearts ?? MAX_HEARTS}
+          onExit={() => activeItem?.type === 'daily' ? setScreen('levels') : setScreen('level')}
         />
       )}
       {screen === 'completion' && lastResult && (

@@ -112,8 +112,8 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
                 </div>
               </button>
 
-              {/* ── Conteúdo expansível ── */}
-              {isOpen && (
+              {/* ── Conteúdo expansível (animação suave) ── */}
+              <div className={`module-items-wrap ${isOpen ? 'items-open' : ''}`}>
                 <div className="module-items">
                   <button
                     className="module-item item-vocab"
@@ -165,7 +165,7 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
                     <span className="item-xp">+{mod.evaluation.xpReward} XP</span>
                   </button>
                 </div>
-              )}
+              </div>
             </div>
           )
         })}
