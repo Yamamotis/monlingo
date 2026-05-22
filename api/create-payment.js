@@ -37,6 +37,8 @@ export default async function handler(req, res) {
         notification_url: `${appUrl}/api/webhook`,
         payment_methods: {
           installments: 1,
+          excluded_payment_types: [],
+          default_payment_method_id: 'pix',
         },
       }),
     })
