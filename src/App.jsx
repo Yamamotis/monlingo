@@ -45,11 +45,9 @@ export default function App() {
   const [activeItem, setActiveItem]     = useState(null)
   const [progress, setProgress]         = useState(EMPTY)
   const [lastResult, setLastResult]     = useState(null)
-  const [muted, setMuted]               = useState(() => localStorage.getItem('monlingo_muted') === 'true')
   const [toastQueue, setToastQueue]     = useState([])
   const readyToSave = useRef(false)
 
-  useEffect(() => { localStorage.setItem('monlingo_muted', muted) }, [muted])
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
@@ -153,8 +151,6 @@ export default function App() {
     setProgress(prev => ({ ...prev, onboardingDone: true }))
 
   const handleLogout    = () => signOut(auth)
-  const toggleMute      = () => setMuted(m => !m)
-
   if (authUser === undefined) {
     return (
       <div className="app loading-screen">
@@ -165,7 +161,7 @@ export default function App() {
   }
   if (!authUser) return <LoginScreen />
 
-  const shared = { user: authUser, onLogout: handleLogout, muted, onToggleMute: toggleMute }
+  const shared = { user: authUser, onLogout: handleLogout }
 
   return (
     <div className="app">
@@ -197,8 +193,6 @@ export default function App() {
           item={activeItem}
           onComplete={handleComplete}
           onExit={() => setScreen('level')}
-          muted={muted}
-          onToggleMute={toggleMute}
         />
       )}
       {screen === 'completion' && lastResult && (

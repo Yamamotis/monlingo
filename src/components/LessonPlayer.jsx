@@ -4,7 +4,7 @@ import MultipleChoice   from './exercises/MultipleChoice'
 import ListeningExercise from './exercises/ListeningExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 
-export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onToggleMute }) {
+export default function LessonPlayer({ mod, item, onComplete, onExit }) {
   const skipVocab = item.type === 'evaluation' || item.type === 'review'
   const isEval    = item.type === 'evaluation'
 
@@ -32,11 +32,11 @@ export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onT
     setIsCorrect(correct)
 
     if (correct) {
-      if (!muted) playCorrect()
+      playCorrect()
       if (speakFr) setSessionCorrect(prev => { const s = new Set(prev); s.add(speakFr); return s })
       setAnswerPhase('feedback')
     } else {
-      if (!muted) playWrong()
+      playWrong()
       if (speakFr) setSessionWrong(prev => new Set([...prev, speakFr]))
       const next = lives - 1
       setLives(next)
@@ -138,9 +138,6 @@ export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onT
             </span>
           ))}
         </div>
-        <button className="btn-mute" onClick={onToggleMute} title={muted ? 'Ativar sons' : 'Silenciar'}>
-          {muted ? '🔇' : '🔊'}
-        </button>
       </header>
 
       <div className="player-body">
