@@ -194,7 +194,10 @@ export default function App() {
     if (activeItem.type === 'exercise') {
       setScreen('level')
     } else {
-      setLastResult({ xp: xpGained, item: activeItem, module: activeModule })
+      setLastResult({
+        xp: xpGained, item: activeItem, module: activeModule,
+        returnTo: activeItem.type === 'daily' ? 'levels' : 'level',
+      })
       setScreen('completion')
     }
 
@@ -293,7 +296,7 @@ export default function App() {
         />
       )}
       {screen === 'completion' && lastResult && (
-        <CompletionScreen result={lastResult} onContinue={() => setScreen('level')} />
+        <CompletionScreen result={lastResult} onContinue={() => setScreen(lastResult.returnTo ?? 'level')} />
       )}
       {screen === 'leaderboard' && (
         <LeaderboardScreen
