@@ -1,9 +1,24 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import confetti from 'canvas-confetti'
+
+async function share(item, mod, xp) {
+  const type = item.type === 'evaluation' ? 'avaliação' : 'aula'
+  const text = `Completei a ${type} "${mod.title}" no Monlingo! +${xp} XP 🇫🇷`
+  const url  = 'https://monlingo.vercel.app'
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: 'Monlingo', text, url })
+    } else {
+      await navigator.clipboard.writeText(`${text} ${url}`)
+      return 'copied'
+    }
+  } catch { /* cancelled */ }
+}
 
 export default function CompletionScreen({ result, onContinue }) {
   const { item, module: mod, xp } = result
   const isEval = item.type === 'evaluation'
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     confetti({
@@ -15,6 +30,11 @@ export default function CompletionScreen({ result, onContinue }) {
       scalar: 1.1,
     })
   }, [])
+
+  const handleShare = async () => {
+    const result = await share(item, mod, xp)
+    if (result === 'copied') { setCopied(true); setTimeout(() => setCopied(false), 2000) }
+  }
 
   return (
     <div className="completion-screen">
@@ -45,8 +65,10 @@ export default function CompletionScreen({ result, onContinue }) {
           </div>
         </div>
 
-        <button className="btn-complete" onClick={onContinue}>
-          Continuar
+        <button className="btn-complete" onClick={onContinue}>Continuar</button>
+
+        <button className="btn-share-completion" onClick={handleShare}>
+          {copied ? '✓ Copiado!' : '📤 Compartilhar progresso'}
         </button>
       </div>
     </div>

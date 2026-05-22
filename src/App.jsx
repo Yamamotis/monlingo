@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { onAuthStateChanged, signOut }  from 'firebase/auth'
-import { doc, getDoc, setDoc }          from 'firebase/firestore'
+import { doc }                           from 'firebase/firestore'
 import { auth, db }                     from './firebase'
+import { doc as fbDoc, getDoc, setDoc } from 'firebase/firestore'
 import { ACHIEVEMENTS }                 from './data/achievements'
 import { buildReviewItem }              from './data/lessons'
 import FrFlag             from './components/FrFlag'
@@ -13,9 +14,18 @@ import CompletionScreen   from './components/CompletionScreen'
 import ProfileScreen      from './components/ProfileScreen'
 import AchievementToast   from './components/AchievementToast'
 import OnboardingScreen   from './components/OnboardingScreen'
+import LeaderboardScreen  from './components/LeaderboardScreen'
 
-const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null, achievements: [], wrongWords: [] }
+const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null, achievements: [], wrongWords: [], weeklyXP: 0, weekStart: '' }
 const REVIEW_MOD = { id: 'review', number: 0, title: 'Revisão', icon: '🔄', color: '#1CB0F6' }
+
+function getWeekStart() {
+  const d   = new Date()
+  const day = d.getDay()
+  const mon = new Date(d)
+  mon.setDate(d.getDate() - day + (day === 0 ? -6 : 1))
+  return `${mon.getFullYear()}-${String(mon.getMonth()+1).padStart(2,'0')}-${String(mon.getDate()).padStart(2,'0')}`
+}
 
 function getToday() {
   const d = new Date()
@@ -46,7 +56,7 @@ export default function App() {
       readyToSave.current = false
       if (user) {
         try {
-          const snap = await getDoc(doc(db, 'users', user.uid))
+          const snap = await getDoc(fbDoc(db, 'users', user.uid))
           if (snap.exists()) {
             // Usuário existente — marca onboarding como já feito
             setProgress({ ...EMPTY, ...snap.data().progress, onboardingDone: true })
@@ -66,7 +76,7 @@ export default function App() {
 
   useEffect(() => {
     if (!authUser || !readyToSave.current) return
-    setDoc(doc(db, 'users', authUser.uid), { progress }, { merge: true }).catch(() => {})
+    setDoc(fbDoc(db, 'users', authUser.uid), { progress }, { merge: true }).catch(() => {})
   }, [progress])
 
   const handleSelectLevel = (level) => { setActiveLevel(level); setScreen('level') }
@@ -97,10 +107,14 @@ export default function App() {
     const newCompleted    = [...new Set([...prev.completed, activeItem.id])]
     const prevAchievements = prev.achievements ?? []
 
-    // Atualiza palavras erradas: remove as acertadas, adiciona as novas erradas
+    // Palavras erradas
     const prevWrong = new Set(prev.wrongWords ?? [])
     correct.forEach(w => prevWrong.delete(w))
     wrong.forEach(w => prevWrong.add(w))
+
+    // XP semanal
+    const weekStart  = getWeekStart()
+    const weeklyXP   = (prev.weekStart === weekStart ? prev.weeklyXP ?? 0 : 0) + xpGained
 
     const newProgress = {
       ...prev,
@@ -109,6 +123,8 @@ export default function App() {
       streak,
       lastStudyDate: today,
       wrongWords:    [...prevWrong],
+      weeklyXP,
+      weekStart,
     }
 
     // Find newly unlocked achievements
@@ -122,6 +138,14 @@ export default function App() {
     if (unlocked.length) setToastQueue(q => [...q, ...unlocked])
     setLastResult({ xp: xpGained, item: activeItem, module: activeModule })
     setScreen('completion')
+
+    // Atualiza leaderboard público
+    setDoc(fbDoc(db, 'leaderboard', authUser.uid), {
+      displayName: authUser.displayName || authUser.email.split('@')[0],
+      weeklyXP,
+      weekStart,
+      totalXP: newProgress.xp,
+    }).catch(() => {})
   }
 
   const handleToastDone = () => setToastQueue(q => q.slice(1))
@@ -153,6 +177,7 @@ export default function App() {
           progress={progress}
           onSelect={handleSelectLevel}
           onOpenProfile={() => setScreen('profile')}
+          onOpenLeaderboard={() => setScreen('leaderboard')}
           onStartReview={handleStartReview}
           {...shared}
         />
@@ -178,6 +203,13 @@ export default function App() {
       )}
       {screen === 'completion' && lastResult && (
         <CompletionScreen result={lastResult} onContinue={() => setScreen('level')} />
+      )}
+      {screen === 'leaderboard' && (
+        <LeaderboardScreen
+          user={authUser}
+          progress={progress}
+          onBack={() => setScreen('levels')}
+        />
       )}
       {screen === 'profile' && (
         <ProfileScreen

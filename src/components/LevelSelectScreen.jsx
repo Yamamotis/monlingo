@@ -22,7 +22,7 @@ function AnimatedXP({ value }) {
   return <span className="xp-num">{shown}</span>
 }
 
-export default function LevelSelectScreen({ progress, onSelect, user, onLogout, muted, onToggleMute, onOpenProfile, onStartReview }) {
+export default function LevelSelectScreen({ progress, onSelect, user, onLogout, muted, onToggleMute, onOpenProfile, onOpenLeaderboard, onStartReview }) {
   const { completed, xp, streak = 0, wrongWords = [] } = progress
   const username = user?.email?.split('@')[0] ?? ''
 
@@ -46,6 +46,9 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout, 
           </div>
           <button className="btn-mute" onClick={onToggleMute} title={muted ? 'Ativar sons' : 'Silenciar'}>
             {muted ? '🔇' : '🔊'}
+          </button>
+          <button className="btn-leaderboard" onClick={onOpenLeaderboard} title="Ranking">
+            🏆
           </button>
           <button className="user-avatar-btn" onClick={onOpenProfile} title="Perfil">
             {username[0]?.toUpperCase()}
