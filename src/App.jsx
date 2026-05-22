@@ -12,6 +12,7 @@ import LessonPlayer       from './components/LessonPlayer'
 import CompletionScreen   from './components/CompletionScreen'
 import ProfileScreen      from './components/ProfileScreen'
 import AchievementToast   from './components/AchievementToast'
+import OnboardingScreen   from './components/OnboardingScreen'
 
 const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null, achievements: [], wrongWords: [] }
 const REVIEW_MOD = { id: 'review', number: 0, title: 'Revisão', icon: '🔄', color: '#1CB0F6' }
@@ -46,7 +47,13 @@ export default function App() {
       if (user) {
         try {
           const snap = await getDoc(doc(db, 'users', user.uid))
-          setProgress(snap.exists() ? { ...EMPTY, ...snap.data().progress } : EMPTY)
+          if (snap.exists()) {
+            // Usuário existente — marca onboarding como já feito
+            setProgress({ ...EMPTY, ...snap.data().progress, onboardingDone: true })
+          } else {
+            // Novo usuário — verá o onboarding
+            setProgress({ ...EMPTY, onboardingDone: false })
+          }
         } catch { setProgress(EMPTY) }
         readyToSave.current = true
       } else {
@@ -118,6 +125,9 @@ export default function App() {
   }
 
   const handleToastDone = () => setToastQueue(q => q.slice(1))
+  const handleOnboardingDone = () =>
+    setProgress(prev => ({ ...prev, onboardingDone: true }))
+
   const handleLogout    = () => signOut(auth)
   const toggleMute      = () => setMuted(m => !m)
 
@@ -135,7 +145,10 @@ export default function App() {
 
   return (
     <div className="app">
-      {screen === 'levels' && (
+      {screen === 'levels' && !progress.onboardingDone && (
+        <OnboardingScreen onDone={handleOnboardingDone} />
+      )}
+      {screen === 'levels' && progress.onboardingDone && (
         <LevelSelectScreen
           progress={progress}
           onSelect={handleSelectLevel}
