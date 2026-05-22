@@ -530,26 +530,34 @@ export const LEVELS = [
 
 export const MODULES = DEFS.map(def => {
   const vocab = VOCAB[def.vocabKey]
+  const gens  = genExercises(vocab)
   return {
-    id: def.id,
-    number: def.number,
-    title: def.title,
+    id:          def.id,
+    number:      def.number,
+    title:       def.title,
     description: def.description,
-    icon: def.icon,
-    color: def.color,
-    lesson: {
-      id: `${def.id}-lesson`,
-      type: 'lesson',
-      title: def.title,
-      xpReward: 10,
+    icon:        def.icon,
+    color:       def.color,
+    vocab: {
+      id:         `${def.id}-vocab`,
+      type:       'vocab',
+      title:      def.title,
       vocabulary: vocab,
-      exercises: genExercises(vocab),
     },
+    exercises: gens.map((ex, i) => ({
+      id:        `${def.id}-ex${i + 1}`,
+      type:      'exercise',
+      number:    ex.number,
+      title:     ex.title,
+      subtitle:  ex.subtitle,
+      xpReward:  10,
+      questions: ex.questions,
+    })),
     evaluation: {
-      id: `${def.id}-eval`,
-      type: 'evaluation',
-      title: 'Avaliação',
-      xpReward: 20,
+      id:        `${def.id}-eval`,
+      type:      'evaluation',
+      title:     'Avaliação',
+      xpReward:  20,
       questions: genEvalQuestions(vocab),
     },
   }

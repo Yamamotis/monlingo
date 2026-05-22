@@ -134,8 +134,12 @@ export default function App() {
 
     setProgress(newProgress)
     if (unlocked.length) setToastQueue(q => [...q, ...unlocked])
-    setLastResult({ xp: xpGained, item: activeItem, module: activeModule })
-    setScreen('completion')
+    if (activeItem.type === 'exercise') {
+      setScreen('level')
+    } else {
+      setLastResult({ xp: xpGained, item: activeItem, module: activeModule })
+      setScreen('completion')
+    }
 
     // Atualiza leaderboard público
     setDoc(fbDoc(db, 'leaderboard', authUser.uid), {
@@ -144,26 +148,6 @@ export default function App() {
       weekStart,
       totalXP: newProgress.xp,
     }).catch(() => {})
-  }
-
-  const handleXpGain = (xpGained) => {
-    const today     = getToday()
-    const yesterday = getYesterday()
-    setProgress(prev => {
-      const last  = prev.lastStudyDate
-      let streak  = prev.streak ?? 0
-      if (last !== today) streak = last === yesterday ? streak + 1 : 1
-      const weekStart = getWeekStart()
-      const weeklyXP  = (prev.weekStart === weekStart ? prev.weeklyXP ?? 0 : 0) + xpGained
-      const next = { ...prev, xp: prev.xp + xpGained, streak, lastStudyDate: today, weeklyXP, weekStart }
-      setDoc(fbDoc(db, 'leaderboard', authUser.uid), {
-        displayName: authUser.displayName || authUser.email.split('@')[0],
-        weeklyXP,
-        weekStart,
-        totalXP: next.xp,
-      }).catch(() => {})
-      return next
-    })
   }
 
   const handleToastDone = () => setToastQueue(q => q.slice(1))
@@ -212,7 +196,6 @@ export default function App() {
           mod={activeModule}
           item={activeItem}
           onComplete={handleComplete}
-          onXpGain={handleXpGain}
           onExit={() => setScreen('level')}
         />
       )}

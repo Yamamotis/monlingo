@@ -4,22 +4,24 @@ import MultipleChoice   from './exercises/MultipleChoice'
 import ListeningExercise from './exercises/ListeningExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 
-export default function LessonPlayer({ mod, item, onComplete, onXpGain, onExit }) {
-  const skipVocab = item.type === 'evaluation' || item.type === 'review'
-  const isEval    = item.type === 'evaluation'
+export default function LessonPlayer({ mod, item, onComplete, onExit }) {
+  const isVocab  = item.type === 'vocab'
+  const isEval   = item.type === 'evaluation'
+  const isReview = item.type === 'review'
 
-  const exercises = skipVocab && item.type !== 'review'
+  const exercises = isVocab ? [] : isReview
+    ? item.exercises
+    : isEval
     ? [{ number: 1, title: 'Avaliação', subtitle: '10 questões finais', questions: item.questions }]
-    : item.exercises
+    : [{ number: item.number, title: item.title, subtitle: item.subtitle, questions: item.questions }]
 
-  const [phase, setPhase]           = useState(skipVocab ? 'exercise' : 'vocab')
-  const [exIdx, setExIdx]           = useState(0)
-  const [qIdx, setQIdx]             = useState(0)
-  const [lives, setLives]           = useState(3)
+  const [phase, setPhase]             = useState(isVocab ? 'vocab' : 'exercise')
+  const [exIdx, setExIdx]             = useState(0)
+  const [qIdx, setQIdx]               = useState(0)
+  const [lives, setLives]             = useState(3)
   const [answerPhase, setAnswerPhase] = useState('idle')
-  const [isCorrect, setIsCorrect]   = useState(null)
+  const [isCorrect, setIsCorrect]     = useState(null)
 
-  // Rastreamento de palavras erradas / certas para o modo revisão
   const [sessionWrong,   setSessionWrong]   = useState(new Set())
   const [sessionCorrect, setSessionCorrect] = useState(new Set())
 
@@ -30,7 +32,6 @@ export default function LessonPlayer({ mod, item, onComplete, onXpGain, onExit }
   const handleAnswer = (correct) => {
     const speakFr = currentQ?.speakFr
     setIsCorrect(correct)
-
     if (correct) {
       playCorrect()
       if (speakFr) setSessionCorrect(prev => { const s = new Set(prev); s.add(speakFr); return s })
@@ -46,13 +47,12 @@ export default function LessonPlayer({ mod, item, onComplete, onXpGain, onExit }
   }
 
   const handleContinue = () => {
-    const nextQ  = qIdx + 1
+    const nextQ = qIdx + 1
     if (nextQ >= totalQ) {
       const nextEx = exIdx + 1
       if (nextEx >= exercises.length) {
         onComplete(item.xpReward, { wrong: [...sessionWrong], correct: [...sessionCorrect] })
       } else {
-        onXpGain?.(10)
         setPhase('ex-done')
       }
     } else {
@@ -74,7 +74,7 @@ export default function LessonPlayer({ mod, item, onComplete, onXpGain, onExit }
   }
 
   if (phase === 'vocab') {
-    return <VocabPage mod={mod} item={item} onContinue={() => setPhase('exercise')} onExit={onExit} />
+    return <VocabPage mod={mod} item={item} onContinue={onExit} onExit={onExit} />
   }
 
   if (phase === 'failed') {

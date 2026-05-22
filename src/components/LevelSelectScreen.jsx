@@ -81,10 +81,10 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout, 
         {LEVELS.map(level => {
           const locked = level.moduleIds.length === 0
           const mods   = MODULES.filter(m => level.moduleIds.includes(m.id))
-          const total  = mods.length * 2
+          const total  = mods.length * 4
           const done   = mods.reduce((acc, mod) =>
             acc
-            + (completed.includes(mod.lesson.id)     ? 1 : 0)
+            + mod.exercises.reduce((a, ex) => a + (completed.includes(ex.id) ? 1 : 0), 0)
             + (completed.includes(mod.evaluation.id) ? 1 : 0), 0)
           const pct      = total > 0 ? (done / total) * 100 : 0
           const finished = total > 0 && done === total
