@@ -53,7 +53,7 @@ export default function CategoryScreen({
             <AnimatedXP value={xp} />
           </div>
           <div className={`hearts-badge ${isPremium ? 'hearts-premium' : ''}`} title={isPremium ? 'Vidas ilimitadas' : `${hearts}/5 corações`}>
-            <span>❤️</span>
+            <span>{isPremium ? '💜' : '❤️'}</span>
             <span className="streak-num">{isPremium ? '∞' : hearts}</span>
           </div>
           <button className="user-avatar-btn" onClick={onOpenProfile} title="Perfil">
