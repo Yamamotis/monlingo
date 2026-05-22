@@ -57,6 +57,8 @@ function getYesterday() {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
 }
 
+const PAYMENT_STATUS = new URLSearchParams(window.location.search).get('payment')
+
 export default function App() {
   const [authUser, setAuthUser]         = useState(undefined)
   const [screen, setScreen]                 = useState('levels')
@@ -69,6 +71,7 @@ export default function App() {
   const [lastResult, setLastResult]         = useState(null)
   const [toastQueue, setToastQueue]         = useState([])
   const [levelUpLevel, setLevelUpLevel]     = useState(null)
+  const [paymentBanner, setPaymentBanner]   = useState(PAYMENT_STATUS === 'success')
   const readyToSave = useRef(false)
 
 
@@ -245,6 +248,12 @@ export default function App() {
 
   return (
     <div className="app">
+      {paymentBanner && (
+        <div className="payment-success-banner">
+          <span>🎉 Pagamento aprovado! Bem-vindo ao Premium.</span>
+          <button onClick={() => setPaymentBanner(false)}>✕</button>
+        </div>
+      )}
       {screen === 'levels' && !progress.onboardingDone && (
         <OnboardingScreen
           onDone={handleOnboardingDone}
