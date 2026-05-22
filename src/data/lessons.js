@@ -20,8 +20,14 @@ function makeQ(vocab, item, dir) {
   return { type: 'multiple-choice', question, options, correct: options.indexOf(ans), speakFr: item.fr }
 }
 
+function makeListeningQ(vocab, item) {
+  const ans    = item.pt
+  const wrongs = shuffle(vocab.filter(v => v.pt !== ans)).slice(0, 3).map(v => v.pt)
+  const options = shuffle([ans, ...wrongs])
+  return { type: 'listening', question: 'Ouça e selecione a tradução', speakFr: item.fr, options, correct: options.indexOf(ans) }
+}
+
 function genExercises(vocab) {
-  const all = shuffle([...vocab])
   return [
     {
       number: 1,
@@ -38,11 +44,8 @@ function genExercises(vocab) {
     {
       number: 3,
       title: 'Exercício 3',
-      subtitle: 'Revisão geral',
-      questions: shuffle([
-        ...all.slice(0, 5).map(item => makeQ(vocab, item, 'fr-pt')),
-        ...all.slice(5).map(item => makeQ(vocab, item, 'pt-fr')),
-      ]),
+      subtitle: 'Compreensão auditiva 🎧',
+      questions: shuffle(vocab.map(item => makeListeningQ(vocab, item))),
     },
   ]
 }
@@ -179,7 +182,7 @@ const VOCAB = {
     { fr: 'Lit',          pt: 'Cama',           note: null },
   ],
 
-  // ── Módulos de frases (11–15) ─────────────────
+  // ── Módulos de frases (11–15) ──────────────────
 
   m11: [
     { fr: 'Je m\'appelle…',              pt: 'Meu nome é…',                   note: 'Verbo s\'appeler — reflexivo' },
@@ -245,6 +248,140 @@ const VOCAB = {
     { fr: 'Mon chat dort sur le lit',    pt: 'Meu gato dorme na cama',        note: 'Dort = dorme; chat do M7, lit do M10' },
     { fr: 'Je mange du pain le matin',   pt: 'Como pão de manhã',             note: 'Manger = comer; pain do M6; le matin = de manhã' },
   ],
+
+  // ── Intermediário ──────────────────────────────
+
+  m16: [
+    { fr: 'Aller',   pt: 'Ir',         note: 'Verbo irregular — je vais, tu vas, il va' },
+    { fr: 'Faire',   pt: 'Fazer',       note: 'Muito versátil: faire du sport, faire la cuisine' },
+    { fr: 'Être',    pt: 'Ser / Estar', note: 'Verbo mais importante do francês' },
+    { fr: 'Avoir',   pt: 'Ter',         note: 'Usado também em expressões de idade e sensações' },
+    { fr: 'Vouloir', pt: 'Querer',      note: 'Je veux = quero; je voudrais = gostaria' },
+    { fr: 'Pouvoir', pt: 'Poder',       note: 'Je peux = eu posso' },
+    { fr: 'Savoir',  pt: 'Saber',       note: 'Diferente de connaître (conhecer uma pessoa)' },
+    { fr: 'Venir',   pt: 'Vir',         note: 'Je viens = eu venho' },
+    { fr: 'Prendre', pt: 'Pegar / Tomar', note: 'Prendre le bus = pegar o ônibus' },
+    { fr: 'Parler',  pt: 'Falar',       note: 'Verbo regular -er: je parle, tu parles' },
+  ],
+
+  m17: [
+    { fr: 'École',      pt: 'Escola',         note: null },
+    { fr: 'Classe',     pt: 'Turma / Sala',   note: null },
+    { fr: 'Professeur', pt: 'Professor(a)',   note: null },
+    { fr: 'Élève',      pt: 'Aluno(a)',       note: null },
+    { fr: 'Livre',      pt: 'Livro',          note: null },
+    { fr: 'Cahier',     pt: 'Caderno',        note: null },
+    { fr: 'Stylo',      pt: 'Caneta',         note: null },
+    { fr: 'Crayon',     pt: 'Lápis',          note: null },
+    { fr: 'Sac',        pt: 'Mochila',        note: null },
+    { fr: 'Devoir',     pt: 'Dever de casa',  note: 'Plural: les devoirs' },
+  ],
+
+  m18: [
+    { fr: 'Voiture', pt: 'Carro',       note: null },
+    { fr: 'Bus',     pt: 'Ônibus',      note: null },
+    { fr: 'Train',   pt: 'Trem',        note: null },
+    { fr: 'Avion',   pt: 'Avião',       note: null },
+    { fr: 'Vélo',    pt: 'Bicicleta',   note: null },
+    { fr: 'Métro',   pt: 'Metrô',       note: null },
+    { fr: 'Taxi',    pt: 'Táxi',        note: null },
+    { fr: 'Bateau',  pt: 'Barco',       note: null },
+    { fr: 'À pied',  pt: 'A pé',        note: 'Aller à pied = ir a pé' },
+    { fr: 'Gare',    pt: 'Estação',     note: 'Gare = estação de trem; aéroport = aeroporto' },
+  ],
+
+  m19: [
+    { fr: 'Printemps',    pt: 'Primavera',    note: null },
+    { fr: 'Été',          pt: 'Verão',         note: 'Acento circunflexo: été' },
+    { fr: 'Automne',      pt: 'Outono',        note: null },
+    { fr: 'Hiver',        pt: 'Inverno',       note: null },
+    { fr: 'Soleil',       pt: 'Sol',           note: 'Il fait soleil = está ensolarado' },
+    { fr: 'Pluie',        pt: 'Chuva',         note: 'Il pleut = está chovendo' },
+    { fr: 'Neige',        pt: 'Neve',          note: 'Il neige = está nevando' },
+    { fr: 'Vent',         pt: 'Vento',         note: 'Il fait du vent = está ventando' },
+    { fr: 'Nuage',        pt: 'Nuvem',         note: null },
+    { fr: 'Température',  pt: 'Temperatura',   note: 'Quelle température fait-il? = Que temperatura está?' },
+  ],
+
+  m20: [
+    { fr: 'Grand',    pt: 'Grande',    note: 'Feminino: grande' },
+    { fr: 'Petit',    pt: 'Pequeno',   note: 'Feminino: petite' },
+    { fr: 'Beau',     pt: 'Bonito',    note: 'Feminino: belle' },
+    { fr: 'Laid',     pt: 'Feio',      note: 'Feminino: laide' },
+    { fr: 'Rapide',   pt: 'Rápido',    note: 'Invariável para fem./masc.' },
+    { fr: 'Lent',     pt: 'Lento',     note: 'Feminino: lente' },
+    { fr: 'Chaud',    pt: 'Quente',    note: 'Il fait chaud = está quente' },
+    { fr: 'Froid',    pt: 'Frio',      note: 'Il fait froid = está frio' },
+    { fr: 'Nouveau',  pt: 'Novo',      note: 'Feminino: nouvelle' },
+    { fr: 'Vieux',    pt: 'Velho',     note: 'Feminino: vieille' },
+  ],
+
+  // ── Intermediário 2 ────────────────────────────
+
+  m21: [
+    { fr: 'Travail',     pt: 'Trabalho',    note: null },
+    { fr: 'Bureau',      pt: 'Escritório',  note: 'Também pode ser "escrivaninha"' },
+    { fr: 'Réunion',     pt: 'Reunião',     note: null },
+    { fr: 'Collègue',    pt: 'Colega',      note: null },
+    { fr: 'Patron',      pt: 'Chefe',       note: null },
+    { fr: 'Salaire',     pt: 'Salário',     note: null },
+    { fr: 'Vacances',    pt: 'Férias',      note: 'Sempre no plural em francês' },
+    { fr: 'Entreprise',  pt: 'Empresa',     note: null },
+    { fr: 'Email',       pt: 'E-mail',      note: 'Também: courriel (forma mais francesa)' },
+    { fr: 'Téléphone',   pt: 'Telefone',    note: null },
+  ],
+
+  m22: [
+    { fr: 'Heureux',   pt: 'Feliz',        note: 'Feminino: heureuse' },
+    { fr: 'Triste',    pt: 'Triste',       note: 'Invariável' },
+    { fr: 'Fâché',     pt: 'Bravo / Irritado', note: 'Feminino: fâchée' },
+    { fr: 'Surpris',   pt: 'Surpreso',     note: 'Feminino: surprise' },
+    { fr: 'Peur',      pt: 'Medo',         note: 'J\'ai peur = tenho medo' },
+    { fr: 'Amour',     pt: 'Amor',         note: null },
+    { fr: 'Joie',      pt: 'Alegria',      note: null },
+    { fr: 'Calme',     pt: 'Calmo',        note: 'Invariável para fem./masc.' },
+    { fr: 'Fatigué',   pt: 'Cansado',      note: 'Feminino: fatiguée' },
+    { fr: 'Inquiet',   pt: 'Preocupado',   note: 'Feminino: inquiète' },
+  ],
+
+  m23: [
+    { fr: 'Médecin',     pt: 'Médico',      note: null },
+    { fr: 'Hôpital',     pt: 'Hospital',    note: null },
+    { fr: 'Médicament',  pt: 'Remédio',     note: null },
+    { fr: 'Douleur',     pt: 'Dor',         note: 'J\'ai une douleur = estou com dor' },
+    { fr: 'Fièvre',      pt: 'Febre',       note: 'J\'ai de la fièvre = estou com febre' },
+    { fr: 'Rhume',       pt: 'Resfriado',   note: null },
+    { fr: 'Blessure',    pt: 'Ferimento',   note: null },
+    { fr: 'Allergie',    pt: 'Alergia',     note: null },
+    { fr: 'Santé',       pt: 'Saúde',       note: 'À votre santé! = Saúde! (brinde)' },
+    { fr: 'Rendez-vous', pt: 'Consulta',    note: 'Aussi: encontro, reunião marcada' },
+  ],
+
+  m24: [
+    { fr: 'Film',      pt: 'Filme',      note: null },
+    { fr: 'Musique',   pt: 'Música',     note: null },
+    { fr: 'Sport',     pt: 'Esporte',    note: 'Faire du sport = praticar esporte' },
+    { fr: 'Jeu',       pt: 'Jogo',       note: 'Plural: les jeux' },
+    { fr: 'Voyage',    pt: 'Viagem',     note: null },
+    { fr: 'Cuisine',   pt: 'Culinária',  note: 'Aussi: cozinha (local)' },
+    { fr: 'Dessin',    pt: 'Desenho',    note: null },
+    { fr: 'Danse',     pt: 'Dança',      note: null },
+    { fr: 'Lecture',   pt: 'Leitura',    note: 'Aimer la lecture = gostar de ler' },
+    { fr: 'Jardinage', pt: 'Jardinagem', note: null },
+  ],
+
+  m25: [
+    { fr: 'Rue',        pt: 'Rua',         note: null },
+    { fr: 'Quartier',   pt: 'Bairro',      note: null },
+    { fr: 'Place',      pt: 'Praça',       note: 'La place principale = a praça principal' },
+    { fr: 'Magasin',    pt: 'Loja',        note: null },
+    { fr: 'Pharmacie',  pt: 'Farmácia',    note: null },
+    { fr: 'Musée',      pt: 'Museu',       note: null },
+    { fr: 'Banque',     pt: 'Banco',       note: null },
+    { fr: 'Hôtel',      pt: 'Hotel',       note: null },
+    { fr: 'Parc',       pt: 'Parque',      note: null },
+    { fr: 'Mairie',     pt: 'Prefeitura',  note: 'Sede do governo municipal' },
+  ],
 }
 
 // ── Module definitions ─────────────────────────────────────────────────────────
@@ -265,6 +402,18 @@ const DEFS = [
   { id:'m13', number:13, title:'Falando da Família',  description:'Frases sobre os membros da família',        icon:'💬', color:'#CE82FF', vocabKey:'m13' },
   { id:'m14', number:14, title:'Descrevendo Coisas',  description:'Combine cores, animais, roupas e lugares',  icon:'🖌️', color:'#1CB0F6', vocabKey:'m14' },
   { id:'m15', number:15, title:'Rotina Diária',       description:'Frases sobre o dia a dia com o que aprendeu', icon:'🗓️', color:'#FF4B4B', vocabKey:'m15' },
+  // ── Intermediário ──────────────────────────────────────────────────────────
+  { id:'m16', number:16, title:'Verbos Essenciais',  description:'Os verbos mais usados no francês',          icon:'⚡', color:'#FF9600', vocabKey:'m16' },
+  { id:'m17', number:17, title:'Na Escola',           description:'Vocabulário do ambiente escolar',           icon:'🏫', color:'#58CC02', vocabKey:'m17' },
+  { id:'m18', number:18, title:'Transportes',         description:'Como se locomover em francês',              icon:'🚆', color:'#1CB0F6', vocabKey:'m18' },
+  { id:'m19', number:19, title:'Tempo e Estações',    description:'Clima, estações do ano e o tempo',          icon:'☀️', color:'#FFC800', vocabKey:'m19' },
+  { id:'m20', number:20, title:'Adjetivos',           description:'Descreva tudo com os adjetivos certos',     icon:'🎨', color:'#CE82FF', vocabKey:'m20' },
+  // ── Intermediário 2 ────────────────────────────────────────────────────────
+  { id:'m21', number:21, title:'No Trabalho',         description:'Vocabulário profissional em francês',       icon:'💼', color:'#1CB0F6', vocabKey:'m21' },
+  { id:'m22', number:22, title:'Emoções',             description:'Expresse como você se sente em francês',    icon:'😊', color:'#FF4B4B', vocabKey:'m22' },
+  { id:'m23', number:23, title:'Saúde',               description:'Vocabulário médico e de bem-estar',         icon:'🏥', color:'#58CC02', vocabKey:'m23' },
+  { id:'m24', number:24, title:'Lazer',               description:'Hobbies e atividades de lazer',             icon:'🎭', color:'#CE82FF', vocabKey:'m24' },
+  { id:'m25', number:25, title:'A Cidade',            description:'Navegue pela cidade em francês',            icon:'🏙️', color:'#FF9600', vocabKey:'m25' },
 ]
 
 export const LEVELS = [
@@ -295,18 +444,18 @@ export const LEVELS = [
   {
     id: 'intermediate-1',
     name: 'Intermediário',
-    subtitle: 'Em breve',
+    subtitle: 'Verbos, escola, transporte e mais',
     icon: '🌿',
     color: '#FF9600',
-    moduleIds: [],
+    moduleIds: ['m16', 'm17', 'm18', 'm19', 'm20'],
   },
   {
     id: 'intermediate-2',
     name: 'Intermediário 2',
-    subtitle: 'Em breve',
+    subtitle: 'Trabalho, emoções, saúde e cidade',
     icon: '🌳',
     color: '#FF4B4B',
-    moduleIds: [],
+    moduleIds: ['m21', 'm22', 'm23', 'm24', 'm25'],
   },
   {
     id: 'advanced',
@@ -344,3 +493,31 @@ export const MODULES = DEFS.map(def => {
     },
   }
 })
+
+// ── Utilitários de revisão ─────────────────────────────────────────────────────
+
+export function getAllVocab() {
+  return DEFS.flatMap(def => VOCAB[def.vocabKey])
+}
+
+export function buildReviewItem(wrongWords) {
+  const all   = getAllVocab()
+  const items = shuffle(wrongWords.map(fr => all.find(v => v.fr === fr)).filter(Boolean)).slice(0, 10)
+  if (!items.length) return null
+  const questions = shuffle([
+    ...items.slice(0, 5).map(item => makeQ(all, item, 'fr-pt')),
+    ...items.slice(5).map(item => makeListeningQ(all, item)),
+  ]).slice(0, 10)
+  return {
+    id: 'review',
+    type: 'review',
+    title: 'Revisão',
+    xpReward: Math.max(5, items.length),
+    exercises: [{
+      number: 1,
+      title: 'Revisão Rápida',
+      subtitle: `${items.length} palavras selecionadas`,
+      questions,
+    }],
+  }
+}

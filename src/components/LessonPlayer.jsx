@@ -1,34 +1,43 @@
 import { useState } from 'react'
-import VocabPage from './VocabPage'
-import MultipleChoice from './exercises/MultipleChoice'
+import VocabPage        from './VocabPage'
+import MultipleChoice   from './exercises/MultipleChoice'
+import ListeningExercise from './exercises/ListeningExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 
 export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onToggleMute }) {
-  const isEval = item.type === 'evaluation'
+  const skipVocab = item.type === 'evaluation' || item.type === 'review'
+  const isEval    = item.type === 'evaluation'
 
-  // Lessons have 3 exercises; evaluations have a single "exercise" from questions array
-  const exercises = isEval
+  const exercises = skipVocab && item.type !== 'review'
     ? [{ number: 1, title: 'Avaliação', subtitle: '10 questões finais', questions: item.questions }]
     : item.exercises
 
-  const [phase, setPhase]           = useState(isEval ? 'exercise' : 'vocab')
+  const [phase, setPhase]           = useState(skipVocab ? 'exercise' : 'vocab')
   const [exIdx, setExIdx]           = useState(0)
   const [qIdx, setQIdx]             = useState(0)
   const [lives, setLives]           = useState(3)
-  const [answerPhase, setAnswerPhase] = useState('idle') // 'idle' | 'feedback'
+  const [answerPhase, setAnswerPhase] = useState('idle')
   const [isCorrect, setIsCorrect]   = useState(null)
+
+  // Rastreamento de palavras erradas / certas para o modo revisão
+  const [sessionWrong,   setSessionWrong]   = useState(new Set())
+  const [sessionCorrect, setSessionCorrect] = useState(new Set())
 
   const currentEx = exercises[exIdx]
   const currentQ  = currentEx?.questions[qIdx]
   const totalQ    = currentEx?.questions.length ?? 0
 
   const handleAnswer = (correct) => {
+    const speakFr = currentQ?.speakFr
     setIsCorrect(correct)
+
     if (correct) {
       if (!muted) playCorrect()
+      if (speakFr) setSessionCorrect(prev => { const s = new Set(prev); s.add(speakFr); return s })
       setAnswerPhase('feedback')
     } else {
       if (!muted) playWrong()
+      if (speakFr) setSessionWrong(prev => new Set([...prev, speakFr]))
       const next = lives - 1
       setLives(next)
       if (next <= 0) setPhase('failed')
@@ -37,11 +46,11 @@ export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onT
   }
 
   const handleContinue = () => {
-    const nextQ = qIdx + 1
+    const nextQ  = qIdx + 1
     if (nextQ >= totalQ) {
       const nextEx = exIdx + 1
       if (nextEx >= exercises.length) {
-        onComplete(item.xpReward)
+        onComplete(item.xpReward, { wrong: [...sessionWrong], correct: [...sessionCorrect] })
       } else {
         setPhase('ex-done')
       }
@@ -53,30 +62,20 @@ export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onT
   }
 
   const startNextExercise = () => {
-    setExIdx(e => e + 1)
-    setQIdx(0)
-    setLives(3)
-    setAnswerPhase('idle')
-    setIsCorrect(null)
+    setExIdx(e => e + 1); setQIdx(0)
+    setLives(3); setAnswerPhase('idle'); setIsCorrect(null)
     setPhase('exercise')
   }
 
   const handleRetry = () => {
-    setQIdx(0)
-    setLives(3)
-    setAnswerPhase('idle')
-    setIsCorrect(null)
+    setQIdx(0); setLives(3); setAnswerPhase('idle'); setIsCorrect(null)
     setPhase('exercise')
   }
 
-  // ── Vocab page ─────────────────────────────────
   if (phase === 'vocab') {
-    return (
-      <VocabPage mod={mod} item={item} onContinue={() => setPhase('exercise')} onExit={onExit} />
-    )
+    return <VocabPage mod={mod} item={item} onContinue={() => setPhase('exercise')} onExit={onExit} />
   }
 
-  // ── Failed ──────────────────────────────────────
   if (phase === 'failed') {
     return (
       <div className="player-screen failed-screen">
@@ -91,7 +90,6 @@ export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onT
     )
   }
 
-  // ── Between exercises ────────────────────────────
   if (phase === 'ex-done') {
     const nextEx = exercises[exIdx + 1]
     return (
@@ -99,20 +97,17 @@ export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onT
         <div className="ex-done-card">
           <div className="ex-done-icon">🎉</div>
           <h2>{currentEx.title} concluído!</h2>
-
           <div className="ex-dots">
             {exercises.map((_, i) => (
               <div key={i} className={`ex-dot ${i <= exIdx ? 'dot-done' : 'dot-pending'}`} />
             ))}
           </div>
-
           {nextEx && (
             <div className="next-ex-info">
               <span className="next-label">A seguir:</span>
               <span className="next-title">{nextEx.title} — {nextEx.subtitle}</span>
             </div>
           )}
-
           <button
             className="btn-retry"
             style={{ background: mod.color, boxShadow: `0 4px 0 ${mod.color}99` }}
@@ -125,16 +120,16 @@ export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onT
     )
   }
 
-  // ── Exercise player ──────────────────────────────
-  const progressPct = (qIdx / totalQ) * 100
-  const barColor    = isEval ? '#FFC800' : mod.color
+  const barColor  = isEval ? '#FFC800' : item.type === 'review' ? '#1CB0F6' : mod.color
+  const badgeIcon = isEval ? '📝' : item.type === 'review' ? '🔄' : mod.icon
+  const badgeName = isEval ? 'Avaliação' : item.type === 'review' ? 'Revisão Rápida' : currentEx.title
 
   return (
     <div className="player-screen">
       <header className="player-header">
         <button className="btn-close" onClick={onExit}>✕</button>
         <div className="progress-track">
-          <div className="progress-fill" style={{ width: `${progressPct}%`, background: barColor }} />
+          <div className="progress-fill" style={{ width: `${(qIdx / totalQ) * 100}%`, background: barColor }} />
         </div>
         <div className="hearts">
           {[1, 2, 3].map(n => (
@@ -152,10 +147,12 @@ export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onT
         <div className="exercise-top">
           <div
             className={`lesson-badge ${isEval ? 'eval-badge' : ''}`}
-            style={!isEval ? { background: mod.color + '22', color: mod.color, borderColor: mod.color + '66' } : {}}
+            style={!isEval && item.type !== 'review'
+              ? { background: mod.color + '22', color: mod.color, borderColor: mod.color + '66' }
+              : item.type === 'review' ? { background: '#0a1e30', color: '#1CB0F6', borderColor: '#1CB0F644' } : {}}
           >
-            <span>{isEval ? '📝' : mod.icon}</span>
-            <span>Módulo {mod.number} — {currentEx.title}</span>
+            <span>{badgeIcon}</span>
+            <span>{item.type !== 'review' ? `Módulo ${mod.number} — ` : ''}{badgeName}</span>
           </div>
           <div className="q-counter-wrap">
             <span className="q-subtitle">{currentEx.subtitle}</span>
@@ -163,12 +160,21 @@ export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onT
           </div>
         </div>
 
-        <MultipleChoice
-          exercise={currentQ}
-          answered={answerPhase === 'feedback'}
-          isCorrect={isCorrect}
-          onSelect={handleAnswer}
-        />
+        {currentQ?.type === 'listening' ? (
+          <ListeningExercise
+            key={`${exIdx}-${qIdx}`}
+            exercise={currentQ}
+            answered={answerPhase === 'feedback'}
+            onSelect={handleAnswer}
+          />
+        ) : (
+          <MultipleChoice
+            exercise={currentQ}
+            answered={answerPhase === 'feedback'}
+            isCorrect={isCorrect}
+            onSelect={handleAnswer}
+          />
+        )}
       </div>
 
       {answerPhase === 'feedback' && (

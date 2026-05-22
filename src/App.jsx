@@ -3,6 +3,7 @@ import { onAuthStateChanged, signOut }  from 'firebase/auth'
 import { doc, getDoc, setDoc }          from 'firebase/firestore'
 import { auth, db }                     from './firebase'
 import { ACHIEVEMENTS }                 from './data/achievements'
+import { buildReviewItem }              from './data/lessons'
 import FrFlag             from './components/FrFlag'
 import LoginScreen        from './components/LoginScreen'
 import LevelSelectScreen  from './components/LevelSelectScreen'
@@ -12,7 +13,8 @@ import CompletionScreen   from './components/CompletionScreen'
 import ProfileScreen      from './components/ProfileScreen'
 import AchievementToast   from './components/AchievementToast'
 
-const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null, achievements: [] }
+const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null, achievements: [], wrongWords: [] }
+const REVIEW_MOD = { id: 'review', number: 0, title: 'Revisão', icon: '🔄', color: '#1CB0F6' }
 
 function getToday() {
   const d = new Date()
@@ -66,7 +68,16 @@ export default function App() {
     setActiveModule(mod); setActiveItem(item); setScreen('lesson')
   }
 
-  const handleComplete = (xpGained) => {
+  const handleStartReview = () => {
+    const item = buildReviewItem(progress.wrongWords ?? [])
+    if (!item) return
+    setActiveModule(REVIEW_MOD)
+    setActiveItem(item)
+    setScreen('lesson')
+  }
+
+  const handleComplete = (xpGained, wordStats = { wrong: [], correct: [] }) => {
+    const { wrong = [], correct = [] } = wordStats
     const today     = getToday()
     const yesterday = getYesterday()
 
@@ -79,12 +90,18 @@ export default function App() {
     const newCompleted    = [...new Set([...prev.completed, activeItem.id])]
     const prevAchievements = prev.achievements ?? []
 
+    // Atualiza palavras erradas: remove as acertadas, adiciona as novas erradas
+    const prevWrong = new Set(prev.wrongWords ?? [])
+    correct.forEach(w => prevWrong.delete(w))
+    wrong.forEach(w => prevWrong.add(w))
+
     const newProgress = {
       ...prev,
-      completed:      newCompleted,
-      xp:             prev.xp + xpGained,
+      completed:     newCompleted,
+      xp:            prev.xp + xpGained,
       streak,
-      lastStudyDate:  today,
+      lastStudyDate: today,
+      wrongWords:    [...prevWrong],
     }
 
     // Find newly unlocked achievements
@@ -123,6 +140,7 @@ export default function App() {
           progress={progress}
           onSelect={handleSelectLevel}
           onOpenProfile={() => setScreen('profile')}
+          onStartReview={handleStartReview}
           {...shared}
         />
       )}

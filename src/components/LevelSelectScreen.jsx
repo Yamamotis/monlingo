@@ -22,8 +22,8 @@ function AnimatedXP({ value }) {
   return <span className="xp-num">{shown}</span>
 }
 
-export default function LevelSelectScreen({ progress, onSelect, user, onLogout, muted, onToggleMute, onOpenProfile }) {
-  const { completed, xp, streak = 0 } = progress
+export default function LevelSelectScreen({ progress, onSelect, user, onLogout, muted, onToggleMute, onOpenProfile, onStartReview }) {
+  const { completed, xp, streak = 0, wrongWords = [] } = progress
   const username = user?.email?.split('@')[0] ?? ''
 
   return (
@@ -62,6 +62,21 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout, 
       </div>
 
       <div className="levels-list">
+        {wrongWords.length >= 3 && (
+          <button className="review-card" onClick={onStartReview}>
+            <div className="review-icon-wrap">
+              <span>🔄</span>
+            </div>
+            <div className="level-body">
+              <div className="level-top-row">
+                <span className="level-name">Revisão Rápida</span>
+                <span className="review-count">{wrongWords.length}</span>
+              </div>
+              <p className="level-sub">Pratique as palavras que você errou</p>
+            </div>
+            <span className="level-chevron">›</span>
+          </button>
+        )}
         {LEVELS.map(level => {
           const locked = level.moduleIds.length === 0
           const mods   = MODULES.filter(m => level.moduleIds.includes(m.id))
