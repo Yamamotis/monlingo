@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { onAuthStateChanged, signOut }  from 'firebase/auth'
 import { doc }                           from 'firebase/firestore'
 import { auth, db }                     from './firebase'
-import { doc as fbDoc, getDoc, setDoc } from 'firebase/firestore'
+import { doc as fbDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { ACHIEVEMENTS }                 from './data/achievements'
 import { buildReviewItem }              from './data/lessons'
 import FrFlag             from './components/FrFlag'
@@ -15,8 +15,11 @@ import ProfileScreen      from './components/ProfileScreen'
 import AchievementToast   from './components/AchievementToast'
 import OnboardingScreen   from './components/OnboardingScreen'
 import LeaderboardScreen  from './components/LeaderboardScreen'
+import RedeemScreen       from './components/RedeemScreen'
+import AdminScreen        from './components/AdminScreen'
 
-const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null, achievements: [], wrongWords: [], weeklyXP: 0, weekStart: '' }
+const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL ?? ''
+const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null, achievements: [], wrongWords: [], weeklyXP: 0, weekStart: '', isPremium: false }
 const REVIEW_MOD = { id: 'review', number: 0, title: 'Revisão', icon: '🔄', color: '#1CB0F6' }
 
 function getWeekStart() {
@@ -150,6 +153,11 @@ export default function App() {
     }).catch(() => {})
   }
 
+  const handleRedeemSuccess = () => {
+    setProgress(prev => ({ ...prev, isPremium: true }))
+    setScreen('levels')
+  }
+
   const handleToastDone = () => setToastQueue(q => q.slice(1))
   const handleOnboardingDone = () =>
     setProgress(prev => ({ ...prev, onboardingDone: true }))
@@ -179,6 +187,7 @@ export default function App() {
           onOpenProfile={() => setScreen('profile')}
           onOpenLeaderboard={() => setScreen('leaderboard')}
           onStartReview={handleStartReview}
+          onOpenRedeem={() => setScreen('redeem')}
           {...shared}
         />
       )}
@@ -213,9 +222,22 @@ export default function App() {
         <ProfileScreen
           progress={progress}
           user={authUser}
+          isAdmin={authUser.email === ADMIN_EMAIL}
           onBack={() => setScreen('levels')}
           onLogout={handleLogout}
+          onOpenRedeem={() => setScreen('redeem')}
+          onOpenAdmin={() => setScreen('admin')}
         />
+      )}
+      {screen === 'redeem' && (
+        <RedeemScreen
+          user={authUser}
+          onSuccess={handleRedeemSuccess}
+          onBack={() => setScreen('levels')}
+        />
+      )}
+      {screen === 'admin' && authUser.email === ADMIN_EMAIL && (
+        <AdminScreen onBack={() => setScreen('profile')} />
       )}
 
       {/* Achievement toasts — rendered above everything */}

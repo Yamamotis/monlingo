@@ -1076,6 +1076,7 @@ export const LEVELS = [
     subtitle: 'Vocabulário A1 essencial + verbos básicos',
     icon: '🌱',
     color: '#58CC02',
+    premium: false,
     moduleIds: ['m1', 'm2', 'm3', 'm4', 'm5', 'm16', 'm30'],
   },
   {
@@ -1084,6 +1085,7 @@ export const LEVELS = [
     subtitle: 'Vocabulário A1 + meses, pronomes e mais',
     icon: '📗',
     color: '#1CB0F6',
+    premium: false,
     moduleIds: ['m6', 'm7', 'm8', 'm9', 'm10', 'm26', 'm31'],
   },
   {
@@ -1092,6 +1094,7 @@ export const LEVELS = [
     subtitle: 'Primeiras frases + profissões',
     icon: '💬',
     color: '#CE82FF',
+    premium: false,
     moduleIds: ['m11', 'm12', 'm13', 'm14', 'm15', 'm32'],
   },
   {
@@ -1100,6 +1103,7 @@ export const LEVELS = [
     subtitle: 'Vocabulário A2 + gramática (negação, passado)',
     icon: '🌿',
     color: '#FF9600',
+    premium: false,
     moduleIds: ['m17', 'm18', 'm19', 'm20', 'm27', 'm28'],
   },
   {
@@ -1108,6 +1112,7 @@ export const LEVELS = [
     subtitle: 'Vocabulário A2 + verbos reflexivos',
     icon: '🌳',
     color: '#FF4B4B',
+    premium: true,
     moduleIds: ['m21', 'm22', 'm23', 'm24', 'm25', 'm29'],
   },
   {
@@ -1116,6 +1121,7 @@ export const LEVELS = [
     subtitle: 'Futuro, imperativo, comparativos e condicional',
     icon: '🌲',
     color: '#58CC02',
+    premium: true,
     moduleIds: ['m33', 'm34', 'm35', 'm36', 'm37', 'm38'],
   },
   {
@@ -1124,6 +1130,7 @@ export const LEVELS = [
     subtitle: 'Tecnologia, viagens, natureza e opiniões',
     icon: '🌐',
     color: '#1CB0F6',
+    premium: true,
     moduleIds: ['m39', 'm40', 'm41', 'm42', 'm43', 'm44'],
   },
   {
@@ -1132,6 +1139,7 @@ export const LEVELS = [
     subtitle: 'Gramática B2: imparfait, subjonctif, discurso indireto',
     icon: '🏆',
     color: '#FFC800',
+    premium: true,
     moduleIds: ['m45', 'm46', 'm47', 'm48', 'm49', 'm50'],
   },
   {
@@ -1140,6 +1148,7 @@ export const LEVELS = [
     subtitle: 'Negócios, política, cultura e gastronomia francesa',
     icon: '👑',
     color: '#CE82FF',
+    premium: true,
     moduleIds: ['m51', 'm52', 'm53', 'm54', 'm55', 'm56'],
   },
   {
@@ -1148,6 +1157,7 @@ export const LEVELS = [
     subtitle: 'Gramática C1: subjonctif passé, passiva, condicionais',
     icon: '🎓',
     color: '#58CC02',
+    premium: true,
     moduleIds: ['m57', 'm58', 'm59', 'm60', 'm61', 'm62', 'm63'],
   },
   {
@@ -1156,6 +1166,7 @@ export const LEVELS = [
     subtitle: 'Ciência, economia, filosofia e cultura avançada',
     icon: '🔭',
     color: '#1CB0F6',
+    premium: true,
     moduleIds: ['m64', 'm65', 'm66', 'm67', 'm68', 'm69', 'm70'],
   },
 ]

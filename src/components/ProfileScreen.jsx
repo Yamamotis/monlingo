@@ -1,8 +1,8 @@
 import { MODULES } from '../data/lessons'
 import { ACHIEVEMENTS } from '../data/achievements'
 
-export default function ProfileScreen({ progress, user, onBack, onLogout }) {
-  const { completed = [], xp = 0, streak = 0, achievements: earned = [] } = progress
+export default function ProfileScreen({ progress, user, isAdmin, onBack, onLogout, onOpenRedeem, onOpenAdmin }) {
+  const { completed = [], xp = 0, streak = 0, achievements: earned = [], isPremium = false } = progress
 
   const lessonsDone = completed.filter(id => id.endsWith('-lesson')).length
   const evalsDone   = completed.filter(id => id.endsWith('-eval')).length
@@ -85,6 +85,15 @@ export default function ProfileScreen({ progress, user, onBack, onLogout }) {
             })}
           </div>
         </div>
+
+        {isPremium
+          ? <div className="premium-active-badge">💎 Acesso Premium ativo</div>
+          : <button className="btn-redeem-profile" onClick={onOpenRedeem}>🔓 Ativar código Premium</button>
+        }
+
+        {isAdmin && (
+          <button className="btn-admin" onClick={onOpenAdmin}>⚙️ Painel Admin</button>
+        )}
 
         <button className="btn-logout-full" onClick={onLogout}>Sair da conta</button>
       </div>

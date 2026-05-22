@@ -23,8 +23,8 @@ function AnimatedXP({ value }) {
   return <span className="xp-num">{shown}</span>
 }
 
-export default function LevelSelectScreen({ progress, onSelect, user, onLogout, onOpenProfile, onOpenLeaderboard, onStartReview }) {
-  const { completed, xp, streak = 0, wrongWords = [] } = progress
+export default function LevelSelectScreen({ progress, onSelect, user, onLogout, onOpenProfile, onOpenLeaderboard, onStartReview, onOpenRedeem }) {
+  const { completed, xp, streak = 0, wrongWords = [], isPremium = false } = progress
   const username = user?.email?.split('@')[0] ?? ''
 
   return (
@@ -79,11 +79,12 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout, 
           </button>
         )}
         {LEVELS.map((level, idx) => {
-          const noContent  = level.moduleIds.length === 0
-          const prevLevel  = idx > 0 ? LEVELS[idx - 1] : null
-          const prevMods   = prevLevel ? MODULES.filter(m => prevLevel.moduleIds.includes(m.id)) : []
-          const prevDone   = !prevLevel || prevMods.every(m => completed.includes(m.evaluation.id))
-          const locked     = noContent || !prevDone
+          const noContent    = level.moduleIds.length === 0
+          const needsPremium = level.premium && !isPremium
+          const prevLevel    = idx > 0 ? LEVELS[idx - 1] : null
+          const prevMods     = prevLevel ? MODULES.filter(m => prevLevel.moduleIds.includes(m.id)) : []
+          const prevDone     = !prevLevel || prevMods.every(m => completed.includes(m.evaluation.id))
+          const locked       = noContent || (!needsPremium && !prevDone)
 
           const mods   = MODULES.filter(m => level.moduleIds.includes(m.id))
           const total  = mods.length * 4
@@ -93,6 +94,28 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout, 
             + (completed.includes(mod.evaluation.id) ? 1 : 0), 0)
           const pct      = total > 0 ? (done / total) * 100 : 0
           const finished = total > 0 && done === total
+
+          if (needsPremium) {
+            return (
+              <button
+                key={level.id}
+                className="level-card level-premium-locked"
+                onClick={onOpenRedeem}
+              >
+                <div className="level-icon-wrap level-icon-premium">
+                  <span className="level-icon">💎</span>
+                </div>
+                <div className="level-body">
+                  <div className="level-top-row">
+                    <span className="level-name">{level.name}</span>
+                    <span className="level-premium-badge">Premium</span>
+                  </div>
+                  <p className="level-sub">{level.subtitle}</p>
+                </div>
+                <span className="level-chevron">›</span>
+              </button>
+            )
+          }
 
           return (
             <button
