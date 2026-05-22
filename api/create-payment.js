@@ -45,8 +45,8 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       const text = await response.text()
-      console.error('MP create-preference error:', text)
-      return res.status(500).json({ error: 'Erro ao criar preferência de pagamento.' })
+      console.error('MP create-preference error:', response.status, text)
+      return res.status(500).json({ error: `MP ${response.status}: ${text}` })
     }
 
     const data = await response.json()
