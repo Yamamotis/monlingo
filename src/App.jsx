@@ -24,6 +24,13 @@ import LevelUpModal       from './components/LevelUpModal'
 
 const ADMIN_EMAIL  = import.meta.env.VITE_ADMIN_EMAIL ?? ''
 const MAX_HEARTS   = 5
+
+// Retorna o slot de 2 horas atual: "2026-05-22-14" para 14:00–15:59
+function getHeartsSlot() {
+  const now  = new Date()
+  const slot = Math.floor(now.getHours() / 2) * 2
+  return `${now.toISOString().slice(0, 10)}-${String(slot).padStart(2, '0')}`
+}
 const EMPTY = {
   completed: [], xp: 0, streak: 0, lastStudyDate: null,
   achievements: [], wrongWords: [], weeklyXP: 0, weekStart: '',
@@ -70,14 +77,14 @@ export default function App() {
       if (user) {
         try {
           const snap = await getDoc(fbDoc(db, 'users', user.uid))
-          const today = getToday()
+          const slot = getHeartsSlot()
           if (snap.exists()) {
             const saved = snap.data().progress ?? {}
-            // Resetar corações se mudou o dia
-            const hearts = saved.heartsDate === today ? (saved.hearts ?? MAX_HEARTS) : MAX_HEARTS
-            setProgress({ ...EMPTY, ...saved, onboardingDone: true, hearts, heartsDate: today })
+            // Resetar corações se mudou o slot de 2 horas
+            const hearts = saved.heartsDate === slot ? (saved.hearts ?? MAX_HEARTS) : MAX_HEARTS
+            setProgress({ ...EMPTY, ...saved, onboardingDone: true, hearts, heartsDate: slot })
           } else {
-            setProgress({ ...EMPTY, onboardingDone: false, hearts: MAX_HEARTS, heartsDate: today })
+            setProgress({ ...EMPTY, onboardingDone: false, hearts: MAX_HEARTS, heartsDate: slot })
           }
         } catch { setProgress(EMPTY) }
         readyToSave.current = true
@@ -106,11 +113,12 @@ export default function App() {
   }
 
   const handleLoseHeart = () => {
-    setProgress(prev => ({
-      ...prev,
-      hearts:    Math.max(0, (prev.hearts ?? MAX_HEARTS) - 1),
-      heartsDate: getToday(),
-    }))
+    const slot = getHeartsSlot()
+    setProgress(prev => {
+      // Se o slot mudou desde a última perda, reseta antes de decrementar
+      const current = prev.heartsDate === slot ? (prev.hearts ?? MAX_HEARTS) : MAX_HEARTS
+      return { ...prev, hearts: Math.max(0, current - 1), heartsDate: slot }
+    })
   }
 
   const handleStart = (mod, item) => {
