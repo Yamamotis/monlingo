@@ -48,12 +48,6 @@ export default function CategoryScreen({
           <MonlingoLogo className="logo-name" />
         </div>
         <div className="header-right">
-          {streak > 0 && (
-            <div className="streak-badge">
-              <span>🔥</span>
-              <span className="streak-num">{streak}</span>
-            </div>
-          )}
           <div className="xp-badge">
             <span>⭐</span>
             <AnimatedXP value={xp} />
@@ -62,7 +56,6 @@ export default function CategoryScreen({
             <span>❤️</span>
             <span className="streak-num">{hearts}</span>
           </div>
-          <button className="btn-leaderboard" onClick={onOpenLeaderboard} title="Ranking">🏆</button>
           <button className="user-avatar-btn" onClick={onOpenProfile} title="Perfil">
             {username[0]?.toUpperCase()}
           </button>
@@ -181,6 +174,21 @@ export default function CategoryScreen({
             </button>
           )
         })}
+
+        {/* Card de Ranking */}
+        <button className="leaderboard-card" onClick={onOpenLeaderboard}>
+          <div className="lb-card-icon-wrap">
+            <span>🏆</span>
+          </div>
+          <div className="level-body">
+            <div className="level-top-row">
+              <span className="level-name">Ranking Global</span>
+              <span className="lb-card-badge">Top 10</span>
+            </div>
+            <p className="level-sub">Veja sua posição entre todos os alunos</p>
+          </div>
+          <span className="level-chevron">›</span>
+        </button>
       </div>
     </div>
   )

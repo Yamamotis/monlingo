@@ -381,6 +381,16 @@ input { -webkit-tap-highlight-color: transparent; }
 .cat-chevron { font-size: 22px; color: var(--text-light); flex-shrink: 0; }
 .category-card.cat-locked { opacity: 0.45; cursor: default; pointer-events: none; }
 .cat-icon-locked { background: var(--surface-hi) !important; border-color: var(--border) !important; }
+.leaderboard-card {
+  display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(135deg, #FFC80022, #FFC80011);
+  border: 2px solid #FFC80055; border-radius: 20px; padding: 16px;
+  cursor: pointer; text-align: left; width: 100%;
+  transition: border-color 0.15s;
+}
+.leaderboard-card:hover { border-color: #FFC800; }
+.lb-card-icon-wrap { width: 48px; height: 48px; background: #FFC80022; border: 2px solid #FFC80055; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.lb-card-badge { font-size: 11px; font-weight: 800; color: #FFC800; background: #FFC80022; border: 1px solid #FFC80044; border-radius: 8px; padding: 3px 10px; white-space: nowrap; }
 
 /* ── Streak risk banner ── */
 .streak-risk-banner {
