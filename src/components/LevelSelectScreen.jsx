@@ -78,8 +78,13 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout, 
             <span className="level-chevron">›</span>
           </button>
         )}
-        {LEVELS.map(level => {
-          const locked = level.moduleIds.length === 0
+        {LEVELS.map((level, idx) => {
+          const noContent  = level.moduleIds.length === 0
+          const prevLevel  = idx > 0 ? LEVELS[idx - 1] : null
+          const prevMods   = prevLevel ? MODULES.filter(m => prevLevel.moduleIds.includes(m.id)) : []
+          const prevDone   = !prevLevel || prevMods.every(m => completed.includes(m.evaluation.id))
+          const locked     = noContent || !prevDone
+
           const mods   = MODULES.filter(m => level.moduleIds.includes(m.id))
           const total  = mods.length * 4
           const done   = mods.reduce((acc, mod) =>
@@ -106,13 +111,17 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout, 
                 <div className="level-top-row">
                   <span className="level-name">{level.name}</span>
                   {locked
-                    ? <span className="level-soon-badge">Em breve</span>
+                    ? <span className="level-soon-badge">{noContent ? 'Em breve' : 'Bloqueado'}</span>
                     : <span className="level-progress-text" style={{ color: finished ? level.color : undefined }}>
                         {finished ? '✓ Concluído' : `${done}/${total}`}
                       </span>
                   }
                 </div>
-                <p className="level-sub">{level.subtitle}</p>
+                <p className="level-sub">
+                  {locked && !noContent
+                    ? `Conclua ${prevLevel.name} primeiro`
+                    : level.subtitle}
+                </p>
                 {!locked && (
                   <div className="level-bar">
                     <div className="level-bar-fill" style={{ width: `${pct}%`, background: level.color }} />
