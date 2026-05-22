@@ -32,7 +32,8 @@ export default function LeaderboardScreen({ user, progress, onBack }) {
     <div className="lb-screen">
       <header className="player-header">
         <button className="btn-back-level" onClick={onBack}>‹ Voltar</button>
-        <span className="profile-header-title">🏆 Ranking Geral</span>
+        <span className="profile-header-title" style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>🏆 Ranking Geral</span>
+        <span style={{ visibility: 'hidden' }}>‹ Voltar</span>
       </header>
 
       <div className="lb-body">
