@@ -89,7 +89,7 @@ export default function CategoryScreen({
           </button>
         )}
 
-        {CATEGORIES.map(cat => {
+        {CATEGORIES.map((cat, idx) => {
           const catLevels = LEVELS.filter(l => cat.levelIds.includes(l.id))
           const catMods   = catLevels.flatMap(l => MODULES.filter(m => l.moduleIds.includes(m.id)))
           const total     = catMods.length * 4
@@ -99,6 +99,32 @@ export default function CategoryScreen({
             + (completed.includes(mod.evaluation.id) ? 1 : 0), 0)
           const pct      = total > 0 ? (done / total) * 100 : 0
           const finished = total > 0 && done === total
+
+          // Trava sequencial: categoria só abre quando a anterior estiver 100% concluída
+          const prevCat      = idx > 0 ? CATEGORIES[idx - 1] : null
+          const prevCatMods  = prevCat
+            ? LEVELS.filter(l => prevCat.levelIds.includes(l.id))
+                    .flatMap(l => MODULES.filter(m => l.moduleIds.includes(m.id)))
+            : []
+          const prevFinished = !prevCat || prevCatMods.every(m => completed.includes(m.evaluation.id))
+          const locked       = !prevFinished
+
+          if (locked) {
+            return (
+              <div key={cat.id} className="category-card cat-locked">
+                <div className="cat-icon-wrap cat-icon-locked">
+                  <span className="cat-icon">🔒</span>
+                </div>
+                <div className="cat-body">
+                  <div className="cat-top-row">
+                    <span className="cat-name">{cat.name}</span>
+                    <span className="level-soon-badge">Bloqueado</span>
+                  </div>
+                  <p className="cat-subtitle">Conclua {prevCat.name} primeiro</p>
+                </div>
+              </div>
+            )
+          }
 
           return (
             <button

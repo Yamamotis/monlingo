@@ -329,6 +329,8 @@ input { -webkit-tap-highlight-color: transparent; }
 .cat-bar { height: 6px; background: var(--surface-hi); border-radius: 3px; overflow: hidden; }
 .cat-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
 .cat-chevron { font-size: 22px; color: var(--text-light); flex-shrink: 0; }
+.category-card.cat-locked { opacity: 0.45; cursor: default; pointer-events: none; }
+.cat-icon-locked { background: var(--surface-hi) !important; border-color: var(--border) !important; }
 
 /* ── Streak risk banner ── */
 .streak-risk-banner {
