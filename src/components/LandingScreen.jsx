@@ -49,7 +49,7 @@ export default function LandingScreen() {
 
         <div className="landing-pricing">
           <p className="landing-free-note">✓ Grátis para Iniciante e Intermediário 1</p>
-          <p className="landing-premium-note">💎 Premium a partir de <strong>R$ 9,99</strong> — acesso completo vitalício</p>
+          <p className="landing-premium-note">💎 Premium a partir de <strong>R$ 14,99</strong> — acesso completo vitalício</p>
         </div>
       </div>
 
