@@ -1,8 +1,8 @@
 import { LEVELS, MODULES } from '../data/lessons'
 import FrFlag from './FrFlag'
 
-export default function LevelSelectScreen({ progress, onSelect, user, onLogout }) {
-  const { completed, xp } = progress
+export default function LevelSelectScreen({ progress, onSelect, user, onLogout, muted, onToggleMute, onOpenProfile }) {
+  const { completed, xp, streak = 0 } = progress
   const username = user?.email?.split('@')[0] ?? ''
 
   return (
@@ -13,14 +13,22 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout }
           <span className="logo-name">Monlingo</span>
         </div>
         <div className="header-right">
+          {streak > 0 && (
+            <div className="streak-badge">
+              <span>🔥</span>
+              <span className="streak-num">{streak}</span>
+            </div>
+          )}
           <div className="xp-badge">
             <span>⭐</span>
-            <span className="xp-num">{xp} XP</span>
+            <span className="xp-num">{xp}</span>
           </div>
-          <div className="user-pill">
-            <span className="user-name" title={user?.email}>{username}</span>
-            <button className="btn-logout" onClick={onLogout} title="Sair">↩</button>
-          </div>
+          <button className="btn-mute" onClick={onToggleMute} title={muted ? 'Ativar sons' : 'Silenciar'}>
+            {muted ? '🔇' : '🔊'}
+          </button>
+          <button className="user-avatar-btn" onClick={onOpenProfile} title="Perfil">
+            {username[0]?.toUpperCase()}
+          </button>
         </div>
       </header>
 
@@ -35,13 +43,13 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout }
       <div className="levels-list">
         {LEVELS.map(level => {
           const locked = level.moduleIds.length === 0
-          const mods = MODULES.filter(m => level.moduleIds.includes(m.id))
-          const total = mods.length * 2
-          const done  = mods.reduce((acc, mod) =>
+          const mods   = MODULES.filter(m => level.moduleIds.includes(m.id))
+          const total  = mods.length * 2
+          const done   = mods.reduce((acc, mod) =>
             acc
-            + (completed.includes(mod.lesson.id)      ? 1 : 0)
-            + (completed.includes(mod.evaluation.id)  ? 1 : 0), 0)
-          const pct = total > 0 ? (done / total) * 100 : 0
+            + (completed.includes(mod.lesson.id)     ? 1 : 0)
+            + (completed.includes(mod.evaluation.id) ? 1 : 0), 0)
+          const pct      = total > 0 ? (done / total) * 100 : 0
           const finished = total > 0 && done === total
 
           return (
@@ -57,7 +65,6 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout }
               >
                 <span className="level-icon">{locked ? '🔒' : level.icon}</span>
               </div>
-
               <div className="level-body">
                 <div className="level-top-row">
                   <span className="level-name">{level.name}</span>
@@ -71,14 +78,10 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout }
                 <p className="level-sub">{level.subtitle}</p>
                 {!locked && (
                   <div className="level-bar">
-                    <div
-                      className="level-bar-fill"
-                      style={{ width: `${pct}%`, background: level.color }}
-                    />
+                    <div className="level-bar-fill" style={{ width: `${pct}%`, background: level.color }} />
                   </div>
                 )}
               </div>
-
               {!locked && <span className="level-chevron">›</span>}
             </button>
           )

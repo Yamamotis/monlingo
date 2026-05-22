@@ -2,14 +2,26 @@ import { useState, useEffect, useRef } from 'react'
 import { onAuthStateChanged, signOut }  from 'firebase/auth'
 import { doc, getDoc, setDoc }          from 'firebase/firestore'
 import { auth, db }                     from './firebase'
-import FrFlag          from './components/FrFlag'
-import LoginScreen     from './components/LoginScreen'
-import LevelSelectScreen from './components/LevelSelectScreen'
-import MapScreen       from './components/MapScreen'
-import LessonPlayer    from './components/LessonPlayer'
-import CompletionScreen from './components/CompletionScreen'
+import FrFlag             from './components/FrFlag'
+import LoginScreen        from './components/LoginScreen'
+import LevelSelectScreen  from './components/LevelSelectScreen'
+import MapScreen          from './components/MapScreen'
+import LessonPlayer       from './components/LessonPlayer'
+import CompletionScreen   from './components/CompletionScreen'
+import ProfileScreen      from './components/ProfileScreen'
 
-const EMPTY = { completed: [], xp: 0 }
+const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null }
+
+function getToday() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+}
+
+function getYesterday() {
+  const d = new Date()
+  d.setDate(d.getDate() - 1)
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+}
 
 export default function App() {
   const [authUser, setAuthUser]         = useState(undefined)
@@ -19,15 +31,22 @@ export default function App() {
   const [activeItem, setActiveItem]     = useState(null)
   const [progress, setProgress]         = useState(EMPTY)
   const [lastResult, setLastResult]     = useState(null)
+  const [muted, setMuted]               = useState(() => localStorage.getItem('monlingo_muted') === 'true')
   const readyToSave = useRef(false)
 
+  // persist mute preference
+  useEffect(() => {
+    localStorage.setItem('monlingo_muted', muted)
+  }, [muted])
+
+  // auth + load progress
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       readyToSave.current = false
       if (user) {
         try {
           const snap = await getDoc(doc(db, 'users', user.uid))
-          setProgress(snap.exists() ? (snap.data().progress ?? EMPTY) : EMPTY)
+          setProgress(snap.exists() ? { ...EMPTY, ...snap.data().progress } : EMPTY)
         } catch { setProgress(EMPTY) }
         readyToSave.current = true
       } else {
@@ -38,35 +57,41 @@ export default function App() {
     return unsub
   }, [])
 
+  // save progress to Firestore
   useEffect(() => {
     if (!authUser || !readyToSave.current) return
     setDoc(doc(db, 'users', authUser.uid), { progress }, { merge: true }).catch(() => {})
   }, [progress])
 
-  const handleSelectLevel = (level) => {
-    setActiveLevel(level)
-    setScreen('level')
-  }
+  const handleSelectLevel = (level) => { setActiveLevel(level); setScreen('level') }
+  const handleBackToLevels = () => setScreen('levels')
 
   const handleStart = (mod, item) => {
-    setActiveModule(mod)
-    setActiveItem(item)
-    setScreen('lesson')
+    setActiveModule(mod); setActiveItem(item); setScreen('lesson')
   }
 
   const handleComplete = (xpGained) => {
-    setProgress(prev => ({
-      completed: [...new Set([...prev.completed, activeItem.id])],
-      xp: prev.xp + xpGained,
-    }))
+    const today = getToday()
+    setProgress(prev => {
+      const last = prev.lastStudyDate
+      let streak = prev.streak ?? 0
+      if (last !== today) {
+        streak = last === getYesterday() ? streak + 1 : 1
+      }
+      return {
+        ...prev,
+        completed: [...new Set([...prev.completed, activeItem.id])],
+        xp: prev.xp + xpGained,
+        streak,
+        lastStudyDate: today,
+      }
+    })
     setLastResult({ xp: xpGained, item: activeItem, module: activeModule })
     setScreen('completion')
   }
 
-  const handleExitLesson  = () => setScreen('level')
-  const handleExitCompletion = () => setScreen('level')
-  const handleBackToLevels = () => setScreen('levels')
   const handleLogout = () => signOut(auth)
+  const toggleMute   = () => setMuted(m => !m)
 
   if (authUser === undefined) {
     return (
@@ -79,14 +104,16 @@ export default function App() {
 
   if (!authUser) return <LoginScreen />
 
+  const sharedProps = { user: authUser, onLogout: handleLogout, muted, onToggleMute: toggleMute }
+
   return (
     <div className="app">
       {screen === 'levels' && (
         <LevelSelectScreen
           progress={progress}
           onSelect={handleSelectLevel}
-          user={authUser}
-          onLogout={handleLogout}
+          onOpenProfile={() => setScreen('profile')}
+          {...sharedProps}
         />
       )}
       {screen === 'level' && activeLevel && (
@@ -95,6 +122,7 @@ export default function App() {
           progress={progress}
           onStart={handleStart}
           onBack={handleBackToLevels}
+          {...sharedProps}
         />
       )}
       {screen === 'lesson' && activeItem && (
@@ -102,11 +130,21 @@ export default function App() {
           mod={activeModule}
           item={activeItem}
           onComplete={handleComplete}
-          onExit={handleExitLesson}
+          onExit={() => setScreen('level')}
+          muted={muted}
+          onToggleMute={toggleMute}
         />
       )}
       {screen === 'completion' && lastResult && (
-        <CompletionScreen result={lastResult} onContinue={handleExitCompletion} />
+        <CompletionScreen result={lastResult} onContinue={() => setScreen('level')} />
+      )}
+      {screen === 'profile' && (
+        <ProfileScreen
+          progress={progress}
+          user={authUser}
+          onBack={() => setScreen('levels')}
+          onLogout={handleLogout}
+        />
       )}
     </div>
   )

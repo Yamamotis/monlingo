@@ -171,6 +171,52 @@ input { -webkit-tap-highlight-color: transparent; }
 }
 .btn-logout:hover { background: var(--tint-red); color: var(--red); border-color: var(--red); }
 
+.streak-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #2d1a00;
+  border: 2px solid #ff6b00;
+  border-radius: 99px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-weight: 800;
+  color: #ff9500;
+}
+.streak-num { font-size: 15px; }
+
+.btn-mute {
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.btn-mute:active { background: var(--border); }
+
+.user-avatar-btn {
+  background: var(--green);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 0 var(--green-dark);
+  transition: transform 0.1s;
+}
+.user-avatar-btn:active { transform: scale(0.92); }
+
 /* ── Banner ───────────────────────────────────── */
 .map-banner {
   width: 100%;
@@ -355,6 +401,128 @@ input { -webkit-tap-highlight-color: transparent; }
   font-size: 14px; color: var(--text-light); font-weight: 700;
 }
 .map-footer span { font-size: 32px; }
+
+/* ── Profile Screen ───────────────────────────── */
+.profile-screen {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  background: var(--bg);
+}
+.profile-header-title {
+  flex: 1;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--text);
+}
+.profile-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 28px 20px calc(var(--sab) + 40px);
+}
+.profile-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-size: 40px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 0 var(--green-dark);
+}
+.profile-email {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+}
+.profile-since {
+  font-size: 13px;
+  color: var(--text-light);
+  font-weight: 600;
+}
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 380px;
+  margin-top: 8px;
+}
+.profile-stat {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  padding: 18px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+.profile-stat.flame { border-color: #ff6b00; background: #2d1a00; }
+.profile-stat.gold  { border-color: var(--gold-dark); background: var(--tint-gold); }
+.profile-stat.green { border-color: var(--green-dark); background: var(--tint-green); }
+.profile-stat.blue  { border-color: var(--blue); background: var(--tint-blue); }
+.pstat-icon { font-size: 28px; }
+.pstat-num  { font-size: 26px; font-weight: 900; color: var(--text); }
+.pstat-label { font-size: 12px; font-weight: 700; color: var(--text-light); }
+.profile-stat.flame .pstat-num  { color: #ff9500; }
+.profile-stat.gold  .pstat-num  { color: var(--gold); }
+.profile-stat.green .pstat-num  { color: var(--green); }
+.profile-stat.blue  .pstat-num  { color: var(--blue); }
+.profile-overall {
+  width: 100%;
+  max-width: 380px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 18px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.overall-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.overall-label { font-size: 14px; font-weight: 800; color: var(--text); }
+.overall-pct   { font-size: 16px; font-weight: 900; color: var(--green); }
+.overall-bar {
+  height: 10px;
+  background: var(--surface-hi);
+  border-radius: 99px;
+  overflow: hidden;
+}
+.overall-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 99px;
+  transition: width 0.6s ease;
+}
+.overall-sub { font-size: 12px; color: var(--text-light); font-weight: 600; }
+.btn-logout-full {
+  background: var(--tint-red);
+  color: var(--red);
+  border: 2px solid var(--red);
+  font-size: 16px;
+  font-weight: 800;
+  padding: 16px;
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 380px;
+  margin-top: 8px;
+  min-height: 54px;
+  transition: background 0.15s;
+}
+.btn-logout-full:active { background: #3a1010; }
 
 /* ── Login Screen ─────────────────────────────── */
 .login-screen {

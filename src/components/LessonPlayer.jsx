@@ -3,7 +3,7 @@ import VocabPage from './VocabPage'
 import MultipleChoice from './exercises/MultipleChoice'
 import { playCorrect, playWrong } from '../utils/sounds'
 
-export default function LessonPlayer({ mod, item, onComplete, onExit }) {
+export default function LessonPlayer({ mod, item, onComplete, onExit, muted, onToggleMute }) {
   const isEval = item.type === 'evaluation'
 
   // Lessons have 3 exercises; evaluations have a single "exercise" from questions array
@@ -25,10 +25,10 @@ export default function LessonPlayer({ mod, item, onComplete, onExit }) {
   const handleAnswer = (correct) => {
     setIsCorrect(correct)
     if (correct) {
-      playCorrect()
+      if (!muted) playCorrect()
       setAnswerPhase('feedback')
     } else {
-      playWrong()
+      if (!muted) playWrong()
       const next = lives - 1
       setLives(next)
       if (next <= 0) setPhase('failed')
@@ -143,6 +143,9 @@ export default function LessonPlayer({ mod, item, onComplete, onExit }) {
             </span>
           ))}
         </div>
+        <button className="btn-mute" onClick={onToggleMute} title={muted ? 'Ativar sons' : 'Silenciar'}>
+          {muted ? '🔇' : '🔊'}
+        </button>
       </header>
 
       <div className="player-body">
