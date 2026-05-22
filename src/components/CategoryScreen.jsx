@@ -34,7 +34,7 @@ export default function CategoryScreen({
   onSelectCategory, onOpenProfile, onOpenLeaderboard, onStartReview, onStartDaily, onOpenDictionary,
 }) {
   const { completed = [], xp = 0, streak = 0, wrongWords = [], lastStudyDate,
-          hearts = 5, dailyMission } = progress
+          hearts = 5, dailyMission, isPremium = false } = progress
   const today           = getToday()
   const dailyDone       = dailyMission?.date === today && dailyMission?.completed
   const username     = user?.email?.split('@')[0] ?? ''
@@ -52,9 +52,9 @@ export default function CategoryScreen({
             <span>⭐</span>
             <AnimatedXP value={xp} />
           </div>
-          <div className="hearts-badge" title={`${hearts}/5 corações`}>
+          <div className={`hearts-badge ${isPremium ? 'hearts-premium' : ''}`} title={isPremium ? 'Vidas ilimitadas' : `${hearts}/5 corações`}>
             <span>❤️</span>
-            <span className="streak-num">{hearts}</span>
+            <span className="streak-num">{isPremium ? '∞' : hearts}</span>
           </div>
           <button className="user-avatar-btn" onClick={onOpenProfile} title="Perfil">
             {username[0]?.toUpperCase()}

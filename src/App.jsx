@@ -114,9 +114,9 @@ export default function App() {
   }
 
   const handleLoseHeart = () => {
+    if (progress.isPremium) return  // premium = vidas globais infinitas
     const slot = getHeartsSlot()
     setProgress(prev => {
-      // Se o slot mudou desde a última perda, reseta antes de decrementar
       const current = prev.heartsDate === slot ? (prev.hearts ?? MAX_HEARTS) : MAX_HEARTS
       return { ...prev, hearts: Math.max(0, current - 1), heartsDate: slot }
     })
@@ -294,6 +294,7 @@ export default function App() {
           onComplete={handleComplete}
           onLoseHeart={handleLoseHeart}
           hearts={progress.hearts ?? MAX_HEARTS}
+          isPremium={progress.isPremium ?? false}
           onExit={() => activeItem?.type === 'daily' ? setScreen('levels') : setScreen('level')}
         />
       )}

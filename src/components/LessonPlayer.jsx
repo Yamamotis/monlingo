@@ -5,7 +5,7 @@ import ListeningExercise from './exercises/ListeningExercise'
 import TypingExercise    from './exercises/TypingExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 
-export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, hearts = 5, onExit }) {
+export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, hearts = 5, isPremium = false, onExit }) {
   const isVocab  = item.type === 'vocab'
   const isEval   = item.type === 'evaluation'
   const isReview = item.type === 'review'
@@ -44,7 +44,9 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
       onLoseHeart?.()
       const next = lives - 1
       setLives(next)
-      if (next <= 0 || hearts - 1 <= 0) setPhase('failed')
+      // Premium: só falha por vidas do exercício (não por vidas globais)
+      const globalOut = !isPremium && hearts - 1 <= 0
+      if (next <= 0 || globalOut) setPhase('failed')
       else setAnswerPhase('feedback')
     }
   }

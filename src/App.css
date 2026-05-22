@@ -355,6 +355,7 @@ input { -webkit-tap-highlight-color: transparent; }
 
 /* ── Hearts badge ── */
 .hearts-badge { display: flex; align-items: center; gap: 4px; background: #FF4B4B20; border: 1.5px solid #FF4B4B44; border-radius: 20px; padding: 4px 10px; }
+.hearts-badge.hearts-premium { background: #a855f722; border-color: #a855f755; }
 
 /* ── Category Screen ── */
 .category-screen { display: flex; flex-direction: column; min-height: 100dvh; }
