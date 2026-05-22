@@ -507,6 +507,15 @@ input { -webkit-tap-highlight-color: transparent; }
 .module-card.mod-done { border-color: var(--green-dark); }
 .module-card.mod-locked-full { opacity: 0.45; pointer-events: none; padding: 16px; }
 .module-card.mod-locked-full .mod-icon-locked { background: var(--surface-hi) !important; border-color: var(--border) !important; }
+.module-toggle {
+  width: 100%; background: none; border: none; cursor: pointer; padding: 0; text-align: left;
+}
+.mod-chevron {
+  font-size: 22px; color: var(--text-light); flex-shrink: 0; margin-left: 4px;
+  transition: transform 0.25s ease; display: inline-block;
+}
+.mod-chevron.chevron-open { transform: rotate(90deg); }
+.module-items { border-top: 1px solid var(--border); }
 .mod-progress-bar { height: 5px; background: var(--surface-hi); }
 .mod-progress-fill { height: 100%; transition: width 0.5s ease; border-radius: 0 3px 3px 0; }
 .module-header {

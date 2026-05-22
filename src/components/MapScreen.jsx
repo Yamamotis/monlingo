@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { MODULES } from '../data/lessons'
 
 const EX_ICONS = ['✏️', '🔄', '🎧']
@@ -5,6 +6,20 @@ const EX_ICONS = ['✏️', '🔄', '🎧']
 export default function MapScreen({ level, progress, onStart, onBack }) {
   const { completed } = progress
   const levelModules  = MODULES.filter(m => level.moduleIds.includes(m.id))
+
+  // Abre automaticamente o primeiro módulo não concluído
+  const firstOpen = levelModules.find((mod) => {
+    const evalDone = completed.includes(mod.evaluation.id)
+    return !evalDone
+  })
+  const [expanded, setExpanded] = useState(() => new Set(firstOpen ? [firstOpen.id] : []))
+
+  const toggleMod = (id) =>
+    setExpanded(prev => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
 
   const totalItems = levelModules.length * 4
   const doneCount  = levelModules.reduce((acc, mod) =>
@@ -43,8 +58,9 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
           const ex3Done  = completed.includes(mod.exercises[2].id)
           const evalDone = completed.includes(mod.evaluation.id)
           const modProgress = [ex1Done, ex2Done, ex3Done, evalDone].filter(Boolean).length
-          const modDone = modProgress === 4
+          const modDone   = modProgress === 4
           const modLocked = !prevEvalDone
+          const isOpen    = expanded.has(mod.id)
 
           if (modLocked) {
             return (
@@ -64,8 +80,10 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
           }
 
           return (
-            <div key={mod.id} className={`module-card mod-open ${modDone ? 'mod-done' : ''}`}>
-              <div className="module-top">
+            <div key={mod.id} className={`module-card mod-open ${modDone ? 'mod-done' : ''} ${isOpen ? 'mod-expanded' : ''}`}>
+
+              {/* ── Cabeçalho clicável ── */}
+              <button className="module-toggle" onClick={() => toggleMod(mod.id)}>
                 <div className="mod-progress-bar">
                   <div
                     className="mod-progress-fill"
@@ -90,63 +108,64 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
                       : <span className="badge-count">{modProgress}/4</span>
                     }
                   </div>
+                  <span className={`mod-chevron ${isOpen ? 'chevron-open' : ''}`}>›</span>
                 </div>
-              </div>
+              </button>
 
-              <div className="module-items">
-                {/* Vocabulário — sempre acessível, 0 XP */}
-                <button
-                  className="module-item item-vocab"
-                  onClick={() => onStart(mod, mod.vocab)}
-                >
-                  <span className="item-icon">📖</span>
-                  <div className="item-info">
-                    <span className="item-label">Vocabulário</span>
-                    <span className="item-title">{mod.title}</span>
-                  </div>
-                  <span className="item-status">→</span>
-                  <span className="item-xp item-xp-free">Estudo</span>
-                </button>
+              {/* ── Conteúdo expansível ── */}
+              {isOpen && (
+                <div className="module-items">
+                  <button
+                    className="module-item item-vocab"
+                    onClick={() => onStart(mod, mod.vocab)}
+                  >
+                    <span className="item-icon">📖</span>
+                    <div className="item-info">
+                      <span className="item-label">Vocabulário</span>
+                      <span className="item-title">{mod.title}</span>
+                    </div>
+                    <span className="item-status">→</span>
+                    <span className="item-xp item-xp-free">Estudo</span>
+                  </button>
 
-                {/* 3 Exercícios */}
-                {mod.exercises.map((ex, i) => {
-                  const prevDone = i === 0 ? true : completed.includes(mod.exercises[i - 1].id)
-                  const thisDone = completed.includes(ex.id)
-                  return (
-                    <button
-                      key={ex.id}
-                      className={`module-item ${thisDone ? 'item-done' : prevDone ? 'item-active' : 'item-locked'}`}
-                      onClick={() => prevDone && onStart(mod, ex)}
-                      disabled={!prevDone}
-                    >
-                      <span className="item-icon">{EX_ICONS[i]}</span>
-                      <div className="item-info">
-                        <span className="item-label">{ex.title}</span>
-                        <span className="item-title">{ex.subtitle}</span>
-                      </div>
-                      <span className="item-status">{thisDone ? '✓' : prevDone ? '→' : '🔒'}</span>
-                      <span className="item-xp">+{ex.xpReward} XP</span>
-                    </button>
-                  )
-                })}
+                  {mod.exercises.map((ex, i) => {
+                    const prevDone = i === 0 ? true : completed.includes(mod.exercises[i - 1].id)
+                    const thisDone = completed.includes(ex.id)
+                    return (
+                      <button
+                        key={ex.id}
+                        className={`module-item ${thisDone ? 'item-done' : prevDone ? 'item-active' : 'item-locked'}`}
+                        onClick={() => prevDone && onStart(mod, ex)}
+                        disabled={!prevDone}
+                      >
+                        <span className="item-icon">{EX_ICONS[i]}</span>
+                        <div className="item-info">
+                          <span className="item-label">{ex.title}</span>
+                          <span className="item-title">{ex.subtitle}</span>
+                        </div>
+                        <span className="item-status">{thisDone ? '✓' : prevDone ? '→' : '🔒'}</span>
+                        <span className="item-xp">+{ex.xpReward} XP</span>
+                      </button>
+                    )
+                  })}
 
-                {/* Avaliação */}
-                <button
-                  className={`module-item ${evalDone ? 'item-done' : ex3Done ? 'item-active' : 'item-locked'}`}
-                  onClick={() => ex3Done && onStart(mod, mod.evaluation)}
-                  disabled={!ex3Done}
-                >
-                  <span className="item-icon">📝</span>
-                  <div className="item-info">
-                    <span className="item-label">Avaliação</span>
-                    <span className="item-title">
-                      {evalDone ? 'Concluída' : ex3Done ? 'Disponível' : 'Complete os exercícios primeiro'}
-                    </span>
-                  </div>
-                  <span className="item-status">{evalDone ? '✓' : ex3Done ? '→' : '🔒'}</span>
-                  <span className="item-xp">+{mod.evaluation.xpReward} XP</span>
-                </button>
-              </div>
+                  <button
+                    className={`module-item ${evalDone ? 'item-done' : ex3Done ? 'item-active' : 'item-locked'}`}
+                    onClick={() => ex3Done && onStart(mod, mod.evaluation)}
+                    disabled={!ex3Done}
+                  >
+                    <span className="item-icon">📝</span>
+                    <div className="item-info">
+                      <span className="item-label">Avaliação</span>
+                      <span className="item-title">
+                        {evalDone ? 'Concluída' : ex3Done ? 'Disponível' : 'Complete os exercícios primeiro'}
+                      </span>
+                    </div>
+                    <span className="item-status">{evalDone ? '✓' : ex3Done ? '→' : '🔒'}</span>
+                    <span className="item-xp">+{mod.evaluation.xpReward} XP</span>
+                  </button>
+                </div>
+              )}
             </div>
           )
         })}
