@@ -1,5 +1,26 @@
+import { useState, useEffect, useRef } from 'react'
 import { LEVELS, MODULES } from '../data/lessons'
 import FrFlag from './FrFlag'
+
+function AnimatedXP({ value }) {
+  const [shown, setShown] = useState(value)
+  const prev = useRef(value)
+  useEffect(() => {
+    const start = prev.current, end = value
+    if (start === end) return
+    const t0 = performance.now()
+    const dur = 700
+    const tick = (now) => {
+      const p = Math.min((now - t0) / dur, 1)
+      const e = 1 - Math.pow(1 - p, 3)
+      setShown(Math.round(start + (end - start) * e))
+      if (p < 1) requestAnimationFrame(tick)
+      else prev.current = end
+    }
+    requestAnimationFrame(tick)
+  }, [value])
+  return <span className="xp-num">{shown}</span>
+}
 
 export default function LevelSelectScreen({ progress, onSelect, user, onLogout, muted, onToggleMute, onOpenProfile }) {
   const { completed, xp, streak = 0 } = progress
@@ -21,7 +42,7 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout, 
           )}
           <div className="xp-badge">
             <span>⭐</span>
-            <span className="xp-num">{xp}</span>
+            <AnimatedXP value={xp} />
           </div>
           <button className="btn-mute" onClick={onToggleMute} title={muted ? 'Ativar sons' : 'Silenciar'}>
             {muted ? '🔇' : '🔊'}

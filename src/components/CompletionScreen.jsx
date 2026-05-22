@@ -1,6 +1,20 @@
+import { useEffect } from 'react'
+import confetti from 'canvas-confetti'
+
 export default function CompletionScreen({ result, onContinue }) {
   const { item, module: mod, xp } = result
   const isEval = item.type === 'evaluation'
+
+  useEffect(() => {
+    confetti({
+      particleCount: isEval ? 160 : 100,
+      spread: isEval ? 90 : 70,
+      origin: { y: 0.55 },
+      colors: ['#58CC02', '#1CB0F6', '#FFC800', '#FF4B4B', '#CE82FF', '#ffffff'],
+      gravity: 0.9,
+      scalar: 1.1,
+    })
+  }, [])
 
   return (
     <div className="completion-screen">

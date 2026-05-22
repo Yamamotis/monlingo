@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { onAuthStateChanged, signOut }  from 'firebase/auth'
 import { doc, getDoc, setDoc }          from 'firebase/firestore'
 import { auth, db }                     from './firebase'
+import { ACHIEVEMENTS }                 from './data/achievements'
 import FrFlag             from './components/FrFlag'
 import LoginScreen        from './components/LoginScreen'
 import LevelSelectScreen  from './components/LevelSelectScreen'
@@ -9,14 +10,14 @@ import MapScreen          from './components/MapScreen'
 import LessonPlayer       from './components/LessonPlayer'
 import CompletionScreen   from './components/CompletionScreen'
 import ProfileScreen      from './components/ProfileScreen'
+import AchievementToast   from './components/AchievementToast'
 
-const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null }
+const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null, achievements: [] }
 
 function getToday() {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
 }
-
 function getYesterday() {
   const d = new Date()
   d.setDate(d.getDate() - 1)
@@ -32,14 +33,11 @@ export default function App() {
   const [progress, setProgress]         = useState(EMPTY)
   const [lastResult, setLastResult]     = useState(null)
   const [muted, setMuted]               = useState(() => localStorage.getItem('monlingo_muted') === 'true')
+  const [toastQueue, setToastQueue]     = useState([])
   const readyToSave = useRef(false)
 
-  // persist mute preference
-  useEffect(() => {
-    localStorage.setItem('monlingo_muted', muted)
-  }, [muted])
+  useEffect(() => { localStorage.setItem('monlingo_muted', muted) }, [muted])
 
-  // auth + load progress
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       readyToSave.current = false
@@ -57,41 +55,54 @@ export default function App() {
     return unsub
   }, [])
 
-  // save progress to Firestore
   useEffect(() => {
     if (!authUser || !readyToSave.current) return
     setDoc(doc(db, 'users', authUser.uid), { progress }, { merge: true }).catch(() => {})
   }, [progress])
 
   const handleSelectLevel = (level) => { setActiveLevel(level); setScreen('level') }
-  const handleBackToLevels = () => setScreen('levels')
 
   const handleStart = (mod, item) => {
     setActiveModule(mod); setActiveItem(item); setScreen('lesson')
   }
 
   const handleComplete = (xpGained) => {
-    const today = getToday()
-    setProgress(prev => {
-      const last = prev.lastStudyDate
-      let streak = prev.streak ?? 0
-      if (last !== today) {
-        streak = last === getYesterday() ? streak + 1 : 1
-      }
-      return {
-        ...prev,
-        completed: [...new Set([...prev.completed, activeItem.id])],
-        xp: prev.xp + xpGained,
-        streak,
-        lastStudyDate: today,
-      }
-    })
+    const today     = getToday()
+    const yesterday = getYesterday()
+
+    // Compute full new progress synchronously (for achievement checking)
+    const prev     = progress
+    const last     = prev.lastStudyDate
+    let   streak   = prev.streak ?? 0
+    if (last !== today) streak = last === yesterday ? streak + 1 : 1
+
+    const newCompleted    = [...new Set([...prev.completed, activeItem.id])]
+    const prevAchievements = prev.achievements ?? []
+
+    const newProgress = {
+      ...prev,
+      completed:      newCompleted,
+      xp:             prev.xp + xpGained,
+      streak,
+      lastStudyDate:  today,
+    }
+
+    // Find newly unlocked achievements
+    const unlocked = ACHIEVEMENTS.filter(a =>
+      !prevAchievements.includes(a.id) && a.check(newProgress)
+    )
+
+    newProgress.achievements = [...prevAchievements, ...unlocked.map(a => a.id)]
+
+    setProgress(newProgress)
+    if (unlocked.length) setToastQueue(q => [...q, ...unlocked])
     setLastResult({ xp: xpGained, item: activeItem, module: activeModule })
     setScreen('completion')
   }
 
-  const handleLogout = () => signOut(auth)
-  const toggleMute   = () => setMuted(m => !m)
+  const handleToastDone = () => setToastQueue(q => q.slice(1))
+  const handleLogout    = () => signOut(auth)
+  const toggleMute      = () => setMuted(m => !m)
 
   if (authUser === undefined) {
     return (
@@ -101,10 +112,9 @@ export default function App() {
       </div>
     )
   }
-
   if (!authUser) return <LoginScreen />
 
-  const sharedProps = { user: authUser, onLogout: handleLogout, muted, onToggleMute: toggleMute }
+  const shared = { user: authUser, onLogout: handleLogout, muted, onToggleMute: toggleMute }
 
   return (
     <div className="app">
@@ -113,7 +123,7 @@ export default function App() {
           progress={progress}
           onSelect={handleSelectLevel}
           onOpenProfile={() => setScreen('profile')}
-          {...sharedProps}
+          {...shared}
         />
       )}
       {screen === 'level' && activeLevel && (
@@ -121,8 +131,8 @@ export default function App() {
           level={activeLevel}
           progress={progress}
           onStart={handleStart}
-          onBack={handleBackToLevels}
-          {...sharedProps}
+          onBack={() => setScreen('levels')}
+          {...shared}
         />
       )}
       {screen === 'lesson' && activeItem && (
@@ -144,6 +154,15 @@ export default function App() {
           user={authUser}
           onBack={() => setScreen('levels')}
           onLogout={handleLogout}
+        />
+      )}
+
+      {/* Achievement toasts — rendered above everything */}
+      {toastQueue.length > 0 && (
+        <AchievementToast
+          key={toastQueue[0].id}
+          achievement={toastQueue[0]}
+          onDone={handleToastDone}
         />
       )}
     </div>
