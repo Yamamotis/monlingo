@@ -11,10 +11,34 @@ const CODE_ERRORS = {
 export default function RedeemScreen({ user, onSuccess, onBack }) {
   const [buying,      setBuying]      = useState(false)
   const [buyError,    setBuyError]    = useState('')
+  const [verifying,   setVerifying]   = useState(false)
+  const [verifyMsg,   setVerifyMsg]   = useState('')
   const [showCode,    setShowCode]    = useState(false)
   const [code,        setCode]        = useState('')
   const [codeLoading, setCodeLoading] = useState(false)
   const [codeError,   setCodeError]   = useState('')
+
+  const handleVerify = async () => {
+    setVerifyMsg('')
+    setVerifying(true)
+    try {
+      const res  = await fetch('/api/verify-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid: user.uid }),
+      })
+      const data = await res.json()
+      if (data.activated) {
+        onSuccess()
+      } else {
+        setVerifyMsg('Nenhum pagamento aprovado encontrado. Aguarde alguns minutos e tente novamente.')
+      }
+    } catch {
+      setVerifyMsg('Erro ao verificar. Tente novamente.')
+    } finally {
+      setVerifying(false)
+    }
+  }
 
   const handleBuy = async () => {
     setBuyError('')
@@ -93,6 +117,15 @@ export default function RedeemScreen({ user, onSuccess, onBack }) {
           {buying ? 'Redirecionando…' : 'Comprar por R$ 14,99'}
         </button>
         {buyError && <p className="redeem-error">⚠ {buyError}</p>}
+
+        <button
+          className="btn-verify-payment"
+          onClick={handleVerify}
+          disabled={verifying}
+        >
+          {verifying ? 'Verificando…' : 'Já paguei — ativar acesso'}
+        </button>
+        {verifyMsg && <p className="redeem-verify-msg">{verifyMsg}</p>}
 
         <p className="redeem-safe-note">🔒 Pagamento seguro via Mercado Pago</p>
 

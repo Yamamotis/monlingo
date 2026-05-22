@@ -1763,6 +1763,23 @@ input { -webkit-tap-highlight-color: transparent; }
   margin-top: 8px;
 }
 
+.btn-verify-payment {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: 2px solid var(--green);
+  background: transparent;
+  color: var(--green);
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.btn-verify-payment:hover:not(:disabled) { background: var(--green); color: #fff; }
+.btn-verify-payment:disabled { opacity: 0.5; cursor: not-allowed; }
+.redeem-verify-msg { font-size: 0.83rem; color: var(--text-light); text-align: center; margin: 0; }
+
 .btn-have-code {
   display: block;
   width: 100%;
