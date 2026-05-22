@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { LEVELS, MODULES } from '../data/lessons'
 import FrFlag from './FrFlag'
+import MonlingoLogo from './MonlingoLogo'
 
 function AnimatedXP({ value }) {
   const [shown, setShown] = useState(value)
@@ -31,7 +32,7 @@ export default function LevelSelectScreen({ progress, onSelect, user, onLogout, 
       <header className="map-header">
         <div className="map-logo">
           <FrFlag size="sm" />
-          <span className="logo-name">Monlingo</span>
+          <MonlingoLogo className="logo-name" />
         </div>
         <div className="header-right">
           {streak > 0 && (

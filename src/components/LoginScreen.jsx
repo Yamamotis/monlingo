@@ -8,6 +8,7 @@ import {
 } from 'firebase/auth'
 import { auth } from '../firebase'
 import FrFlag from './FrFlag'
+import MonlingoLogo from './MonlingoLogo'
 
 const ERRORS = {
   'auth/invalid-email':        'E-mail inválido.',
@@ -73,7 +74,7 @@ export default function LoginScreen() {
 
         <div className="login-brand">
           <FrFlag size="lg" />
-          <h1 className="login-title">Monlingo</h1>
+          <MonlingoLogo className="login-title" />
           <p className="login-sub">
             {mode === 'forgot' ? 'Recuperar senha' : 'Aprenda francês do zero'}
           </p>
