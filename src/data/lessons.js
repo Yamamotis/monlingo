@@ -795,6 +795,192 @@ const VOCAB = {
     { fr: 'Les chiens aboient, la caravane passe', pt: 'Os cães ladram, a caravana passa', note: 'Indiferença às críticas' },
     { fr: 'Petit à petit, l\'oiseau fait son nid', pt: 'Devagar se vai ao longe',  note: 'lit: pouco a pouco o pássaro faz seu ninho' },
   ],
+
+  // ── Avançado 3 ─────────────────────────────────────────────────────────────
+
+  m57: [
+    { fr: 'Bien qu\'il ait réussi',              pt: 'Embora ele tenha conseguido',     note: 'subjonctif passé = avoir/être subjonctif + particípio' },
+    { fr: 'Je suis contente qu\'elle soit venue', pt: 'Estou feliz que ela tenha vindo', note: 'être ao subjonctif: je sois, tu sois, il soit' },
+    { fr: 'Il est dommage que tu n\'aies pas mangé', pt: 'É uma pena que você não tenha comido', note: null },
+    { fr: 'Je doute qu\'elle ait compris',        pt: 'Duvido que ela tenha entendido',  note: null },
+    { fr: 'Bien que nous ayons essayé',           pt: 'Embora tenhamos tentado',         note: null },
+    { fr: 'À moins qu\'il ne soit parti',         pt: 'A menos que ele tenha partido',   note: null },
+    { fr: 'Quoiqu\'il ait dit',                   pt: 'Apesar do que ele tenha dito',    note: 'quoique = quoi que = embora' },
+    { fr: 'Je suis surpris qu\'il soit arrivé en avance', pt: 'Estou surpreso que ele tenha chegado cedo', note: null },
+    { fr: 'Il est bizarre qu\'elle ait menti',    pt: 'É estranho que ela tenha mentido', note: null },
+    { fr: 'Pour qu\'il ait pu réussir',           pt: 'Para que ele tenha conseguido',   note: 'pouvoir → puisse (pres.) / ait pu (passé)' },
+  ],
+
+  m58: [
+    { fr: 'Le livre a été écrit par l\'auteur',   pt: 'O livro foi escrito pelo autor',  note: 'passiva = être conjugado + particípio passado' },
+    { fr: 'La maison est construite',             pt: 'A casa está sendo construída',    note: 'passiva no presente' },
+    { fr: 'Le rapport sera présenté demain',      pt: 'O relatório será apresentado amanhã', note: 'passiva no futuro' },
+    { fr: 'La décision a été prise hier',         pt: 'A decisão foi tomada ontem',      note: null },
+    { fr: 'Les résultats sont publiés',           pt: 'Os resultados são publicados',    note: null },
+    { fr: 'Le projet avait été approuvé',         pt: 'O projeto havia sido aprovado',   note: 'passiva no plus-que-parfait' },
+    { fr: 'La réunion a été annulée',             pt: 'A reunião foi cancelada',         note: null },
+    { fr: 'Les portes seront ouvertes à 9h',      pt: 'As portas serão abertas às 9h',  note: null },
+    { fr: 'Le voleur a été arrêté',               pt: 'O ladrão foi preso',             note: null },
+    { fr: 'Ce film est très regardé',             pt: 'Este filme é muito assistido',    note: null },
+  ],
+
+  m59: [
+    { fr: 'En mangeant',                          pt: 'Enquanto come / Comendo',         note: 'gérondif = en + participe présent' },
+    { fr: 'En travaillant',                       pt: 'Trabalhando / Ao trabalhar',      note: null },
+    { fr: 'En marchant, il réfléchit',            pt: 'Caminhando, ele reflete',         note: 'ação simultânea' },
+    { fr: 'Tout en parlant',                      pt: 'Mesmo falando',                   note: 'tout en = concessão ou simultaneidade' },
+    { fr: 'En ayant de la patience',              pt: 'Tendo paciência',                 note: null },
+    { fr: 'En arrivant à l\'heure',               pt: 'Chegando no horário',             note: null },
+    { fr: 'En faisant attention',                 pt: 'Prestando atenção',               note: null },
+    { fr: 'En étudiant chaque jour',              pt: 'Estudando todos os dias',         note: null },
+    { fr: 'C\'est en forgeant qu\'on devient forgeron', pt: 'É praticando que se aprende', note: 'provérbio clássico com gérondif' },
+    { fr: 'Un homme souriant',                    pt: 'Um homem sorridente',             note: 'participe présent como adjetivo (invariável)' },
+  ],
+
+  m60: [
+    { fr: 'Si j\'avais su, je ne serais pas venu', pt: 'Se eu soubesse, não teria vindo', note: 'si + plus-que-parfait → condicionnal passé' },
+    { fr: 'Si elle était là, je lui parlerais',   pt: 'Se ela estivesse aqui, eu falaria', note: 'si + imparfait → conditionnel présent' },
+    { fr: 'Si tu avais travaillé, tu aurais réussi', pt: 'Se tivesse trabalhado, teria conseguido', note: null },
+    { fr: 'Si j\'étais riche, je voyagerais',     pt: 'Se eu fosse rico, viajaria',       note: null },
+    { fr: 'Si nous avions le temps, nous viendrions', pt: 'Se tivéssemos tempo, viraríamos', note: null },
+    { fr: 'Si seulement je pouvais',              pt: 'Se ao menos eu pudesse',           note: 'si seulement = lamento' },
+    { fr: 'Au cas où il viendrait',               pt: 'Caso ele venha',                  note: 'au cas où + conditionnel' },
+    { fr: 'Si c\'était possible, je le ferais',   pt: 'Se fosse possível, eu faria',     note: null },
+    { fr: 'Si j\'avais de l\'argent, j\'achèterais', pt: 'Se eu tivesse dinheiro, compraria', note: null },
+    { fr: 'Si tu m\'avais écouté',                pt: 'Se você tivesse me escutado',     note: null },
+  ],
+
+  m61: [
+    { fr: 'C\'est pourquoi',        pt: 'É por isso que / Por conseguinte', note: 'causa → consequência' },
+    { fr: 'Car',                    pt: 'Pois / Porque',                    note: 'formal; usado após a consequência' },
+    { fr: 'En effet',               pt: 'Com efeito / De fato',             note: 'confirma o que foi dito' },
+    { fr: 'À cause de',             pt: 'Por causa de',                     note: 'causa negativa' },
+    { fr: 'Grâce à',                pt: 'Graças a',                         note: 'causa positiva' },
+    { fr: 'Donc',                   pt: 'Então / Portanto',                 note: 'conclusão lógica' },
+    { fr: 'Si bien que',            pt: 'De modo que / Tanto que',          note: 'consequência intensificada' },
+    { fr: 'C\'est la raison pour laquelle', pt: 'É a razão pela qual',      note: 'formal' },
+    { fr: 'Étant donné que',        pt: 'Dado que / Uma vez que',           note: null },
+    { fr: 'Il en résulte que',      pt: 'Resulta que / Disso resulta que',  note: 'formal/científico' },
+  ],
+
+  m62: [
+    { fr: 'Même si',                pt: 'Mesmo se / Mesmo que',             note: 'concessão com indicativo' },
+    { fr: 'En dépit de',            pt: 'Apesar de',                        note: '+ substantivo ou infinitivo' },
+    { fr: 'Malgré',                 pt: 'Apesar de',                        note: '+ substantivo (sans verbe)' },
+    { fr: 'Or',                     pt: 'Ora / Porém',                      note: 'adversativo lógico — início de frase' },
+    { fr: 'Pourtant',               pt: 'No entanto / Porém',               note: null },
+    { fr: 'Alors que',              pt: 'Enquanto que / Ao passo que',      note: 'oposição ou simultâneidade' },
+    { fr: 'Tandis que',             pt: 'Enquanto / Ao passo que',          note: null },
+    { fr: 'Certes',                 pt: 'Certamente (mas…)',                note: 'concede algo antes de contradizer' },
+    { fr: 'Sauf que',               pt: 'Exceto que / A não ser que',       note: null },
+    { fr: 'Quoique',                pt: 'Embora',                           note: '+ subjonctif — mais formal que bien que' },
+  ],
+
+  m63: [
+    { fr: 'Bouffer',                pt: 'Comer (gíria)',                    note: 'familiar — nível coloquial' },
+    { fr: 'Boulot',                 pt: 'Trabalho (gíria)',                 note: 'familiar — nível coloquial' },
+    { fr: 'Fric',                   pt: 'Grana / Dinheiro (gíria)',         note: 'familiar' },
+    { fr: 'Sympa',                  pt: 'Simpático / Legal',                note: 'familiar — abreviação de sympathique' },
+    { fr: 'Chouette',               pt: 'Bacana / Legal',                   note: 'familiar' },
+    { fr: 'Nonobstant',             pt: 'Não obstante / Apesar disso',      note: 'soutenu — nível culto/formal' },
+    { fr: 'Susmentionné',           pt: 'Supracitado / Acima mencionado',   note: 'administrativo/jurídico' },
+    { fr: 'Ci-joint',               pt: 'Anexo / Em anexo',                note: 'administrativo — em e-mails formais' },
+    { fr: 'Il appert que',          pt: 'Consta que / É evidente que',      note: 'soutenu/jurídico' },
+    { fr: 'Veuillez agréer…',       pt: 'Atenciosamente… (fórmula de encerramento)', note: 'correspondência formal francesa' },
+  ],
+
+  // ── Avançado 4 ─────────────────────────────────────────────────────────────
+
+  m64: [
+    { fr: 'Recherche',              pt: 'Pesquisa',                         note: null },
+    { fr: 'Expérience',             pt: 'Experimento / Experiência',        note: null },
+    { fr: 'Hypothèse',              pt: 'Hipótese',                         note: null },
+    { fr: 'Données',                pt: 'Dados',                            note: 'Sempre plural neste sentido' },
+    { fr: 'Résultat',               pt: 'Resultado',                        note: null },
+    { fr: 'Diagnostic',             pt: 'Diagnóstico',                      note: null },
+    { fr: 'Chirurgie',              pt: 'Cirurgia',                         note: null },
+    { fr: 'Symptôme',               pt: 'Sintoma',                          note: null },
+    { fr: 'Vaccin',                 pt: 'Vacina',                           note: null },
+    { fr: 'Essai clinique',         pt: 'Ensaio clínico',                   note: null },
+  ],
+
+  m65: [
+    { fr: 'Marché',                 pt: 'Mercado',                          note: null },
+    { fr: 'Croissance',             pt: 'Crescimento',                      note: null },
+    { fr: 'Inflation',              pt: 'Inflação',                         note: null },
+    { fr: 'Investissement',         pt: 'Investimento',                     note: null },
+    { fr: 'Dette',                  pt: 'Dívida',                           note: null },
+    { fr: 'Budget',                 pt: 'Orçamento',                        note: null },
+    { fr: 'Bourse',                 pt: 'Bolsa de valores',                 note: null },
+    { fr: 'Mondialisation',         pt: 'Globalização',                     note: null },
+    { fr: 'Crise économique',       pt: 'Crise econômica',                  note: null },
+    { fr: 'Taux d\'intérêt',        pt: 'Taxa de juros',                    note: null },
+  ],
+
+  m66: [
+    { fr: 'Réchauffement climatique', pt: 'Aquecimento global',             note: null },
+    { fr: 'Émissions de CO2',       pt: 'Emissões de CO₂',                 note: null },
+    { fr: 'Énergie renouvelable',   pt: 'Energia renovável',               note: null },
+    { fr: 'Déforestation',          pt: 'Desmatamento',                     note: null },
+    { fr: 'Biodiversité',           pt: 'Biodiversidade',                   note: null },
+    { fr: 'Développement durable',  pt: 'Desenvolvimento sustentável',      note: null },
+    { fr: 'Empreinte carbone',      pt: 'Pegada de carbono',               note: null },
+    { fr: 'Catastrophe naturelle',  pt: 'Catástrofe natural',              note: null },
+    { fr: 'Espèce menacée',         pt: 'Espécie ameaçada',                note: null },
+    { fr: 'Transition écologique',  pt: 'Transição ecológica',             note: null },
+  ],
+
+  m67: [
+    { fr: 'Conscience',             pt: 'Consciência',                      note: null },
+    { fr: 'Raison',                 pt: 'Razão',                            note: null },
+    { fr: 'Existence',              pt: 'Existência',                       note: null },
+    { fr: 'Vérité',                 pt: 'Verdade',                          note: null },
+    { fr: 'Justice',                pt: 'Justiça',                          note: null },
+    { fr: 'Éthique',                pt: 'Ética',                            note: null },
+    { fr: 'Valeur',                 pt: 'Valor',                            note: null },
+    { fr: 'Doute',                  pt: 'Dúvida',                           note: 'Descartes: "Je pense, donc je suis"' },
+    { fr: 'Absurde',                pt: 'Absurdo',                          note: 'Camus: filosofia do absurdo' },
+    { fr: 'Liberté de pensée',      pt: 'Liberdade de pensamento',         note: null },
+  ],
+
+  m68: [
+    { fr: 'Journal',                pt: 'Jornal',                           note: null },
+    { fr: 'Article',                pt: 'Artigo',                           note: null },
+    { fr: 'Reporter',               pt: 'Repórter',                         note: null },
+    { fr: 'Titre',                  pt: 'Título / Manchete',                note: null },
+    { fr: 'Source',                 pt: 'Fonte',                            note: null },
+    { fr: 'Désinformation',         pt: 'Desinformação / Fake news',        note: null },
+    { fr: 'Presse',                 pt: 'Imprensa',                         note: null },
+    { fr: 'Reportage',              pt: 'Reportagem',                       note: null },
+    { fr: 'Débat',                  pt: 'Debate',                           note: null },
+    { fr: 'Censure',                pt: 'Censura',                          note: null },
+  ],
+
+  m69: [
+    { fr: 'Accord',                 pt: 'Acordo',                           note: null },
+    { fr: 'Traité',                 pt: 'Tratado',                          note: null },
+    { fr: 'Alliance',               pt: 'Aliança',                          note: null },
+    { fr: 'Diplomatie',             pt: 'Diplomacia',                       note: null },
+    { fr: 'Ambassade',              pt: 'Embaixada',                        note: null },
+    { fr: 'Conflit',                pt: 'Conflito',                         note: null },
+    { fr: 'Sanction',               pt: 'Sanção',                           note: null },
+    { fr: 'Sommet',                 pt: 'Cúpula (reunião de líderes)',      note: null },
+    { fr: 'Organisation internationale', pt: 'Organização internacional',  note: null },
+    { fr: 'Coopération',            pt: 'Cooperação',                       note: null },
+  ],
+
+  m70: [
+    { fr: 'L\'ineffable',           pt: 'O inefável / O indizível',         note: 'aquilo que não pode ser expresso em palavras' },
+    { fr: 'La mélancolie',          pt: 'A melancolia',                     note: null },
+    { fr: 'L\'éphémère',            pt: 'O efêmero / O passageiro',         note: null },
+    { fr: 'Le sublime',             pt: 'O sublime',                        note: null },
+    { fr: 'L\'ennui',               pt: 'O tédio profundo',                 note: 'Baudelaire — diferente de simples aborrecimento' },
+    { fr: 'La nostalgie',           pt: 'A nostalgia',                      note: null },
+    { fr: 'Le dénouement',          pt: 'O desfecho / O desenlace',         note: 'resolução final de uma narrativa' },
+    { fr: 'Le protagoniste',        pt: 'O protagonista',                   note: null },
+    { fr: 'La vraisemblance',       pt: 'A verossimilhança',                note: 'aparência de verdade numa obra literária' },
+    { fr: 'La quintessence',        pt: 'A quintessência / A essência pura', note: null },
+  ],
 }
 
 // ── Module definitions ─────────────────────────────────────────────────────────
@@ -865,6 +1051,22 @@ const DEFS = [
   { id:'m54', number:54, title:'Vocabulário Formal', description:'Expressões formais e de registro culto',      icon:'📜', color:'#CE82FF', vocabKey:'m54' },
   { id:'m55', number:55, title:'Gastronomia Francesa', description:'Os pratos e iguarias da França',            icon:'🍽️', color:'#FF9600', vocabKey:'m55' },
   { id:'m56', number:56, title:'Provérbios',         description:'A sabedoria popular em francês',              icon:'📖', color:'#FFC800', vocabKey:'m56' },
+  // ── Avançado 3 ─────────────────────────────────────────────────────────────
+  { id:'m57', number:57, title:'Subjonctif Passé',   description:'O passado do subjuntivo em francês',          icon:'🔀', color:'#58CC02', vocabKey:'m57' },
+  { id:'m58', number:58, title:'Voz Passiva',        description:'Como usar a voz passiva em francês',          icon:'🔄', color:'#FF4B4B', vocabKey:'m58' },
+  { id:'m59', number:59, title:'Gérondif',           description:'Ações simultâneas com en + participe',        icon:'⚙️', color:'#1CB0F6', vocabKey:'m59' },
+  { id:'m60', number:60, title:'Condicionais com Si', description:'Hipóteses reais e irreais com si',           icon:'🔮', color:'#FF9600', vocabKey:'m60' },
+  { id:'m61', number:61, title:'Causa e Consequência', description:'Conectores de causa e resultado',           icon:'⚡', color:'#CE82FF', vocabKey:'m61' },
+  { id:'m62', number:62, title:'Concessão e Oposição', description:'Malgré, pourtant, alors que…',             icon:'⚖️', color:'#FFC800', vocabKey:'m62' },
+  { id:'m63', number:63, title:'Registros de Língua', description:'Familiar, corrente e culto em francês',     icon:'🎭', color:'#58CC02', vocabKey:'m63' },
+  // ── Avançado 4 ─────────────────────────────────────────────────────────────
+  { id:'m64', number:64, title:'Medicina e Ciência', description:'Vocabulário científico e médico avançado',    icon:'🔬', color:'#1CB0F6', vocabKey:'m64' },
+  { id:'m65', number:65, title:'Economia',           description:'Vocabulário econômico e financeiro',          icon:'📈', color:'#FF9600', vocabKey:'m65' },
+  { id:'m66', number:66, title:'Meio Ambiente',      description:'Ecologia, clima e sustentabilidade',          icon:'🌍', color:'#58CC02', vocabKey:'m66' },
+  { id:'m67', number:67, title:'Filosofia',          description:'Conceitos filosóficos em francês',            icon:'🧠', color:'#CE82FF', vocabKey:'m67' },
+  { id:'m68', number:68, title:'Mídia e Jornalismo', description:'Vocabulário da comunicação e imprensa',       icon:'📰', color:'#FF4B4B', vocabKey:'m68' },
+  { id:'m69', number:69, title:'Relações Internacionais', description:'Diplomacia e política mundial',          icon:'🌐', color:'#1CB0F6', vocabKey:'m69' },
+  { id:'m70', number:70, title:'Expressões Literárias', description:'Vocabulário culto e literário em francês', icon:'✒️', color:'#FFC800', vocabKey:'m70' },
 ]
 
 export const LEVELS = [
@@ -939,6 +1141,22 @@ export const LEVELS = [
     icon: '👑',
     color: '#CE82FF',
     moduleIds: ['m51', 'm52', 'm53', 'm54', 'm55', 'm56'],
+  },
+  {
+    id: 'advanced-3',
+    name: 'Avançado 3',
+    subtitle: 'Gramática C1: subjonctif passé, passiva, condicionais',
+    icon: '🎓',
+    color: '#58CC02',
+    moduleIds: ['m57', 'm58', 'm59', 'm60', 'm61', 'm62', 'm63'],
+  },
+  {
+    id: 'advanced-4',
+    name: 'Avançado 4',
+    subtitle: 'Ciência, economia, filosofia e cultura avançada',
+    icon: '🔭',
+    color: '#1CB0F6',
+    moduleIds: ['m64', 'm65', 'm66', 'm67', 'm68', 'm69', 'm70'],
   },
 ]
 
