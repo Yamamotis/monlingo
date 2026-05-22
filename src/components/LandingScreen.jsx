@@ -30,8 +30,10 @@ export default function LandingScreen() {
   return (
     <div className="landing-screen">
       <div className="landing-hero">
-        <FrFlag size="lg" />
-        <MonlingoLogo className="landing-logo" />
+        <div className="landing-brand">
+          <FrFlag size="lg" />
+          <MonlingoLogo className="landing-logo" />
+        </div>
         <p className="landing-tagline">Aprenda francês do zero até a fluência</p>
 
         <button className="btn-google btn-google-landing" onClick={handleGoogle} disabled={loading}>
@@ -45,7 +47,10 @@ export default function LandingScreen() {
         </button>
         {error && <p className="login-error">⚠ {error}</p>}
 
-        <p className="landing-free-note">✓ Grátis para Iniciante e Intermediário 1</p>
+        <div className="landing-pricing">
+          <p className="landing-free-note">✓ Grátis para Iniciante e Intermediário 1</p>
+          <p className="landing-premium-note">💎 Premium a partir de <strong>R$ 9,99</strong> — acesso completo vitalício</p>
+        </div>
       </div>
 
       <div className="landing-features">
