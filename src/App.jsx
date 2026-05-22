@@ -4,7 +4,7 @@ import { doc }                           from 'firebase/firestore'
 import { auth, db }                     from './firebase'
 import { doc as fbDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { ACHIEVEMENTS }                 from './data/achievements'
-import { buildReviewItem }              from './data/lessons'
+import { buildReviewItem, LEVELS, MODULES } from './data/lessons'
 import FrFlag             from './components/FrFlag'
 import LoginScreen        from './components/LoginScreen'
 import LevelSelectScreen  from './components/LevelSelectScreen'
@@ -17,6 +17,9 @@ import OnboardingScreen   from './components/OnboardingScreen'
 import LeaderboardScreen  from './components/LeaderboardScreen'
 import RedeemScreen       from './components/RedeemScreen'
 import AdminScreen        from './components/AdminScreen'
+import CategoryScreen     from './components/CategoryScreen'
+import PlacementTest      from './components/PlacementTest'
+import LevelUpModal       from './components/LevelUpModal'
 
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL ?? ''
 const EMPTY = { completed: [], xp: 0, streak: 0, lastStudyDate: null, achievements: [], wrongWords: [], weeklyXP: 0, weekStart: '', isPremium: false }
@@ -42,13 +45,15 @@ function getYesterday() {
 
 export default function App() {
   const [authUser, setAuthUser]         = useState(undefined)
-  const [screen, setScreen]             = useState('levels')
-  const [activeLevel, setActiveLevel]   = useState(null)
-  const [activeModule, setActiveModule] = useState(null)
-  const [activeItem, setActiveItem]     = useState(null)
-  const [progress, setProgress]         = useState(EMPTY)
-  const [lastResult, setLastResult]     = useState(null)
-  const [toastQueue, setToastQueue]     = useState([])
+  const [screen, setScreen]               = useState('levels')
+  const [activeLevel, setActiveLevel]     = useState(null)
+  const [activeModule, setActiveModule]   = useState(null)
+  const [activeItem, setActiveItem]       = useState(null)
+  const [activeCategory, setActiveCategory] = useState(null)
+  const [progress, setProgress]           = useState(EMPTY)
+  const [lastResult, setLastResult]       = useState(null)
+  const [toastQueue, setToastQueue]       = useState([])
+  const [levelUpLevel, setLevelUpLevel]   = useState(null)
   const readyToSave = useRef(false)
 
 
@@ -80,7 +85,8 @@ export default function App() {
     setDoc(fbDoc(db, 'users', authUser.uid), { progress }, { merge: true }).catch(() => {})
   }, [progress])
 
-  const handleSelectLevel = (level) => { setActiveLevel(level); setScreen('level') }
+  const handleSelectCategory = (cat) => { setActiveCategory(cat); setScreen('sublevel') }
+  const handleSelectLevel    = (level) => { setActiveLevel(level); setScreen('level') }
 
   const handleStart = (mod, item) => {
     setActiveModule(mod); setActiveItem(item); setScreen('lesson')
@@ -137,6 +143,17 @@ export default function App() {
 
     setProgress(newProgress)
     if (unlocked.length) setToastQueue(q => [...q, ...unlocked])
+
+    // Detecta level-up (nível inteiro concluído)
+    const justFinishedLevel = LEVELS.find(level => {
+      if (!level.moduleIds.length) return false
+      const mods     = MODULES.filter(m => level.moduleIds.includes(m.id))
+      const wasDone  = mods.every(m => prev.completed.includes(m.evaluation.id))
+      const nowDone  = mods.every(m => newCompleted.includes(m.evaluation.id))
+      return !wasDone && nowDone
+    })
+    if (justFinishedLevel) setLevelUpLevel(justFinishedLevel)
+
     if (activeItem.type === 'exercise') {
       setScreen('level')
     } else {
@@ -155,6 +172,15 @@ export default function App() {
 
   const handleRedeemSuccess = () => {
     setProgress(prev => ({ ...prev, isPremium: true }))
+    setScreen('levels')
+  }
+
+  const handlePlacementDone = (evalIds) => {
+    setProgress(prev => ({
+      ...prev,
+      completed: [...new Set([...prev.completed, ...evalIds])],
+      onboardingDone: true,
+    }))
     setScreen('levels')
   }
 
@@ -178,17 +204,34 @@ export default function App() {
   return (
     <div className="app">
       {screen === 'levels' && !progress.onboardingDone && (
-        <OnboardingScreen onDone={handleOnboardingDone} />
+        <OnboardingScreen
+          onDone={handleOnboardingDone}
+          onStartPlacement={() => setScreen('placement')}
+        />
+      )}
+      {screen === 'placement' && (
+        <PlacementTest
+          onComplete={handlePlacementDone}
+          onSkip={() => { setProgress(prev => ({ ...prev, onboardingDone: true })); setScreen('levels') }}
+        />
       )}
       {screen === 'levels' && progress.onboardingDone && (
-        <LevelSelectScreen
+        <CategoryScreen
           progress={progress}
-          onSelect={handleSelectLevel}
+          onSelectCategory={handleSelectCategory}
           onOpenProfile={() => setScreen('profile')}
           onOpenLeaderboard={() => setScreen('leaderboard')}
           onStartReview={handleStartReview}
-          onOpenRedeem={() => setScreen('redeem')}
           {...shared}
+        />
+      )}
+      {screen === 'sublevel' && activeCategory && (
+        <LevelSelectScreen
+          category={activeCategory}
+          progress={progress}
+          onSelect={handleSelectLevel}
+          onBack={() => setScreen('levels')}
+          onOpenRedeem={() => setScreen('redeem')}
         />
       )}
       {screen === 'level' && activeLevel && (
@@ -196,7 +239,7 @@ export default function App() {
           level={activeLevel}
           progress={progress}
           onStart={handleStart}
-          onBack={() => setScreen('levels')}
+          onBack={() => setScreen('sublevel')}
           {...shared}
         />
       )}
@@ -238,6 +281,14 @@ export default function App() {
       )}
       {screen === 'admin' && authUser.email === ADMIN_EMAIL && (
         <AdminScreen onBack={() => setScreen('profile')} />
+      )}
+
+      {/* Level-up modal — rendered above everything */}
+      {levelUpLevel && (
+        <LevelUpModal
+          level={levelUpLevel}
+          onContinue={() => setLevelUpLevel(null)}
+        />
       )}
 
       {/* Achievement toasts — rendered above everything */}

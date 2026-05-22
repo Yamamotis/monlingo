@@ -1069,6 +1069,33 @@ const DEFS = [
   { id:'m70', number:70, title:'Expressões Literárias', description:'Vocabulário culto e literário em francês', icon:'✒️', color:'#FFC800', vocabKey:'m70' },
 ]
 
+export const CATEGORIES = [
+  {
+    id:       'beginner',
+    name:     'Iniciante',
+    subtitle: 'A1 — vocabulário e primeiras frases',
+    icon:     '🌱',
+    color:    '#58CC02',
+    levelIds: ['beginner-1', 'beginner-2', 'beginner-3'],
+  },
+  {
+    id:       'intermediate',
+    name:     'Intermediário',
+    subtitle: 'A2/B1 — gramática e temas do cotidiano',
+    icon:     '🌿',
+    color:    '#FF9600',
+    levelIds: ['intermediate-1', 'intermediate-2', 'intermediate-3', 'intermediate-4'],
+  },
+  {
+    id:       'advanced',
+    name:     'Avançado',
+    subtitle: 'B2/C1 — fluência e cultura francesa',
+    icon:     '🏆',
+    color:    '#FFC800',
+    levelIds: ['advanced', 'advanced-2', 'advanced-3', 'advanced-4'],
+  },
+]
+
 export const LEVELS = [
   {
     id: 'beginner-1',

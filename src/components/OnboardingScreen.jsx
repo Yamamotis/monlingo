@@ -33,7 +33,7 @@ const STEPS = [
   },
 ]
 
-export default function OnboardingScreen({ onDone }) {
+export default function OnboardingScreen({ onDone, onStartPlacement }) {
   const [step, setStep] = useState(0)
   const current = STEPS[step]
   const isLast  = current.isLast
@@ -73,13 +73,28 @@ export default function OnboardingScreen({ onDone }) {
             />
           ))}
         </div>
-        <button
-          className="btn-onboard-next"
-          style={{ background: current.color, boxShadow: `0 4px 0 ${current.color}88` }}
-          onClick={next}
-        >
-          {isLast ? 'Começar! 🚀' : 'Próximo →'}
-        </button>
+        {isLast ? (
+          <div className="onboard-last-actions">
+            <button
+              className="btn-onboard-next"
+              style={{ background: current.color, boxShadow: `0 4px 0 ${current.color}88` }}
+              onClick={onDone}
+            >
+              Começar do zero 🌱
+            </button>
+            <button className="btn-onboard-placement" onClick={onStartPlacement}>
+              🎯 Fazer teste de nivelamento
+            </button>
+          </div>
+        ) : (
+          <button
+            className="btn-onboard-next"
+            style={{ background: current.color, boxShadow: `0 4px 0 ${current.color}88` }}
+            onClick={next}
+          >
+            Próximo →
+          </button>
+        )}
       </div>
     </div>
   )
