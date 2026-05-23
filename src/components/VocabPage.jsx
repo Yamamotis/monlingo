@@ -1,6 +1,31 @@
+import { useState } from 'react'
 import SpeakButton from './SpeakButton'
 
+function ConjugationTable({ table }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="conj-table">
+      <button className="conj-toggle" onClick={() => setOpen(o => !o)}>
+        <span>📋 {table.verb}</span>
+        <span className="conj-arrow">{open ? '▲' : '▼'}</span>
+      </button>
+      {open && (
+        <div className="conj-rows">
+          {table.rows.map(r => (
+            <div key={r.pr} className="conj-row">
+              <span className="conj-pr">{r.pr}</span>
+              <span className="conj-form">{r.form}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function VocabPage({ mod, item, onContinue, onExit }) {
+  const exerciseCount = mod.exercises?.length ?? 4
+
   return (
     <div className="vocab-page">
       <header className="player-header">
@@ -37,9 +62,27 @@ export default function VocabPage({ mod, item, onContinue, onExit }) {
           ))}
         </div>
 
+        {/* Grammar note */}
+        {item.grammarNote && (
+          <div className="grammar-note">
+            <span className="grammar-note-icon">📌</span>
+            <p className="grammar-note-text">{item.grammarNote}</p>
+          </div>
+        )}
+
+        {/* Conjugation tables */}
+        {item.conjugation?.length > 0 && (
+          <div className="conjugation-section">
+            <p className="conjugation-title">🔤 Tabelas de Conjugação</p>
+            {item.conjugation.map((t, i) => (
+              <ConjugationTable key={i} table={t} />
+            ))}
+          </div>
+        )}
+
         <div className="vocab-cta">
           <p className="vocab-cta-info">
-            3 exercícios • 10 questões cada
+            {exerciseCount} exercício{exerciseCount !== 1 ? 's' : ''} • 10 questões cada
           </p>
           <button className="btn-proceed" onClick={onContinue}>
             Prosseguir para os exercícios →

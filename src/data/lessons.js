@@ -40,6 +40,27 @@ function genTypingExercise(vocab) {
   }
 }
 
+function makeOrderingQ(item) {
+  const words = item.fr.split(' ')
+  if (words.length < 3) return null
+  return {
+    type:    'ordering',
+    pt:      item.pt,
+    words:   shuffle([...words]),
+    correct: words,
+    speakFr: item.fr,
+  }
+}
+
+function genOrderingExercise(vocab) {
+  return {
+    number:   5,
+    title:    'Exercício 5',
+    subtitle: 'Organize as frases 🔤',
+    questions: shuffle(vocab.map(makeOrderingQ).filter(Boolean)),
+  }
+}
+
 function genExercises(vocab) {
   return [
     {
@@ -1211,9 +1232,125 @@ export const LEVELS = [
   },
 ]
 
+const MODULE_META = {
+  m1: {
+    grammarNote: 'Em francês, "vous" pode ser plural ou tratamento formal. Use "tu" com amigos e "vous" com desconhecidos ou superiores.',
+  },
+  m3: {
+    grammarNote: 'Adjetivos de cor concordam com o substantivo em gênero e número. Exceções invariáveis: "orange" e "marron" nunca mudam.',
+  },
+  m4: {
+    grammarNote: 'Possessivos: mon/ma (meu/minha), ton/ta (teu/tua), son/sa (seu/sua). Antes de vogal, use sempre "mon" mesmo no feminino: "mon amie".',
+  },
+  m5: {
+    grammarNote: '"Le" + dia da semana indica repetição habitual: "le lundi" = toda segunda-feira. Sem artigo indica um dia específico.',
+  },
+  m11: {
+    hasOrdering: true,
+    grammarNote: 'Para se apresentar: s\'appeler (nome), avoir + número + ans (idade), être + adjetivo (nacionalidade — concorda em gênero).',
+  },
+  m12: {
+    hasOrdering: true,
+    grammarNote: '"Je voudrais" (condicional de vouloir) é mais educado que "je veux" para fazer pedidos num restaurante.',
+  },
+  m13: {
+    hasOrdering: true,
+    grammarNote: 'Mon/ma concordam com o substantivo: "mon père" (masc.), "ma mère" (fem.). Antes de vogal, sempre "mon": "mon amie".',
+  },
+  m14: {
+    hasOrdering: true,
+    grammarNote: 'Em francês, o adjetivo geralmente vem DEPOIS do substantivo: "une robe rouge". Exceções que vêm antes: bon, grand, petit, beau, joli.',
+  },
+  m15: {
+    hasOrdering: true,
+    grammarNote: 'O presente do indicativo (présent) cobre ações habituais, fatos gerais e ações em curso — equivale ao "faço" e "estou fazendo" do português.',
+  },
+  m16: {
+    grammarNote: 'Verbos irregulares não seguem padrão e devem ser memorizados. Être, avoir, aller e faire são a base de quase toda comunicação em francês.',
+    conjugation: [
+      {
+        verb: 'Être — Ser / Estar',
+        rows: [
+          { pr: 'Je',           form: 'suis'   },
+          { pr: 'Tu',           form: 'es'     },
+          { pr: 'Il / Elle',    form: 'est'    },
+          { pr: 'Nous',         form: 'sommes' },
+          { pr: 'Vous',         form: 'êtes'   },
+          { pr: 'Ils / Elles',  form: 'sont'   },
+        ],
+      },
+      {
+        verb: 'Avoir — Ter',
+        rows: [
+          { pr: 'Je',           form: 'ai'     },
+          { pr: 'Tu',           form: 'as'     },
+          { pr: 'Il / Elle',    form: 'a'      },
+          { pr: 'Nous',         form: 'avons'  },
+          { pr: 'Vous',         form: 'avez'   },
+          { pr: 'Ils / Elles',  form: 'ont'    },
+        ],
+      },
+      {
+        verb: 'Aller — Ir',
+        rows: [
+          { pr: 'Je',           form: 'vais'   },
+          { pr: 'Tu',           form: 'vas'    },
+          { pr: 'Il / Elle',    form: 'va'     },
+          { pr: 'Nous',         form: 'allons' },
+          { pr: 'Vous',         form: 'allez'  },
+          { pr: 'Ils / Elles',  form: 'vont'   },
+        ],
+      },
+      {
+        verb: 'Faire — Fazer',
+        rows: [
+          { pr: 'Je',           form: 'fais'    },
+          { pr: 'Tu',           form: 'fais'    },
+          { pr: 'Il / Elle',    form: 'fait'    },
+          { pr: 'Nous',         form: 'faisons' },
+          { pr: 'Vous',         form: 'faites'  },
+          { pr: 'Ils / Elles',  form: 'font'    },
+        ],
+      },
+    ],
+  },
+  m31: {
+    grammarNote: 'Os pronomes pessoais são: je (eu), tu (você/informal), il/elle (ele/ela), nous (nós), vous (vocês/formal), ils/elles (eles/elas).',
+    conjugation: [
+      {
+        verb: 'Parler — Falar (modelo -ER regular)',
+        rows: [
+          { pr: 'Je',           form: 'parle'   },
+          { pr: 'Tu',           form: 'parles'  },
+          { pr: 'Il / Elle',    form: 'parle'   },
+          { pr: 'Nous',         form: 'parlons' },
+          { pr: 'Vous',         form: 'parlez'  },
+          { pr: 'Ils / Elles',  form: 'parlent' },
+        ],
+      },
+      {
+        verb: 'Finir — Terminar (modelo -IR regular)',
+        rows: [
+          { pr: 'Je',           form: 'finis'     },
+          { pr: 'Tu',           form: 'finis'     },
+          { pr: 'Il / Elle',    form: 'finit'     },
+          { pr: 'Nous',         form: 'finissons' },
+          { pr: 'Vous',         form: 'finissez'  },
+          { pr: 'Ils / Elles',  form: 'finissent' },
+        ],
+      },
+    ],
+  },
+}
+
 export const MODULES = DEFS.map(def => {
   const vocab = VOCAB[def.vocabKey]
+  const meta  = MODULE_META[def.id] ?? {}
   const gens  = [...genExercises(vocab), genTypingExercise(vocab)]
+  if (meta.hasOrdering) {
+    const ord = genOrderingExercise(vocab)
+    if (ord.questions.length >= 3) gens.push(ord)
+  }
   return {
     id:          def.id,
     number:      def.number,
@@ -1222,10 +1359,12 @@ export const MODULES = DEFS.map(def => {
     icon:        def.icon,
     color:       def.color,
     vocab: {
-      id:         `${def.id}-vocab`,
-      type:       'vocab',
-      title:      def.title,
-      vocabulary: vocab,
+      id:          `${def.id}-vocab`,
+      type:        'vocab',
+      title:       def.title,
+      vocabulary:  vocab,
+      grammarNote: meta.grammarNote ?? null,
+      conjugation: meta.conjugation ?? null,
     },
     exercises: gens.map((ex, i) => ({
       id:        `${def.id}-ex${i + 1}`,

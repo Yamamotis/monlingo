@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import VocabPage        from './VocabPage'
+import VocabPage         from './VocabPage'
 import MultipleChoice    from './exercises/MultipleChoice'
 import ListeningExercise from './exercises/ListeningExercise'
 import TypingExercise    from './exercises/TypingExercise'
+import OrderingExercise  from './exercises/OrderingExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 
 export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, hearts = 5, isPremium = false, onExit }) {
@@ -172,6 +173,13 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
           />
         ) : currentQ?.type === 'typing' ? (
           <TypingExercise
+            key={`${exIdx}-${qIdx}`}
+            exercise={currentQ}
+            answered={answerPhase === 'feedback'}
+            onSelect={handleAnswer}
+          />
+        ) : currentQ?.type === 'ordering' ? (
+          <OrderingExercise
             key={`${exIdx}-${qIdx}`}
             exercise={currentQ}
             answered={answerPhase === 'feedback'}
