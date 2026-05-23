@@ -6,7 +6,7 @@ import TypingExercise    from './exercises/TypingExercise'
 import OrderingExercise  from './exercises/OrderingExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 
-export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, hearts = 5, isPremium = false, onExit }) {
+export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, hearts = 5, isPremium = false, onExit, onOpenRedeem }) {
   const isVocab  = item.type === 'vocab'
   const isEval   = item.type === 'evaluation'
   const isReview = item.type === 'review'
@@ -84,6 +84,30 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
   }
 
   if (phase === 'failed') {
+    if (!isPremium) {
+      return (
+        <div className="player-screen failed-screen">
+          <div className="failed-card failed-upsell">
+            <div className="failed-icon">💔</div>
+            <h2 className="upsell-title">Suas vidas acabaram!</h2>
+            <p className="upsell-sub">Com o Premium você tem vidas ilimitadas e nunca precisa parar.</p>
+
+            <ul className="upsell-perks">
+              <li>💜 Vidas ilimitadas</li>
+              <li>🎯 Missão do dia exclusiva</li>
+              <li>🏆 Acesso a todos os 70 módulos</li>
+              <li>⭐ Acesso vitalício por R$ 14,99</li>
+            </ul>
+
+            <button className="btn-upsell-buy" onClick={onOpenRedeem}>
+              Seja Premium — R$ 14,99
+            </button>
+            <button className="btn-retry" onClick={handleRetry}>Tentar novamente</button>
+            <button className="btn-exit-soft" onClick={onExit}>Sair</button>
+          </div>
+        </div>
+      )
+    }
     return (
       <div className="player-screen failed-screen">
         <div className="failed-card">

@@ -305,6 +305,7 @@ export default function App() {
           hearts={progress.hearts ?? MAX_HEARTS}
           isPremium={progress.isPremium ?? false}
           onExit={() => activeItem?.type === 'daily' ? setScreen('levels') : setScreen('level')}
+          onOpenRedeem={() => setScreen('redeem')}
         />
       )}
       {screen === 'completion' && lastResult && (
