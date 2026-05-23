@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { speakFrench } from '../../utils/speech'
 
 export default function ListeningExercise({ exercise, answered, onSelect }) {
@@ -13,6 +13,14 @@ export default function ListeningExercise({ exercise, answered, onSelect }) {
       () => setSpeaking(false),
     )
   }
+
+  // Auto-play when the question mounts
+  useEffect(() => {
+    if (speakFr) {
+      const t = setTimeout(handlePlay, 300)
+      return () => clearTimeout(t)
+    }
+  }, [speakFr])
 
   const getClass = (i) => {
     if (!answered) return `option-btn ${!played ? 'opt-locked' : ''}`
