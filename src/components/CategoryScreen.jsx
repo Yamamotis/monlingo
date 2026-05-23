@@ -68,11 +68,18 @@ export default function CategoryScreen({
         </div>
       )}
 
-      <div className="category-hero">
-        <FrFlag size="md" />
-        <div>
-          <h2 className="banner-title">Aprenda Francês</h2>
-          <p className="banner-sub">Escolha uma categoria para continuar</p>
+      <div className="french-hero">
+        <div className="french-tricolor" />
+        <div className="french-hero-content">
+          <div className="french-hero-text">
+            <p className="hero-bonjour">Bonjour{username ? `, ${username}` : ''}!</p>
+            <h2 className="hero-title">Aprenda Francês</h2>
+            <div className="hero-stats-row">
+              <span className="hero-stat">⭐ {xp} XP</span>
+              {streak > 0 && <span className="hero-stat">🔥 {streak} dia{streak !== 1 ? 's' : ''}</span>}
+            </div>
+          </div>
+          <div className="french-hero-eiffel" aria-hidden="true">🗼</div>
         </div>
       </div>
 
@@ -212,20 +219,6 @@ export default function CategoryScreen({
           <span className="level-chevron">›</span>
         </button>
 
-        {/* Card de Ranking */}
-        <button className="leaderboard-card" onClick={onOpenLeaderboard}>
-          <div className="lb-card-icon-wrap">
-            <span>🏆</span>
-          </div>
-          <div className="level-body">
-            <div className="level-top-row">
-              <span className="level-name">Ranking Global</span>
-              <span className="lb-card-badge">Top 10</span>
-            </div>
-            <p className="level-sub">Veja sua posição entre todos os alunos</p>
-          </div>
-          <span className="level-chevron">›</span>
-        </button>
       </div>
     </div>
   )

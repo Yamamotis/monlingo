@@ -9,6 +9,7 @@ export default function ListeningExercise({ exercise, answered, onSelect }) {
   const prePlayed = getCurrentPlayText() === speakFr
   const [played,   setPlayed]   = useState(prePlayed)
   const [speaking, setSpeaking] = useState(prePlayed)
+  const [selected, setSelected] = useState(null)
 
   const handlePlay = useCallback(() => {
     speakFrench(
@@ -45,7 +46,14 @@ export default function ListeningExercise({ exercise, answered, onSelect }) {
   const getClass = (i) => {
     if (!answered) return `option-btn ${!played ? 'opt-locked' : ''}`
     if (i === correct) return 'option-btn correct'
+    if (i === selected) return 'option-btn wrong-selected'
     return 'option-btn wrong-dim'
+  }
+
+  const handleSelect = (i) => {
+    if (answered || !played) return
+    setSelected(i)
+    onSelect(i === correct)
   }
 
   return (
@@ -70,7 +78,7 @@ export default function ListeningExercise({ exercise, answered, onSelect }) {
           <button
             key={i}
             className={getClass(i)}
-            onClick={() => !answered && played && onSelect(i === correct)}
+            onClick={() => handleSelect(i)}
             disabled={answered || !played}
           >
             {opt}

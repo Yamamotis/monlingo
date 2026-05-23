@@ -1,12 +1,21 @@
+import { useState } from 'react'
 import SpeakButton from '../SpeakButton'
 
 export default function MultipleChoice({ exercise, answered, isCorrect, onSelect }) {
   const { question, options, correct, speakFr } = exercise
+  const [selected, setSelected] = useState(null)
 
   const getClass = (i) => {
     if (!answered) return 'option-btn'
     if (i === correct) return 'option-btn correct'
+    if (i === selected) return 'option-btn wrong-selected'
     return 'option-btn wrong-dim'
+  }
+
+  const handleClick = (i) => {
+    if (answered) return
+    setSelected(i)
+    onSelect(i === correct)
   }
 
   const isPhrase = options.some(o => o.length > 22)
@@ -22,7 +31,7 @@ export default function MultipleChoice({ exercise, answered, isCorrect, onSelect
           <button
             key={i}
             className={getClass(i)}
-            onClick={() => !answered && onSelect(i === correct)}
+            onClick={() => handleClick(i)}
             disabled={answered}
           >
             {opt}

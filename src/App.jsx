@@ -13,6 +13,9 @@ import CategoryScreen    from './components/CategoryScreen'
 import LessonPlayer      from './components/LessonPlayer'
 import AchievementToast  from './components/AchievementToast'
 import LevelUpModal      from './components/LevelUpModal'
+import BottomNav         from './components/BottomNav'
+
+const BOTTOM_NAV_SCREENS = new Set(['levels', 'leaderboard', 'profile'])
 
 const LevelSelectScreen = lazy(() => import('./components/LevelSelectScreen'))
 const MapScreen         = lazy(() => import('./components/MapScreen'))
@@ -280,6 +283,8 @@ export default function App() {
 
   const shared = { user: authUser, onLogout: handleLogout }
 
+  const showBottomNav = BOTTOM_NAV_SCREENS.has(screen)
+
   return (
     <div className="app">
       <Suspense fallback={null}>
@@ -403,6 +408,11 @@ export default function App() {
           achievement={toastQueue[0]}
           onDone={handleToastDone}
         />
+      )}
+
+      {/* Bottom Navigation */}
+      {showBottomNav && (
+        <BottomNav current={screen} onNavigate={setScreen} />
       )}
       </Suspense>
     </div>
