@@ -1,27 +1,29 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, lazy, Suspense } from 'react'
 import { onAuthStateChanged, signOut }  from 'firebase/auth'
 import { doc }                           from 'firebase/firestore'
 import { auth, db }                     from './firebase'
 import { doc as fbDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { ACHIEVEMENTS }                 from './data/achievements'
 import { buildReviewItem, buildDailyItem, LEVELS, MODULES } from './data/lessons'
-import FrFlag             from './components/FrFlag'
-import LandingScreen      from './components/LandingScreen'
-import SkeletonScreen     from './components/SkeletonScreen'
-import LevelSelectScreen  from './components/LevelSelectScreen'
-import MapScreen          from './components/MapScreen'
-import LessonPlayer       from './components/LessonPlayer'
-import CompletionScreen   from './components/CompletionScreen'
-import ProfileScreen      from './components/ProfileScreen'
-import AchievementToast   from './components/AchievementToast'
-import OnboardingScreen   from './components/OnboardingScreen'
-import LeaderboardScreen  from './components/LeaderboardScreen'
-import RedeemScreen       from './components/RedeemScreen'
-import AdminScreen        from './components/AdminScreen'
-import CategoryScreen     from './components/CategoryScreen'
-import DictionaryScreen  from './components/DictionaryScreen'
-import PlacementTest      from './components/PlacementTest'
-import LevelUpModal       from './components/LevelUpModal'
+import FrFlag            from './components/FrFlag'
+import LandingScreen     from './components/LandingScreen'
+import SkeletonScreen    from './components/SkeletonScreen'
+import CategoryScreen    from './components/CategoryScreen'
+import LessonPlayer      from './components/LessonPlayer'
+import AchievementToast  from './components/AchievementToast'
+import LevelUpModal      from './components/LevelUpModal'
+
+const LevelSelectScreen = lazy(() => import('./components/LevelSelectScreen'))
+const MapScreen         = lazy(() => import('./components/MapScreen'))
+const CompletionScreen  = lazy(() => import('./components/CompletionScreen'))
+const ProfileScreen     = lazy(() => import('./components/ProfileScreen'))
+const OnboardingScreen  = lazy(() => import('./components/OnboardingScreen'))
+const LeaderboardScreen = lazy(() => import('./components/LeaderboardScreen'))
+const RedeemScreen      = lazy(() => import('./components/RedeemScreen'))
+const AdminScreen       = lazy(() => import('./components/AdminScreen'))
+const DictionaryScreen  = lazy(() => import('./components/DictionaryScreen'))
+const FlashcardScreen   = lazy(() => import('./components/FlashcardScreen'))
+const PlacementTest     = lazy(() => import('./components/PlacementTest'))
 
 const ADMIN_EMAIL  = import.meta.env.VITE_ADMIN_EMAIL ?? ''
 const MAX_HEARTS   = 5
@@ -248,6 +250,7 @@ export default function App() {
 
   return (
     <div className="app">
+      <Suspense fallback={null}>
       {paymentBanner && (
         <div className="payment-success-banner">
           <span>🎉 Pagamento aprovado! Bem-vindo ao Premium.</span>
@@ -275,6 +278,7 @@ export default function App() {
           onStartReview={handleStartReview}
           onStartDaily={handleStartDaily}
           onOpenDictionary={() => setScreen('dictionary')}
+          onOpenFlashcards={() => setScreen('flashcards')}
           {...shared}
         />
       )}
@@ -345,6 +349,12 @@ export default function App() {
           onBack={() => setScreen('levels')}
         />
       )}
+      {screen === 'flashcards' && (
+        <FlashcardScreen
+          progress={progress}
+          onBack={() => setScreen('levels')}
+        />
+      )}
 
       {/* Level-up modal — rendered above everything */}
       {levelUpLevel && (
@@ -362,6 +372,7 @@ export default function App() {
           onDone={handleToastDone}
         />
       )}
+      </Suspense>
     </div>
   )
 }
