@@ -122,7 +122,7 @@ export default function CategoryScreen({
         {CATEGORIES.map((cat, idx) => {
           const catLevels = LEVELS.filter(l => cat.levelIds.includes(l.id))
           const catMods   = catLevels.flatMap(l => MODULES.filter(m => l.moduleIds.includes(m.id)))
-          const total     = catMods.length * 4
+          const total     = catMods.reduce((acc, m) => acc + m.exercises.length + 1, 0)
           const done      = catMods.reduce((acc, mod) =>
             acc
             + mod.exercises.reduce((a, ex) => a + (completed.includes(ex.id) ? 1 : 0), 0)

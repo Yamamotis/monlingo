@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { MODULES } from '../data/lessons'
 
-const EX_ICONS = ['✏️', '🔄', '🎧', '✍️']
+const EX_ICONS = ['✏️', '🔄', '🎧', '✍️', '🔤']
 
 export default function MapScreen({ level, progress, onStart, onBack }) {
   const { completed } = progress
@@ -21,7 +21,7 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
       return next
     })
 
-  const totalItems = levelModules.length * 4
+  const totalItems = levelModules.reduce((acc, mod) => acc + mod.exercises.length + 1, 0)
   const doneCount  = levelModules.reduce((acc, mod) =>
     acc
     + mod.exercises.reduce((a, ex) => a + (completed.includes(ex.id) ? 1 : 0), 0)
@@ -53,9 +53,9 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
       <div className="modules-list">
         {levelModules.map((mod, idx) => {
           const prevEvalDone = idx === 0 || completed.includes(levelModules[idx - 1].evaluation.id)
-          const exDone   = mod.exercises.map(ex => completed.includes(ex.id))
-          const evalDone = completed.includes(mod.evaluation.id)
-          const ex3Done  = exDone[2] ?? false
+          const exDone      = mod.exercises.map(ex => completed.includes(ex.id))
+          const evalDone    = completed.includes(mod.evaluation.id)
+          const lastExDone  = exDone[mod.exercises.length - 1] ?? false
           const modProgress = [...exDone, evalDone].filter(Boolean).length
           const modTotal    = mod.exercises.length + 1
           const modDone     = evalDone
@@ -150,18 +150,18 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
                   })}
 
                   <button
-                    className={`module-item ${evalDone ? 'item-done' : ex3Done ? 'item-active' : 'item-locked'}`}
-                    onClick={() => ex3Done && onStart(mod, mod.evaluation)}
-                    disabled={!ex3Done}
+                    className={`module-item ${evalDone ? 'item-done' : lastExDone ? 'item-active' : 'item-locked'}`}
+                    onClick={() => lastExDone && onStart(mod, mod.evaluation)}
+                    disabled={!lastExDone}
                   >
                     <span className="item-icon">📝</span>
                     <div className="item-info">
                       <span className="item-label">Avaliação</span>
                       <span className="item-title">
-                        {evalDone ? 'Concluída' : ex3Done ? 'Disponível' : 'Complete os exercícios primeiro'}
+                        {evalDone ? 'Concluída' : lastExDone ? 'Disponível' : 'Complete os exercícios primeiro'}
                       </span>
                     </div>
-                    <span className="item-status">{evalDone ? '✓' : ex3Done ? '→' : '🔒'}</span>
+                    <span className="item-status">{evalDone ? '✓' : lastExDone ? '→' : '🔒'}</span>
                     <span className="item-xp">+{mod.evaluation.xpReward} XP</span>
                   </button>
                 </div>
