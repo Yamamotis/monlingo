@@ -82,8 +82,10 @@ function speakWithTTS(text, onStart, onEnd) {
     utter.pitch  = 1.0
     if (frVoice) utter.voice = frVoice
     onStart?.()
-    utter.onend   = () => onEnd?.()
-    utter.onerror = () => { onEnd?.() }
+    // Timeout de segurança: se onend nunca disparar (iOS silencioso), libera em 5s
+    const safety = setTimeout(() => { onEnd?.() }, 5000)
+    utter.onend   = () => { clearTimeout(safety); onEnd?.() }
+    utter.onerror = () => { clearTimeout(safety); onEnd?.() }
     window.speechSynthesis.speak(utter)
   }
   if (ttsReady) go()

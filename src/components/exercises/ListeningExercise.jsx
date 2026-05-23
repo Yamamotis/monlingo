@@ -1,29 +1,34 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { speakFrench } from '../../utils/speech'
+
+// Tempo máximo esperando o áudio — após isso, libera as opções de qualquer forma
+const UNLOCK_TIMEOUT = 3500
 
 export default function ListeningExercise({ exercise, answered, onSelect }) {
   const { options, correct, speakFr } = exercise
   const [played,   setPlayed]   = useState(false)
   const [speaking, setSpeaking] = useState(false)
-  const playedRef = useRef(false)
 
   const handlePlay = useCallback(() => {
     speakFrench(
       speakFr,
-      () => { setSpeaking(true); setPlayed(true); playedRef.current = true },
-      () => setSpeaking(false),
+      () => { setSpeaking(true); setPlayed(true) },  // onStart: som confirmado
+      () => { setSpeaking(false) },                   // onEnd
     )
   }, [speakFr])
 
-  // Auto-play ao montar — tenta imediatamente (desbloqueado pelo toque anterior)
   useEffect(() => {
-    playedRef.current = false
     setPlayed(false)
     setSpeaking(false)
 
-    // Tenta imediatamente; se falhar, o botão fica visível para o usuário tocar
-    const t = setTimeout(handlePlay, 100)
-    return () => clearTimeout(t)
+    // Tenta auto-play; se o navegador bloquear, o botão fica pulsando
+    const autoPlay = setTimeout(handlePlay, 150)
+
+    // Fallback: depois de UNLOCK_TIMEOUT, libera as opções mesmo sem ouvir
+    // Evita o usuário ficar travado em browsers que bloqueiam tudo
+    const unlock   = setTimeout(() => setPlayed(true), UNLOCK_TIMEOUT)
+
+    return () => { clearTimeout(autoPlay); clearTimeout(unlock) }
   }, [handlePlay])
 
   const getClass = (i) => {
@@ -38,7 +43,7 @@ export default function ListeningExercise({ exercise, answered, onSelect }) {
 
       <div className="listen-center">
         <button
-          className={`btn-listen ${speaking ? 'speaking' : ''} ${!played ? 'unplayed pulse-ring' : ''}`}
+          className={`btn-listen ${speaking ? 'speaking' : ''} ${!played ? 'unplayed' : ''}`}
           onClick={handlePlay}
           type="button"
           aria-label="Ouvir palavra em francês"
