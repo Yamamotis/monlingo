@@ -192,7 +192,15 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
           <div className="fb-text">
             {isCorrect
               ? <><span className="fb-icon">✓</span> Correto!</>
-              : <><span className="fb-icon">✗</span> Errado! Resposta: <strong>{currentQ.options[currentQ.correct]}</strong></>
+              : <>
+                  <span className="fb-icon">✗</span> Não foi dessa vez!{' '}
+                  A resposta é:{' '}
+                  <strong>
+                    {currentQ?.type === 'typing'
+                      ? currentQ.correct
+                      : currentQ?.options?.[currentQ?.correct]}
+                  </strong>
+                </>
             }
           </div>
           <button className="btn-continue" onClick={handleContinue}>
