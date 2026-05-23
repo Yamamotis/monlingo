@@ -1967,3 +1967,118 @@ input { -webkit-tap-highlight-color: transparent; }
   padding: 4px 8px;
   opacity: 0.8;
 }
+
+/* ── SRS Flashcard Buttons ─────────────────────── */
+.srs-buttons {
+  display: flex; gap: 10px; width: 100%;
+}
+.srs-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  gap: 4px; padding: 14px 8px; border-radius: 16px; border: 2px solid var(--border);
+  background: var(--surface-hi); cursor: pointer; font-family: inherit;
+  transition: transform 0.1s, box-shadow 0.1s; min-height: 72px;
+}
+.srs-btn:active { transform: translateY(2px); }
+.srs-icon  { font-size: 22px; }
+.srs-label { font-size: 11px; font-weight: 800; color: var(--text-light); }
+
+.srs-unknown { border-color: #FF4B4B55; }
+.srs-unknown:active { background: #FF4B4B22; }
+.srs-hard    { border-color: #FF960055; }
+.srs-hard:active    { background: #FF960022; }
+.srs-easy    { border-color: #58CC0255; }
+.srs-easy:active    { background: #58CC0222; }
+
+.fc-controls { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 10px; }
+.fc-remaining { font-size: 13px; color: var(--text-light); font-weight: 600; }
+.fc-shuffle { padding: 10px 18px; border-radius: 12px; border: 2px solid var(--border); background: var(--surface-hi); color: var(--text); font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+
+/* ── FC Done Screen ────────────────────────────── */
+.fc-done-screen {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 16px; padding: 32px 24px; text-align: center;
+}
+.fc-done-icon  { font-size: 56px; }
+.fc-done-title { font-size: 24px; font-weight: 900; color: var(--text); margin: 0; }
+.fc-done-sub   { font-size: 14px; color: var(--text-light); margin: 0; }
+.fc-done-stats { display: flex; gap: 12px; margin: 8px 0; }
+.fc-done-stat  {
+  flex: 1; background: var(--surface-hi); border: 2px solid var(--border);
+  border-radius: 16px; padding: 14px 10px; display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+}
+.fc-done-num   { font-size: 24px; font-weight: 900; color: var(--text); }
+.fc-done-label { font-size: 11px; font-weight: 700; color: var(--text-light); }
+.fc-easy-stat  { border-color: #58CC0244; }
+.fc-hard-stat  { border-color: #FF960044; }
+.fc-unk-stat   { border-color: #FF4B4B44; }
+.fc-easy-stat .fc-done-num { color: var(--green); }
+.fc-hard-stat .fc-done-num { color: #FF9600; }
+.fc-unk-stat  .fc-done-num { color: var(--red); }
+
+/* ── Blank Exercise ────────────────────────────── */
+.blank-exercise {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 20px; padding: 4px 0; width: 100%;
+}
+.blank-prompt {
+  font-size: 20px; font-weight: 800; color: var(--text);
+  text-align: center; margin: 0; line-height: 1.35;
+}
+.blank-sentence-wrap {
+  display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: center; gap: 6px;
+  font-size: 18px; font-weight: 700; color: var(--text);
+  background: var(--surface-hi); border-radius: 16px;
+  padding: 16px 20px; width: 100%; line-height: 2;
+}
+.blank-sentence-part { white-space: pre-wrap; }
+.blank-input {
+  background: var(--surface); border: 2.5px solid var(--border);
+  border-radius: 12px; padding: 8px 14px; font-size: 17px;
+  font-weight: 800; color: var(--text); font-family: inherit;
+  text-align: center; min-width: 80px; max-width: 200px; width: auto;
+  outline: none; transition: border-color 0.2s;
+}
+.blank-input:focus    { border-color: var(--blue); }
+.blank-input.blank-correct { border-color: var(--green); background: var(--tint-green); color: var(--green); }
+.blank-input.blank-wrong   { border-color: var(--red);   background: var(--tint-red);   color: var(--red); }
+.blank-input::placeholder  { color: var(--text-light); font-weight: 600; }
+.blank-speak { display: flex; justify-content: center; }
+.blank-correction { font-size: 14px; color: var(--red); font-weight: 700; text-align: center; margin: 0; }
+.blank-submit {
+  padding: 14px 36px; border-radius: 14px; border: none;
+  background: var(--blue); color: #fff; font-size: 16px;
+  font-weight: 800; cursor: pointer; font-family: inherit;
+  box-shadow: 0 4px 0 #1490c8; transition: all 0.1s;
+}
+.blank-submit:active  { transform: translateY(2px); box-shadow: 0 2px 0 #1490c8; }
+.blank-submit:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
+
+/* ── Achievement Filters ───────────────────────── */
+.ach-filters {
+  display: flex; gap: 6px; flex-wrap: wrap;
+}
+.ach-filter-btn {
+  padding: 6px 14px; border-radius: 99px; border: 1.5px solid var(--border);
+  background: var(--surface-hi); color: var(--text-light); font-size: 12px;
+  font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap;
+  transition: all 0.15s;
+}
+.ach-filter-btn.ach-filter-active {
+  background: var(--blue); color: #fff; border-color: var(--blue);
+}
+
+/* Achievement description always visible */
+.achievement-item.ach-locked { opacity: 0.55; }
+.ach-desc { display: block; }
+
+/* ── Listen button pulse (quando ainda não tocou) ── */
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(28,176,246,0.55); }
+  70%  { box-shadow: 0 0 0 18px rgba(28,176,246,0); }
+  100% { box-shadow: 0 0 0 0 rgba(28,176,246,0); }
+}
+.btn-listen.pulse-ring {
+  animation: pulse-ring 1.4s ease-out infinite;
+}

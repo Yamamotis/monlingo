@@ -61,6 +61,60 @@ function genOrderingExercise(vocab) {
   }
 }
 
+// ── Fill-in-the-blank ─────────────────────────────────────────────────────────
+const BLANK_STOP = new Set([
+  'le','la','les','un','une','des','de','du','en','à','au','aux',
+  'je','tu','il','elle','nous','vous','ils','elles','on',
+  'me','ma','mon','se','te','ta','ton','sa','son',
+  'ne','pas','et','ou','que','qui','ce',
+  "j'","c'","l'","n'","d'","m'","s'","t'",
+])
+
+function makeBlankQ(item) {
+  const rawWords = item.fr.split(' ')
+  if (rawWords.length === 1) {
+    // Palavra única — mostra apenas o placeholder
+    return {
+      type:     'blank',
+      prompt:   item.pt,
+      sentence: '___',
+      correct:  item.fr.toLowerCase(),
+      hint:     item.fr[0].toLowerCase(),
+      speakFr:  item.fr,
+    }
+  }
+
+  // Frase: escolhe a palavra mais longa que não seja stop word
+  const candidates = rawWords.map((w, i) => {
+    const norm = w.toLowerCase().replace(/[.,!?;:'"«»]/g, '').replace(/^(l'|d'|j'|n'|s'|m'|t'|c')/, '')
+    return { w, i, norm }
+  }).filter(x => !BLANK_STOP.has(x.norm) && x.norm.length > 2)
+
+  const target = candidates.length
+    ? candidates.sort((a, b) => b.norm.length - a.norm.length)[0]
+    : { w: rawWords[rawWords.length - 1], i: rawWords.length - 1, norm: rawWords[rawWords.length - 1].toLowerCase() }
+
+  const sentence = rawWords.map((w, i) => i === target.i ? '___' : w).join(' ')
+
+  return {
+    type:     'blank',
+    prompt:   item.pt,
+    sentence,
+    correct:  target.norm,
+    hint:     target.norm[0],
+    speakFr:  item.fr,
+  }
+}
+
+function genBlankExercise(vocab) {
+  return {
+    number:    6,
+    title:     'Exercício 6',
+    subtitle:  'Complete a lacuna ✏️',
+    questions: shuffle(vocab.map(makeBlankQ).filter(Boolean)),
+  }
+}
+
 function genExercises(vocab) {
   return [
     {
@@ -1015,6 +1069,86 @@ const VOCAB = {
     { fr: 'La vraisemblance',       pt: 'A verossimilhança',                note: 'aparência de verdade numa obra literária' },
     { fr: 'La quintessence',        pt: 'A quintessência / A essência pura', note: null },
   ],
+
+  // ── Módulos Situacionais ──────────────────────────────────────────────────────
+
+  m71: [
+    { fr: 'Je voudrais une table pour deux',     pt: 'Quero uma mesa para dois',          note: 'je voudrais = condicional educado de vouloir' },
+    { fr: 'La carte, s\'il vous plaît',          pt: 'O cardápio, por favor',             note: null },
+    { fr: 'Je vais prendre le poulet',           pt: 'Vou pegar o frango',                note: 'prendre = pegar/tomar' },
+    { fr: 'C\'est délicieux',                    pt: 'Está delicioso',                    note: null },
+    { fr: 'L\'addition, s\'il vous plaît',       pt: 'A conta, por favor',                note: 'l\'addition = a conta' },
+    { fr: 'Je suis végétarien',                  pt: 'Sou vegetariano',                   note: 'vegetarienne no feminino' },
+    { fr: 'Avez-vous une table libre',           pt: 'Vocês têm uma mesa disponível',     note: null },
+    { fr: 'Un verre d\'eau, s\'il vous plaît',   pt: 'Um copo d\'água, por favor',        note: null },
+    { fr: 'Quelle est la spécialité',            pt: 'Qual é a especialidade',            note: 'do restaurante' },
+    { fr: 'Je voudrais réserver une table',      pt: 'Gostaria de reservar uma mesa',     note: null },
+  ],
+
+  m72: [
+    { fr: 'J\'ai mal à la tête',                 pt: 'Estou com dor de cabeça',           note: 'avoir mal à = ter dor de' },
+    { fr: 'J\'ai de la fièvre',                  pt: 'Estou com febre',                   note: null },
+    { fr: 'Je cherche un médicament',            pt: 'Estou procurando um remédio',       note: null },
+    { fr: 'Avez-vous quelque chose contre',      pt: 'Você tem algo contra',              note: 'para dor, tosse, etc.' },
+    { fr: 'Où est la pharmacie',                 pt: 'Onde fica a farmácia',              note: null },
+    { fr: 'L\'ordonnance',                       pt: 'A receita médica',                  note: 'necessária para certos remédios' },
+    { fr: 'Le comprimé',                         pt: 'O comprimido',                      note: null },
+    { fr: 'Le sirop',                            pt: 'O xarope',                          note: null },
+    { fr: 'Le pansement',                        pt: 'O curativo / O band-aid',           note: null },
+    { fr: 'Je suis allergique à',                pt: 'Sou alérgico a',                    note: 'allergique au = masc., allergique à la = fem.' },
+  ],
+
+  m73: [
+    { fr: 'Excusez-moi, où est',                 pt: 'Com licença, onde fica',            note: 'forma polida de pedir direções' },
+    { fr: 'Tournez à gauche',                    pt: 'Vire à esquerda',                   note: 'tournez = imperativo de tourner' },
+    { fr: 'Tournez à droite',                    pt: 'Vire à direita',                    note: null },
+    { fr: 'Allez tout droit',                    pt: 'Vá em frente',                      note: 'tout droit = direto/em frente' },
+    { fr: 'C\'est loin d\'ici',                  pt: 'É longe daqui',                     note: null },
+    { fr: 'C\'est à deux minutes à pied',        pt: 'Fica a dois minutos a pé',          note: null },
+    { fr: 'Prenez le bus',                       pt: 'Pegue o ônibus',                    note: 'prenez = imperativo de prendre' },
+    { fr: 'À côté de la gare',                   pt: 'Ao lado da estação',                note: 'à côté de = ao lado de' },
+    { fr: 'En face du supermarché',              pt: 'Em frente ao supermercado',         note: 'en face de = em frente a' },
+    { fr: 'Au bout de la rue',                   pt: 'No final da rua',                   note: null },
+  ],
+
+  m74: [
+    { fr: 'Je voudrais réserver une chambre',    pt: 'Gostaria de reservar um quarto',    note: null },
+    { fr: 'Une chambre double',                  pt: 'Um quarto de casal',                note: 'double = para duas pessoas' },
+    { fr: 'Une chambre simple',                  pt: 'Um quarto individual',              note: null },
+    { fr: 'Le petit-déjeuner est inclus',        pt: 'O café da manhã está incluído',     note: null },
+    { fr: 'À quelle heure est le check-in',      pt: 'A que horas é o check-in',          note: null },
+    { fr: 'Pouvez-vous me réveiller à',          pt: 'Pode me acordar às',               note: 'wake-up call' },
+    { fr: 'La climatisation ne fonctionne pas',  pt: 'O ar-condicionado não funciona',    note: null },
+    { fr: 'La clé de la chambre',                pt: 'A chave do quarto',                 note: null },
+    { fr: 'Je pars demain matin',                pt: 'Saio amanhã de manhã',              note: null },
+    { fr: 'Le service de chambre',               pt: 'O serviço de quarto',               note: null },
+  ],
+
+  m75: [
+    { fr: 'Où est le vol pour Paris',            pt: 'Onde fica o voo para Paris',        note: null },
+    { fr: 'L\'embarquement',                     pt: 'O embarque',                        note: 'gate = porte d\'embarquement' },
+    { fr: 'Le retard',                           pt: 'O atraso',                          note: 'mon vol est en retard = meu voo está atrasado' },
+    { fr: 'Le vol est annulé',                   pt: 'O voo foi cancelado',               note: null },
+    { fr: 'Les bagages',                         pt: 'As bagagens',                       note: 'bagage à main = bagagem de mão' },
+    { fr: 'Le passeport',                        pt: 'O passaporte',                      note: null },
+    { fr: 'Le contrôle des passeports',          pt: 'O controle de passaportes',         note: 'imigração' },
+    { fr: 'La sortie de secours',                pt: 'A saída de emergência',             note: null },
+    { fr: 'Le décollage',                        pt: 'A decolagem',                       note: null },
+    { fr: 'L\'atterrissage',                     pt: 'O pouso',                           note: null },
+  ],
+
+  m76: [
+    { fr: 'C\'est combien',                      pt: 'Quanto custa',                      note: 'forma mais direta' },
+    { fr: 'Je voudrais essayer ce vêtement',     pt: 'Gostaria de experimentar esta roupa', note: null },
+    { fr: 'Avez-vous cela en grande taille',     pt: 'Você tem isso em tamanho grande',   note: 'petit = pequeno, moyen = médio, grand = grande' },
+    { fr: 'C\'est trop cher',                    pt: 'É muito caro',                      note: null },
+    { fr: 'Je vais le prendre',                  pt: 'Vou levar',                         note: 'le = masc., la = fem.' },
+    { fr: 'Le remboursement',                    pt: 'O reembolso / A devolução',         note: null },
+    { fr: 'Les soldes',                          pt: 'A liquidação / As promoções',       note: 'período de saldos na França' },
+    { fr: 'La caisse',                           pt: 'O caixa',                           note: 'onde se paga' },
+    { fr: 'Vous acceptez la carte bancaire',     pt: 'Vocês aceitam cartão',              note: null },
+    { fr: 'La facture',                          pt: 'A nota fiscal',                     note: null },
+  ],
 }
 
 // ── Module definitions ─────────────────────────────────────────────────────────
@@ -1101,6 +1235,13 @@ const DEFS = [
   { id:'m68', number:68, title:'Mídia e Jornalismo', description:'Vocabulário da comunicação e imprensa',       icon:'📰', color:'#FF4B4B', vocabKey:'m68' },
   { id:'m69', number:69, title:'Relações Internacionais', description:'Diplomacia e política mundial',          icon:'🌐', color:'#1CB0F6', vocabKey:'m69' },
   { id:'m70', number:70, title:'Expressões Literárias', description:'Vocabulário culto e literário em francês', icon:'✒️', color:'#FFC800', vocabKey:'m70' },
+  // ── Situações do Dia a Dia ─────────────────────────────────────────────────
+  { id:'m71', number:71, title:'No Restaurante',    description:'Peça comida, reserve mesa e pague a conta', icon:'🍽️', color:'#FF9600', vocabKey:'m71' },
+  { id:'m72', number:72, title:'Na Farmácia',       description:'Descreva sintomas e encontre remédios',     icon:'💊', color:'#58CC02', vocabKey:'m72' },
+  { id:'m73', number:73, title:'Pedindo Direções',  description:'Navegue pela cidade em francês',            icon:'🗺️', color:'#1CB0F6', vocabKey:'m73' },
+  { id:'m74', number:74, title:'No Hotel',          description:'Reserve, faça check-in e resolva problemas', icon:'🏨', color:'#CE82FF', vocabKey:'m74' },
+  { id:'m75', number:75, title:'No Aeroporto',      description:'Voos, embarque e situações no aeroporto',   icon:'✈️', color:'#FF4B4B', vocabKey:'m75' },
+  { id:'m76', number:76, title:'Fazendo Compras',   description:'Pergunte preços, tente roupas e pague',     icon:'🛍️', color:'#FFC800', vocabKey:'m76' },
 ]
 
 export const CATEGORIES = [
@@ -1111,6 +1252,14 @@ export const CATEGORIES = [
     icon:     '🌱',
     color:    '#58CC02',
     levelIds: ['beginner-1', 'beginner-2', 'beginner-3'],
+  },
+  {
+    id:       'situational',
+    name:     'Situações',
+    subtitle: 'Frases reais para o dia a dia',
+    icon:     '🗺️',
+    color:    '#1CB0F6',
+    levelIds: ['situational-1'],
   },
   {
     id:       'intermediate',
@@ -1157,6 +1306,15 @@ export const LEVELS = [
     color: '#CE82FF',
     premium: false,
     moduleIds: ['m11', 'm12', 'm13', 'm14', 'm15', 'm32'],
+  },
+  {
+    id: 'situational-1',
+    name: 'Situações',
+    subtitle: 'Restaurante, farmácia, direções, hotel, aeroporto e compras',
+    icon: '🗺️',
+    color: '#1CB0F6',
+    premium: false,
+    moduleIds: ['m71', 'm72', 'm73', 'm74', 'm75', 'm76'],
   },
   {
     id: 'intermediate-1',
@@ -1283,6 +1441,31 @@ const MODULE_META = {
   m35: { hasOrdering: true,
     grammarNote: 'Comparativo: plus/moins/aussi + adjetivo + que. Superlativo: le/la/les + plus/moins + adjetivo.',
   },
+  // ── Situacionais ──
+  m71: {
+    hasOrdering: true, hasBlank: true,
+    grammarNote: '"Je voudrais" (condicional) é mais educado que "je veux" para pedir no restaurante. "L\'addition, s\'il vous plaît" é como pedir a conta.',
+  },
+  m72: {
+    hasOrdering: true, hasBlank: true,
+    grammarNote: 'Para descrever sintomas: "J\'ai mal à + artigo + parte do corpo". Exemplo: "J\'ai mal à la tête" = Estou com dor de cabeça.',
+  },
+  m73: {
+    hasOrdering: true, hasBlank: true,
+    grammarNote: 'Direções básicas: gauche (esquerda), droite (direita), tout droit (em frente). "Tournez" é o imperativo de "tourner" (virar).',
+  },
+  m74: {
+    hasOrdering: true, hasBlank: true,
+    grammarNote: 'No hotel: "Je voudrais réserver une chambre" = quero reservar. "Chambre double" = quarto de casal, "chambre simple" = individual.',
+  },
+  m75: {
+    hasOrdering: true, hasBlank: true,
+    grammarNote: 'No aeroporto: "embarquement" = embarque, "décollage" = decolagem, "atterrissage" = pouso. "Retard" = atraso, "annulé" = cancelado.',
+  },
+  m76: {
+    hasOrdering: true, hasBlank: true,
+    grammarNote: '"C\'est combien ?" é a forma mais direta de perguntar o preço. "Je vais le prendre" = vou levar. "C\'est trop cher" = é muito caro.',
+  },
   m16: {
     grammarNote: 'Verbos irregulares não seguem padrão e devem ser memorizados. Être, avoir, aller e faire são a base de quase toda comunicação em francês.',
     conjugation: [
@@ -1368,6 +1551,10 @@ export const MODULES = DEFS.map(def => {
   if (meta.hasOrdering) {
     const ord = genOrderingExercise(vocab)
     if (ord.questions.length >= 3) gens.push(ord)
+  }
+  if (meta.hasBlank) {
+    const blk = genBlankExercise(vocab)
+    if (blk.questions.length >= 3) gens.push(blk)
   }
   return {
     id:          def.id,

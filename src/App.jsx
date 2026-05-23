@@ -25,8 +25,28 @@ const DictionaryScreen  = lazy(() => import('./components/DictionaryScreen'))
 const FlashcardScreen   = lazy(() => import('./components/FlashcardScreen'))
 const PlacementTest     = lazy(() => import('./components/PlacementTest'))
 
-const ADMIN_EMAIL  = import.meta.env.VITE_ADMIN_EMAIL ?? ''
-const MAX_HEARTS   = 5
+const ADMIN_EMAIL      = import.meta.env.VITE_ADMIN_EMAIL ?? ''
+const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY ?? ''
+const MAX_HEARTS       = 5
+
+// ── Push notification subscription ───────────────────────────────────────────
+async function subscribePush(uid) {
+  if (!VAPID_PUBLIC_KEY || !('serviceWorker' in navigator) || !('PushManager' in window)) return
+  try {
+    const perm = await Notification.requestPermission()
+    if (perm !== 'granted') return
+    const reg = await navigator.serviceWorker.ready
+    const sub = await reg.pushManager.subscribe({
+      userVisibleOnly:      true,
+      applicationServerKey: VAPID_PUBLIC_KEY,
+    })
+    await fetch('/api/subscribe-push', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ uid, subscription: sub.toJSON() }),
+    }).catch(() => {})
+  } catch { /* silently fail */ }
+}
 
 // Retorna o slot de 2 horas atual: "2026-05-22-14" para 14:00–15:59
 function getHeartsSlot() {
@@ -95,6 +115,8 @@ export default function App() {
         } catch { setProgress(EMPTY) }
         readyToSave.current = true
         setProgressLoaded(true)
+        // Pede permissão de push na primeira vez (após 3s para não assustar)
+        setTimeout(() => subscribePush(user.uid), 3000)
       } else {
         setProgress(EMPTY)
       }

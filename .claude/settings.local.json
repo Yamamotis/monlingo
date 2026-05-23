@@ -6,7 +6,13 @@
       "Bash(git commit -m ' *)",
       "WebSearch",
       "Bash(npm run *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(npm install *)",
+      "Bash(ls \"c:/Users/Mathe/Downloads/\" | grep -i firebase 2>/dev/null || ls \"c:/Users/Mathe/Downloads/\" | grep -i monlingo 2>/dev/null)",
+      "Read(//c/Users/Mathe/Downloads/**)",
+      "Bash(git push *)",
+      "Bash(npx web-push *)",
+      "PowerShell(\\(Get-Content \"c:\\\\Users\\\\Mathe\\\\OneDrive\\\\Área de Trabalho\\\\monlingo\\\\src\\\\App.css\" | Measure-Object -Line\\).Lines)"
     ]
   }
 }

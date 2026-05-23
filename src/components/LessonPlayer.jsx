@@ -4,6 +4,7 @@ import MultipleChoice    from './exercises/MultipleChoice'
 import ListeningExercise from './exercises/ListeningExercise'
 import TypingExercise    from './exercises/TypingExercise'
 import OrderingExercise  from './exercises/OrderingExercise'
+import BlankExercise     from './exercises/BlankExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 
 export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, hearts = 5, isPremium = false, onExit, onOpenRedeem }) {
@@ -209,6 +210,13 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
             answered={answerPhase === 'feedback'}
             onSelect={handleAnswer}
           />
+        ) : currentQ?.type === 'blank' ? (
+          <BlankExercise
+            key={`${exIdx}-${qIdx}`}
+            exercise={currentQ}
+            answered={answerPhase === 'feedback'}
+            onSelect={handleAnswer}
+          />
         ) : (
           <MultipleChoice
             exercise={currentQ}
@@ -228,7 +236,7 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
                   <span className="fb-icon">✗</span> Não foi dessa vez!{' '}
                   A resposta é:{' '}
                   <strong>
-                    {currentQ?.type === 'typing'
+                    {currentQ?.type === 'typing' || currentQ?.type === 'blank'
                       ? currentQ.correct
                       : currentQ?.options?.[currentQ?.correct]}
                   </strong>

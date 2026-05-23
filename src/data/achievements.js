@@ -1,57 +1,105 @@
 import { LEVELS } from './lessons'
 
+// Verifica se todos os módulos de um nível têm avaliação concluída
 const lvlDone = (progress, levelId) => {
   const lvl = LEVELS.find(l => l.id === levelId)
   if (!lvl || !lvl.moduleIds.length) return false
-  return lvl.moduleIds.every(mid =>
-    progress.completed.includes(`${mid}-lesson`) &&
-    progress.completed.includes(`${mid}-eval`)
-  )
+  return lvl.moduleIds.every(mid => progress.completed.includes(`${mid}-eval`))
 }
 
 export const ACHIEVEMENTS = [
-  // ── Primeiros passos ──────────────────────────
+  // ── Primeiros passos ──────────────────────────────────────────────────────
   {
     id: 'first-lesson',
     icon: '🎯',
     title: 'Primeiro Passo',
-    desc: 'Concluiu sua primeira aula',
+    desc: 'Completou o primeiro vocabulário',
+    hint: 'Complete a primeira página de vocabulário',
     color: '#58CC02',
-    check: p => p.completed.filter(id => id.endsWith('-lesson')).length >= 1,
+    check: p => p.completed.some(id => id.endsWith('-vocab')),
   },
   {
     id: 'first-eval',
     icon: '📝',
     title: 'Primeiro Teste',
-    desc: 'Concluiu sua primeira avaliação',
+    desc: 'Concluiu a primeira avaliação',
+    hint: 'Conclua a avaliação de qualquer módulo',
     color: '#1CB0F6',
-    check: p => p.completed.filter(id => id.endsWith('-eval')).length >= 1,
+    check: p => p.completed.some(id => id.endsWith('-eval')),
+  },
+  {
+    id: 'ordering-first',
+    icon: '🔤',
+    title: 'Ordenador',
+    desc: 'Completou um exercício de organizar frases',
+    hint: 'Chegue ao Exercício 5 de qualquer módulo',
+    color: '#1CB0F6',
+    check: p => p.completed.some(id => id.endsWith('-ex5')),
+  },
+  {
+    id: 'premium',
+    icon: '💎',
+    title: 'Membro Premium',
+    desc: 'Ativou o acesso Premium',
+    hint: 'Torne-se membro Premium',
+    color: '#CE82FF',
+    check: p => !!p.isPremium,
   },
 
-  // ── Aulas ─────────────────────────────────────
+  // ── Módulos concluídos ────────────────────────────────────────────────────
   {
-    id: 'lessons-5',
+    id: 'modules-5',
     icon: '📖',
     title: 'Estudioso',
-    desc: 'Concluiu 5 aulas',
+    desc: 'Completou 5 módulos',
+    hint: 'Conclua as avaliações de 5 módulos',
     color: '#58CC02',
-    check: p => p.completed.filter(id => id.endsWith('-lesson')).length >= 5,
+    check: p => p.completed.filter(id => id.endsWith('-eval')).length >= 5,
   },
   {
-    id: 'lessons-15',
+    id: 'modules-15',
     icon: '🎓',
     title: 'Graduado',
-    desc: 'Concluiu todas as 15 aulas',
+    desc: 'Completou 15 módulos',
+    hint: 'Conclua 15 avaliações',
     color: '#CE82FF',
-    check: p => p.completed.filter(id => id.endsWith('-lesson')).length >= 15,
+    check: p => p.completed.filter(id => id.endsWith('-eval')).length >= 15,
+  },
+  {
+    id: 'modules-30',
+    icon: '🏅',
+    title: 'Especialista',
+    desc: 'Completou 30 módulos',
+    hint: 'Conclua 30 avaliações',
+    color: '#FF9600',
+    check: p => p.completed.filter(id => id.endsWith('-eval')).length >= 30,
+  },
+  {
+    id: 'modules-50',
+    icon: '🌟',
+    title: 'Mestre',
+    desc: 'Completou 50 módulos',
+    hint: 'Conclua 50 avaliações',
+    color: '#FFC800',
+    check: p => p.completed.filter(id => id.endsWith('-eval')).length >= 50,
+  },
+  {
+    id: 'modules-all',
+    icon: '👑',
+    title: 'Poliglota',
+    desc: 'Completou todos os 70 módulos principais',
+    hint: 'Conclua as avaliações de todos os 70 módulos',
+    color: '#CE82FF',
+    check: p => p.completed.filter(id => id.endsWith('-eval')).length >= 70,
   },
 
-  // ── Níveis ────────────────────────────────────
+  // ── Níveis ────────────────────────────────────────────────────────────────
   {
     id: 'level-beginner-1',
     icon: '🌱',
     title: 'Iniciante',
-    desc: 'Completou o nível Iniciante',
+    desc: 'Completou o nível Iniciante 1',
+    hint: 'Finalize todos os módulos do nível Iniciante',
     color: '#58CC02',
     check: p => lvlDone(p, 'beginner-1'),
   },
@@ -60,6 +108,7 @@ export const ACHIEVEMENTS = [
     icon: '📗',
     title: 'Iniciante 2',
     desc: 'Completou o nível Iniciante 2',
+    hint: 'Finalize todos os módulos do nível Iniciante 2',
     color: '#1CB0F6',
     check: p => lvlDone(p, 'beginner-2'),
   },
@@ -68,16 +117,47 @@ export const ACHIEVEMENTS = [
     icon: '💬',
     title: 'Iniciante 3',
     desc: 'Completou o nível Iniciante 3',
+    hint: 'Finalize todos os módulos do nível Iniciante 3',
     color: '#CE82FF',
     check: p => lvlDone(p, 'beginner-3'),
   },
+  {
+    id: 'level-intermediate-1',
+    icon: '🌿',
+    title: 'Intermediário',
+    desc: 'Completou o nível Intermediário',
+    hint: 'Finalize todos os módulos do nível Intermediário',
+    color: '#FF9600',
+    check: p => lvlDone(p, 'intermediate-1'),
+  },
+  {
+    id: 'level-advanced',
+    icon: '🏆',
+    title: 'Avançado',
+    desc: 'Completou o nível Avançado',
+    hint: 'Finalize todos os módulos do nível Avançado',
+    color: '#FFC800',
+    check: p => lvlDone(p, 'advanced'),
+  },
 
-  // ── Streak ────────────────────────────────────
+  // ── Situações ─────────────────────────────────────────────────────────────
+  {
+    id: 'level-situational',
+    icon: '🗺️',
+    title: 'Viajante',
+    desc: 'Completou todos os módulos situacionais',
+    hint: 'Finalize todos os módulos da categoria Situações',
+    color: '#58CC02',
+    check: p => lvlDone(p, 'situational-1'),
+  },
+
+  // ── Streak ────────────────────────────────────────────────────────────────
   {
     id: 'streak-3',
     icon: '🔥',
     title: 'Na Sequência',
     desc: '3 dias seguidos estudando',
+    hint: 'Estude 3 dias consecutivos',
     color: '#FF9600',
     check: p => (p.streak ?? 0) >= 3,
   },
@@ -86,24 +166,54 @@ export const ACHIEVEMENTS = [
     icon: '🔥',
     title: 'Uma Semana',
     desc: '7 dias seguidos estudando',
+    hint: 'Estude 7 dias consecutivos',
     color: '#FF4B4B',
     check: p => (p.streak ?? 0) >= 7,
+  },
+  {
+    id: 'streak-14',
+    icon: '🔥',
+    title: 'Duas Semanas',
+    desc: '14 dias seguidos estudando',
+    hint: 'Estude 14 dias consecutivos',
+    color: '#FF4B4B',
+    check: p => (p.streak ?? 0) >= 14,
   },
   {
     id: 'streak-30',
     icon: '🔥',
     title: 'Imparável',
     desc: '30 dias seguidos estudando',
+    hint: 'Estude 30 dias consecutivos',
     color: '#FFC800',
     check: p => (p.streak ?? 0) >= 30,
   },
+  {
+    id: 'streak-60',
+    icon: '🔥',
+    title: 'Dois Meses',
+    desc: '60 dias seguidos estudando',
+    hint: 'Estude 60 dias consecutivos',
+    color: '#FFC800',
+    check: p => (p.streak ?? 0) >= 60,
+  },
+  {
+    id: 'streak-100',
+    icon: '🔥',
+    title: 'Centenário',
+    desc: '100 dias seguidos estudando',
+    hint: 'Estude 100 dias consecutivos',
+    color: '#CE82FF',
+    check: p => (p.streak ?? 0) >= 100,
+  },
 
-  // ── XP ────────────────────────────────────────
+  // ── XP ────────────────────────────────────────────────────────────────────
   {
     id: 'xp-100',
     icon: '⭐',
     title: '100 XP',
     desc: 'Acumulou 100 pontos de experiência',
+    hint: 'Ganhe 100 XP no total',
     color: '#FFC800',
     check: p => (p.xp ?? 0) >= 100,
   },
@@ -112,15 +222,76 @@ export const ACHIEVEMENTS = [
     icon: '🌟',
     title: '500 XP',
     desc: 'Acumulou 500 pontos de experiência',
+    hint: 'Ganhe 500 XP no total',
     color: '#FFC800',
     check: p => (p.xp ?? 0) >= 500,
   },
   {
     id: 'xp-1000',
     icon: '💫',
-    title: '1000 XP',
-    desc: 'Acumulou 1000 pontos de experiência',
+    title: '1.000 XP',
+    desc: 'Acumulou 1.000 pontos de experiência',
+    hint: 'Ganhe 1.000 XP no total',
     color: '#FFC800',
     check: p => (p.xp ?? 0) >= 1000,
   },
+  {
+    id: 'xp-2000',
+    icon: '✨',
+    title: '2.000 XP',
+    desc: 'Acumulou 2.000 pontos de experiência',
+    hint: 'Ganhe 2.000 XP no total',
+    color: '#FFC800',
+    check: p => (p.xp ?? 0) >= 2000,
+  },
+  {
+    id: 'xp-5000',
+    icon: '🌠',
+    title: '5.000 XP',
+    desc: 'Acumulou 5.000 pontos de experiência',
+    hint: 'Ganhe 5.000 XP no total',
+    color: '#FFC800',
+    check: p => (p.xp ?? 0) >= 5000,
+  },
+
+  // ── Semana ────────────────────────────────────────────────────────────────
+  {
+    id: 'weekly-100',
+    icon: '📅',
+    title: 'Semana Produtiva',
+    desc: 'Ganhou 100 XP em uma semana',
+    hint: 'Ganhe 100 XP em 7 dias',
+    color: '#CE82FF',
+    check: p => (p.weeklyXP ?? 0) >= 100,
+  },
+  {
+    id: 'weekly-500',
+    icon: '🗓️',
+    title: 'Semana Incrível',
+    desc: 'Ganhou 500 XP em uma semana',
+    hint: 'Ganhe 500 XP em 7 dias',
+    color: '#CE82FF',
+    check: p => (p.weeklyXP ?? 0) >= 500,
+  },
+
+  // ── Revisão ───────────────────────────────────────────────────────────────
+  {
+    id: 'reviewer',
+    icon: '🔄',
+    title: 'Revisor',
+    desc: 'Tem mais de 10 palavras para revisar',
+    hint: 'Erre 10 palavras diferentes para praticar',
+    color: '#1CB0F6',
+    check: p => (p.wrongWords?.length ?? 0) >= 10,
+  },
+]
+
+export const ACHIEVEMENT_CATEGORIES = [
+  { key: 'start',      label: 'Primeiros Passos', ids: ['first-lesson','first-eval','ordering-first','premium'] },
+  { key: 'modules',    label: 'Módulos',           ids: ['modules-5','modules-15','modules-30','modules-50','modules-all'] },
+  { key: 'levels',     label: 'Níveis',            ids: ['level-beginner-1','level-beginner-2','level-beginner-3','level-intermediate-1','level-advanced','level-situational'] },
+  { key: 'streak',     label: 'Sequência',         ids: ['streak-3','streak-7','streak-14','streak-30','streak-60','streak-100'] },
+  { key: 'xp',         label: 'XP',                ids: ['xp-100','xp-500','xp-1000','xp-2000','xp-5000'] },
+  { key: 'weekly',     label: 'Semanal',           ids: ['weekly-100','weekly-500'] },
+  { key: 'misc',       label: 'Extras',            ids: ['reviewer'] },
 ]

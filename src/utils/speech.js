@@ -1,4 +1,4 @@
-// ── Filename helper (mesma lógica do scripts/generate-audio.mjs) ──────────────
+// ── Filename helper (mesma logica do scripts/generate-audio.mjs) ──────────────
 
 function textToFilename(text) {
   return text
@@ -8,6 +8,39 @@ function textToFilename(text) {
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .slice(0, 80)
+}
+
+// ── Audio Unlock (iOS / mobile autoplay policy) ───────────────────────────────
+// O primeiro gesto do usuario desbloqueia tanto HTMLAudio quanto SpeechSynthesis.
+
+let audioUnlocked = false
+
+export function unlockAudio() {
+  if (audioUnlocked) return
+  audioUnlocked = true
+
+  // Desbloqueia HTMLAudioElement tocando silencio (data URI)
+  const silent = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA')
+  silent.play().catch(() => {})
+
+  // Desbloqueia SpeechSynthesis no iOS com utterance vazia
+  if ('speechSynthesis' in window) {
+    const u = new SpeechSynthesisUtterance('')
+    u.volume = 0
+    window.speechSynthesis.speak(u)
+    window.speechSynthesis.cancel()
+  }
+}
+
+// Desbloqueia automaticamente no primeiro toque/clique
+if (typeof window !== 'undefined') {
+  const handler = () => {
+    unlockAudio()
+    document.removeEventListener('touchstart', handler, true)
+    document.removeEventListener('mousedown',  handler, true)
+  }
+  document.addEventListener('touchstart', handler, { once: true, capture: true })
+  document.addEventListener('mousedown',  handler, { once: true, capture: true })
 }
 
 // ── Fallback: Web Speech API ───────────────────────────────────────────────────
@@ -45,56 +78,63 @@ function speakWithTTS(text, onStart, onEnd) {
     if (!ttsReady) loadVoices()
     const utter  = new SpeechSynthesisUtterance(text)
     utter.lang   = 'fr-FR'
-    utter.rate   = 0.75
+    utter.rate   = 0.8
     utter.pitch  = 1.0
     if (frVoice) utter.voice = frVoice
     onStart?.()
     utter.onend   = () => onEnd?.()
-    utter.onerror = () => onEnd?.()
+    utter.onerror = () => { onEnd?.() }
     window.speechSynthesis.speak(utter)
   }
   if (ttsReady) go()
   else {
     window.speechSynthesis.addEventListener('voiceschanged', go, { once: true })
-    setTimeout(go, 400)
+    setTimeout(go, 300)
   }
 }
 
-// ── Player principal: áudio pré-gerado → fallback TTS ─────────────────────────
+// ── Player principal: audio pre-gerado → fallback TTS ─────────────────────────
 
-const audioCache   = new Map()
-let   currentAudio = null
+let currentAudio = null
 
 export function speakFrench(text, onStart, onEnd) {
   if (typeof window === 'undefined') return
 
+  // Para qualquer audio em andamento
   if (currentAudio) {
     currentAudio.pause()
-    currentAudio.currentTime = 0
     currentAudio = null
   }
   window.speechSynthesis?.cancel()
 
-  const filename = `/audio/${textToFilename(text)}.mp3`
+  const filename = '/audio/' + textToFilename(text) + '.mp3'
 
-  let audio = audioCache.get(text)
-  if (!audio) {
-    audio = new Audio(filename)
-    audioCache.set(text, audio)
+  // Cria um novo Audio por chamada para evitar conflitos de onended/onerror
+  const audio = new Audio(filename)
+  currentAudio = audio
+
+  audio.onended = () => {
+    if (currentAudio === audio) currentAudio = null
+    onEnd?.()
   }
 
-  currentAudio      = audio
-  audio.currentTime = 0
-
-  audio.onended = () => { currentAudio = null; onEnd?.() }
+  // 404 ou erro no MP3 → fallback TTS
   audio.onerror = () => {
-    currentAudio = null
+    if (currentAudio === audio) currentAudio = null
     speakWithTTS(text, onStart, onEnd)
   }
 
-  onStart?.()
-  audio.play().catch(() => {
-    currentAudio = null
-    speakWithTTS(text, undefined, onEnd)
-  })
+  // So chama onStart quando o play de fato inicia (evita "played=true" sem som)
+  const promise = audio.play()
+  if (promise) {
+    promise
+      .then(() => onStart?.())
+      .catch(() => {
+        // Bloqueado por autoplay policy → tenta TTS
+        if (currentAudio === audio) currentAudio = null
+        speakWithTTS(text, onStart, onEnd)
+      })
+  } else {
+    onStart?.()
+  }
 }

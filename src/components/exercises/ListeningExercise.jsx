@@ -1,26 +1,30 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { speakFrench } from '../../utils/speech'
 
 export default function ListeningExercise({ exercise, answered, onSelect }) {
   const { options, correct, speakFr } = exercise
   const [played,   setPlayed]   = useState(false)
   const [speaking, setSpeaking] = useState(false)
+  const playedRef = useRef(false)
 
-  const handlePlay = () => {
+  const handlePlay = useCallback(() => {
     speakFrench(
       speakFr,
-      () => { setSpeaking(true); setPlayed(true) },
+      () => { setSpeaking(true); setPlayed(true); playedRef.current = true },
       () => setSpeaking(false),
     )
-  }
-
-  // Auto-play when the question mounts
-  useEffect(() => {
-    if (speakFr) {
-      const t = setTimeout(handlePlay, 300)
-      return () => clearTimeout(t)
-    }
   }, [speakFr])
+
+  // Auto-play ao montar — tenta imediatamente (desbloqueado pelo toque anterior)
+  useEffect(() => {
+    playedRef.current = false
+    setPlayed(false)
+    setSpeaking(false)
+
+    // Tenta imediatamente; se falhar, o botão fica visível para o usuário tocar
+    const t = setTimeout(handlePlay, 100)
+    return () => clearTimeout(t)
+  }, [handlePlay])
 
   const getClass = (i) => {
     if (!answered) return `option-btn ${!played ? 'opt-locked' : ''}`
@@ -34,9 +38,10 @@ export default function ListeningExercise({ exercise, answered, onSelect }) {
 
       <div className="listen-center">
         <button
-          className={`btn-listen ${speaking ? 'speaking' : ''} ${!played ? 'unplayed' : ''}`}
+          className={`btn-listen ${speaking ? 'speaking' : ''} ${!played ? 'unplayed pulse-ring' : ''}`}
           onClick={handlePlay}
           type="button"
+          aria-label="Ouvir palavra em francês"
         >
           🔊
         </button>
