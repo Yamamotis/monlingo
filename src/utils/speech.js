@@ -97,7 +97,10 @@ function speakWithTTS(text, onStart, onEnd) {
 
 // ── Player principal: audio pre-gerado → fallback TTS ─────────────────────────
 
-let currentAudio = null
+let currentAudio     = null
+let currentPlayText  = null   // texto do áudio em andamento
+
+export function getCurrentPlayText() { return currentPlayText }
 
 export function speakFrench(text, onStart, onEnd) {
   if (typeof window === 'undefined') return
@@ -109,14 +112,15 @@ export function speakFrench(text, onStart, onEnd) {
   }
   window.speechSynthesis?.cancel()
 
-  const filename = '/audio/' + textToFilename(text) + '.mp3'
+  currentPlayText = text
+  const filename  = '/audio/' + textToFilename(text) + '.mp3'
 
   // Cria um novo Audio por chamada para evitar conflitos de onended/onerror
   const audio = new Audio(filename)
   currentAudio = audio
 
   audio.onended = () => {
-    if (currentAudio === audio) currentAudio = null
+    if (currentAudio === audio) { currentAudio = null; currentPlayText = null }
     onEnd?.()
   }
 

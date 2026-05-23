@@ -5,6 +5,7 @@ import { auth, db }                     from './firebase'
 import { doc as fbDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { ACHIEVEMENTS }                 from './data/achievements'
 import { buildReviewItem, buildDailyItem, LEVELS, MODULES } from './data/lessons'
+import { speakFrench } from './utils/speech'
 import FrFlag            from './components/FrFlag'
 import LandingScreen     from './components/LandingScreen'
 import SkeletonScreen    from './components/SkeletonScreen'
@@ -133,8 +134,15 @@ export default function App() {
   const handleSelectCategory = (cat)   => { setActiveCategory(cat); setScreen('sublevel') }
   const handleSelectLevel    = (level) => { setActiveLevel(level); setScreen('level') }
 
+  // Pré-toca o 1º áudio de uma lição dentro do handler de clique (iOS autoplay policy)
+  function prePlayFirst(item) {
+    const q = item?.exercises?.[0]?.questions?.[0] ?? item?.questions?.[0]
+    if (q?.type === 'listening' && q?.speakFr) speakFrench(q.speakFr, undefined, undefined)
+  }
+
   const handleStartDaily = () => {
     const item = buildDailyItem(getToday())
+    prePlayFirst(item)
     setActiveModule({ id: 'daily', number: 0, title: 'Missão do Dia', icon: '🎯', color: '#CE82FF' })
     setActiveItem(item)
     setScreen('lesson')
@@ -150,12 +158,14 @@ export default function App() {
   }
 
   const handleStart = (mod, item) => {
+    prePlayFirst(item)
     setActiveModule(mod); setActiveItem(item); setScreen('lesson')
   }
 
   const handleStartReview = () => {
     const item = buildReviewItem(progress.wrongWords ?? [])
     if (!item) return
+    prePlayFirst(item)
     setActiveModule(REVIEW_MOD)
     setActiveItem(item)
     setScreen('lesson')

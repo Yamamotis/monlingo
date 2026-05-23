@@ -1,35 +1,46 @@
 import { useState, useEffect, useCallback } from 'react'
-import { speakFrench } from '../../utils/speech'
-
-// Tempo máximo esperando o áudio — após isso, libera as opções de qualquer forma
-const UNLOCK_TIMEOUT = 3500
+import { speakFrench, getCurrentPlayText } from '../../utils/speech'
 
 export default function ListeningExercise({ exercise, answered, onSelect }) {
   const { options, correct, speakFr } = exercise
-  const [played,   setPlayed]   = useState(false)
-  const [speaking, setSpeaking] = useState(false)
+
+  // Se o pai já pré-tocou este áudio (dentro do event handler de clique),
+  // começa com played/speaking=true — sem precisar de auto-play no useEffect
+  const prePlayed = getCurrentPlayText() === speakFr
+  const [played,   setPlayed]   = useState(prePlayed)
+  const [speaking, setSpeaking] = useState(prePlayed)
 
   const handlePlay = useCallback(() => {
     speakFrench(
       speakFr,
-      () => { setSpeaking(true); setPlayed(true) },  // onStart: som confirmado
-      () => { setSpeaking(false) },                   // onEnd
+      () => { setSpeaking(true); setPlayed(true) },
+      () => setSpeaking(false),
     )
   }, [speakFr])
 
   useEffect(() => {
-    setPlayed(false)
-    setSpeaking(false)
+    // Se o áudio não foi pré-tocado, reseta estado e aguarda o toque do usuário.
+    // Fallback de 3s libera as opções para não travar o exercício.
+    if (getCurrentPlayText() !== speakFr) {
+      setPlayed(false)
+      setSpeaking(false)
+      const unlock = setTimeout(() => setPlayed(true), 3000)
+      return () => clearTimeout(unlock)
+    }
+  }, [speakFr])
 
-    // Tenta auto-play; se o navegador bloquear, o botão fica pulsando
-    const autoPlay = setTimeout(handlePlay, 150)
-
-    // Fallback: depois de UNLOCK_TIMEOUT, libera as opções mesmo sem ouvir
-    // Evita o usuário ficar travado em browsers que bloqueiam tudo
-    const unlock   = setTimeout(() => setPlayed(true), UNLOCK_TIMEOUT)
-
-    return () => { clearTimeout(autoPlay); clearTimeout(unlock) }
-  }, [handlePlay])
+  // Detecta o fim do áudio pré-tocado (sem onEnd ligado) via polling leve.
+  // Limpa o estado "speaking" quando o áudio para.
+  useEffect(() => {
+    if (!speaking) return
+    const id = setInterval(() => {
+      if (getCurrentPlayText() !== speakFr) {
+        setSpeaking(false)
+        clearInterval(id)
+      }
+    }, 200)
+    return () => clearInterval(id)
+  }, [speaking, speakFr])
 
   const getClass = (i) => {
     if (!answered) return `option-btn ${!played ? 'opt-locked' : ''}`
