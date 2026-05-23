@@ -16,7 +16,7 @@ async function share(item, mod, xp) {
 }
 
 export default function CompletionScreen({ result, onContinue }) {
-  const { item, module: mod, xp } = result
+  const { item, module: mod, xp, alreadyDone } = result
   const isEval = item.type === 'evaluation'
   const [copied, setCopied] = useState(false)
 
@@ -49,10 +49,17 @@ export default function CompletionScreen({ result, onContinue }) {
           {isEval ? 'Avaliação Concluída!' : 'Aula Concluída!'}
         </h1>
 
-        <div className="xp-gained">
-          <span className="xp-star">⭐</span>
-          <span className="xp-amount">+{xp} XP</span>
-        </div>
+        {alreadyDone ? (
+          <div className="xp-gained xp-already-done">
+            <span className="xp-star">🔄</span>
+            <span className="xp-amount xp-zero">Revisão — XP já contabilizado</span>
+          </div>
+        ) : (
+          <div className="xp-gained">
+            <span className="xp-star">⭐</span>
+            <span className="xp-amount">+{xp} XP</span>
+          </div>
+        )}
 
         <div className="completion-stats">
           <div className="stat-box">

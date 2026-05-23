@@ -489,6 +489,7 @@ input { -webkit-tap-highlight-color: transparent; }
 
 /* ── Typing Exercise ── */
 .typing-ex { display: flex; flex-direction: column; gap: 16px; padding: 8px 0; }
+.typing-header-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
 .typing-prompt { font-size: 14px; font-weight: 700; color: var(--text-light); margin: 0; text-align: center; }
 .typing-pt { font-size: 22px; font-weight: 900; color: var(--text); text-align: center; padding: 12px 16px; background: var(--surface-hi); border-radius: 14px; }
 .typing-input-wrap { display: flex; align-items: center; gap: 8px; }
@@ -1379,6 +1380,11 @@ input { -webkit-tap-highlight-color: transparent; }
   background: var(--tint-gold); border: 2px solid var(--gold-dark);
   border-radius: 99px; padding: 12px 32px;
 }
+.xp-already-done {
+  background: var(--surface-hi); border-color: var(--border);
+  padding: 12px 20px;
+}
+.xp-zero { font-size: 15px !important; color: var(--text-light) !important; font-weight: 700; }
 .xp-star   { font-size: 26px; }
 .xp-amount { font-size: 26px; font-weight: 900; color: var(--gold); }
 .completion-stats { display: flex; gap: 14px; width: 100%; }

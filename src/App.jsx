@@ -140,7 +140,7 @@ export default function App() {
   // Pré-toca o 1º áudio de uma lição dentro do handler de clique (iOS autoplay policy)
   function prePlayFirst(item) {
     const q = item?.exercises?.[0]?.questions?.[0] ?? item?.questions?.[0]
-    if (q?.type === 'listening' && q?.speakFr) speakFrench(q.speakFr, undefined, undefined)
+    if (q?.speakFr) speakFrench(q.speakFr, undefined, undefined)
   }
 
   const handleStartDaily = () => {
@@ -188,6 +188,10 @@ export default function App() {
     const newCompleted    = [...new Set([...prev.completed, activeItem.id])]
     const prevAchievements = prev.achievements ?? []
 
+    // XP só conta na primeira conclusão — revisão não ganha XP duplicado
+    const alreadyDone = prev.completed.includes(activeItem.id)
+    const xpToAdd     = alreadyDone ? 0 : xpGained
+
     // Palavras erradas
     const prevWrong = new Set(prev.wrongWords ?? [])
     correct.forEach(w => prevWrong.delete(w))
@@ -195,12 +199,12 @@ export default function App() {
 
     // XP semanal
     const weekStart  = getWeekStart()
-    const weeklyXP   = (prev.weekStart === weekStart ? prev.weeklyXP ?? 0 : 0) + xpGained
+    const weeklyXP   = (prev.weekStart === weekStart ? prev.weeklyXP ?? 0 : 0) + xpToAdd
 
     const newProgress = {
       ...prev,
       completed:     newCompleted,
-      xp:            prev.xp + xpGained,
+      xp:            prev.xp + xpToAdd,
       streak,
       lastStudyDate: today,
       wrongWords:    [...prevWrong],
@@ -236,7 +240,8 @@ export default function App() {
       setScreen('level')
     } else {
       setLastResult({
-        xp: xpGained, item: activeItem, module: activeModule,
+        xp: xpToAdd, item: activeItem, module: activeModule,
+        alreadyDone,
         returnTo: activeItem.type === 'daily' ? 'levels' : 'level',
       })
       setScreen('completion')

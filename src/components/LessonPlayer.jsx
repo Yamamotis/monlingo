@@ -8,10 +8,10 @@ import BlankExercise     from './exercises/BlankExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 import { speakFrench } from '../utils/speech'
 
-// Pré-toca o áudio de uma questão de escuta dentro do event handler de clique,
-// para satisfazer a autoplay policy do iOS Safari.
-function prePlayListening(q) {
-  if (q?.type === 'listening' && q?.speakFr) {
+// Pré-toca o áudio de qualquer questão com speakFr dentro do event handler de clique,
+// satisfazendo a autoplay policy do iOS Safari para listening, MC e typing.
+function prePlayAudio(q) {
+  if (q?.speakFr) {
     speakFrench(q.speakFr, undefined, undefined)
   }
 }
@@ -70,12 +70,12 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
         onComplete(item.xpReward, { wrong: [...sessionWrong], correct: [...sessionCorrect] })
       } else {
         // Pré-toca o 1º áudio do próximo exercício enquanto ainda estamos no handler de clique
-        prePlayListening(exercises[nextExIdx]?.questions?.[0])
+        prePlayAudio(exercises[nextExIdx]?.questions?.[0])
         setPhase('ex-done')
       }
     } else {
       // Pré-toca o áudio da próxima questão enquanto ainda estamos no handler de clique
-      prePlayListening(currentEx.questions[nextQIdx])
+      prePlayAudio(currentEx.questions[nextQIdx])
       setQIdx(nextQIdx)
       setAnswerPhase('idle')
       setIsCorrect(null)
@@ -85,7 +85,7 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
   const startNextExercise = () => {
     const nextExIdx = exIdx + 1
     // Pré-toca o 1º áudio do próximo exercício dentro do handler de clique
-    prePlayListening(exercises[nextExIdx]?.questions?.[0])
+    prePlayAudio(exercises[nextExIdx]?.questions?.[0])
     setExIdx(e => e + 1); setQIdx(0)
     setLives(3); setAnswerPhase('idle'); setIsCorrect(null)
     setPhase('exercise')

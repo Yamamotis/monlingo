@@ -65,7 +65,10 @@ export default function TypingExercise({ exercise, answered, onSelect }) {
 
   return (
     <div className="typing-ex">
-      <p className="typing-prompt">Como se escreve em francês?</p>
+      <div className="typing-header-row">
+        <p className="typing-prompt">Como se escreve em francês?</p>
+        {exercise.speakFr && <SpeakButton text={exercise.speakFr} size="sm" />}
+      </div>
       <div className="typing-pt">{exercise.pt}</div>
 
       <div className={`typing-input-wrap ${wrapClass}`}>
@@ -81,9 +84,6 @@ export default function TypingExercise({ exercise, answered, onSelect }) {
           autoCorrect="off"
           spellCheck={false}
         />
-        {answered && exercise.speakFr && (
-          <SpeakButton text={exercise.speakFr} size="sm" />
-        )}
       </div>
 
       {answered && attempt === 'almost' && (
