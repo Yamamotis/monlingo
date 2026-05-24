@@ -38,6 +38,8 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
 
   const [sessionWrong,   setSessionWrong]   = useState(new Set())
   const [sessionCorrect, setSessionCorrect] = useState(new Set())
+  const [heartAnim,      setHeartAnim]      = useState(null) // 1-3: heart breaking index
+  const sessionStatsRef = useRef({ total: 0, right: 0 }) // accuracy tracker (ref = sem re-render)
 
   const currentEx = exercises[exIdx]
   const currentQ  = currentEx?.questions[qIdx]
@@ -46,6 +48,11 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
   const handleAnswer = (correct) => {
     const speakFr = currentQ?.speakFr
     setIsCorrect(correct)
+    // Acumula estatísticas de precisão (só conta uma vez por questão)
+    sessionStatsRef.current = {
+      total: sessionStatsRef.current.total + 1,
+      right: sessionStatsRef.current.right + (correct ? 1 : 0),
+    }
     if (correct) {
       playCorrect()
       if (speakFr) setSessionCorrect(prev => { const s = new Set(prev); s.add(speakFr); return s })
@@ -55,6 +62,9 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
       if (speakFr) setSessionWrong(prev => new Set([...prev, speakFr]))
       onLoseHeart?.()
       const next = lives - 1
+      // Animate the heart that just broke (lives is still old value here)
+      setHeartAnim(lives)
+      setTimeout(() => setHeartAnim(null), 750)
       setLives(next)
       // Premium: só falha por vidas do exercício (não por vidas globais)
       const globalOut = !isPremium && hearts - 1 <= 0
@@ -68,7 +78,9 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
     if (nextQIdx >= totalQ) {
       const nextExIdx = exIdx + 1
       if (nextExIdx >= exercises.length) {
-        onComplete(item.xpReward, { wrong: [...sessionWrong], correct: [...sessionCorrect] })
+        const { total, right } = sessionStatsRef.current
+        const accuracy = total > 0 ? Math.round((right / total) * 100) : 100
+        onComplete(item.xpReward, { wrong: [...sessionWrong], correct: [...sessionCorrect], accuracy })
       } else {
         // Pré-toca o 1º áudio do próximo exercício enquanto ainda estamos no handler de clique
         prePlayAudio(exercises[nextExIdx]?.questions?.[0])
@@ -94,6 +106,7 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
 
   const handleRetry = () => {
     setQIdx(0); setLives(3); setAnswerPhase('idle'); setIsCorrect(null)
+    sessionStatsRef.current = { total: 0, right: 0 } // reseta precisão ao tentar novamente
     setPhase('exercise')
   }
 
@@ -178,12 +191,15 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
       <header className="player-header">
         <button className="btn-close" onClick={onExit}>✕</button>
         <div className="progress-track">
-          <div className="progress-fill" style={{ width: `${(qIdx / totalQ) * 100}%`, background: barColor }} />
+          <div className="progress-fill" style={{ width: `${(qIdx / totalQ) * 100}%`, background: barColor, boxShadow: `0 0 10px ${barColor}bb` }} />
         </div>
         <div className="hearts">
           {[1, 2, 3].map(n => (
-            <span key={n} className={n <= lives ? 'heart full' : 'heart empty'}>
-              {n <= lives ? '❤️' : '🖤'}
+            <span
+              key={n}
+              className={`heart ${n <= lives ? 'full' : 'empty'} ${heartAnim === n ? 'heart-breaking' : ''}`}
+            >
+              {n <= lives ? '❤️' : heartAnim === n ? '💔' : '🖤'}
             </span>
           ))}
         </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import SpeakButton from '../SpeakButton'
+import AccentKeyboard from '../AccentKeyboard'
 
 // Palavras que não devem ser usadas como blank (artigos, preposições comuns)
 const STOP = new Set([
@@ -85,6 +86,14 @@ export default function BlankExercise({ exercise, answered, onSelect }) {
           <SpeakButton text={speakFr} size="sm" />
         </div>
       )}
+
+      {/* Teclado de acentos */}
+      <AccentKeyboard
+        inputRef={inputRef}
+        value={value}
+        onChange={setValue}
+        disabled={!!attempt || answered}
+      />
 
       {attempt === 'wrong' && (
         <p className="blank-correction">

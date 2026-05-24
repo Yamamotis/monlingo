@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import confetti from 'canvas-confetti'
 
 async function share(item, mod, xp) {
@@ -15,25 +15,61 @@ async function share(item, mod, xp) {
   } catch { /* cancelled */ }
 }
 
-export default function CompletionScreen({ result, onContinue }) {
-  const { item, module: mod, xp, alreadyDone } = result
-  const isEval = item.type === 'evaluation'
-  const [copied, setCopied] = useState(false)
+// Cubic ease-out para o contador
+function easeOut(t) { return 1 - Math.pow(1 - t, 3) }
 
+export default function CompletionScreen({ result, onContinue }) {
+  const { item, module: mod, xp, alreadyDone, accuracy = 100 } = result
+
+  // Cor e label da precisão
+  const accColor  = accuracy >= 90 ? '#58CC02' : accuracy >= 70 ? '#1CB0F6' : accuracy >= 50 ? '#FFC800' : '#FF4B4B'
+  const accEmoji  = accuracy >= 90 ? '🌟' : accuracy >= 70 ? '👍' : accuracy >= 50 ? '😅' : '💪'
+  const isEval = item.type === 'evaluation'
+  const [copied,    setCopied]    = useState(false)
+  const [displayXP, setDisplayXP] = useState(0)
+  const animRef = useRef(null)
+
+  // ── Confetti ────────────────────────────────────────
   useEffect(() => {
+    const colors = ['#58CC02', '#1CB0F6', '#FFC800', '#FF4B4B', '#CE82FF', '#ffffff']
+
     confetti({
-      particleCount: isEval ? 160 : 100,
-      spread: isEval ? 90 : 70,
-      origin: { y: 0.55 },
-      colors: ['#58CC02', '#1CB0F6', '#FFC800', '#FF4B4B', '#CE82FF', '#ffffff'],
-      gravity: 0.9,
+      particleCount: isEval ? 130 : 90,
+      spread: isEval ? 85 : 65,
+      origin: { y: 0.58 },
+      colors,
+      gravity: 0.85,
       scalar: 1.1,
     })
+
+    if (isEval) {
+      // Rajadas laterais extras para avaliação
+      setTimeout(() => {
+        confetti({ particleCount: 55, angle: 60,  spread: 55, origin: { x: 0,   y: 0.65 }, colors: ['#FFD700','#FFA500','#58CC02'] })
+        confetti({ particleCount: 55, angle: 120, spread: 55, origin: { x: 1,   y: 0.65 }, colors: ['#FFD700','#FFA500','#58CC02'] })
+      }, 380)
+    }
   }, [])
 
+  // ── XP animado ──────────────────────────────────────
+  useEffect(() => {
+    if (!xp || alreadyDone) return
+    const DURATION = 1300
+    const start    = performance.now()
+
+    const tick = (now) => {
+      const elapsed  = now - start
+      const progress = Math.min(elapsed / DURATION, 1)
+      setDisplayXP(Math.round(xp * easeOut(progress)))
+      if (progress < 1) animRef.current = requestAnimationFrame(tick)
+    }
+    animRef.current = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(animRef.current)
+  }, [xp, alreadyDone])
+
   const handleShare = async () => {
-    const result = await share(item, mod, xp)
-    if (result === 'copied') { setCopied(true); setTimeout(() => setCopied(false), 2000) }
+    const res = await share(item, mod, xp)
+    if (res === 'copied') { setCopied(true); setTimeout(() => setCopied(false), 2000) }
   }
 
   return (
@@ -55,9 +91,9 @@ export default function CompletionScreen({ result, onContinue }) {
             <span className="xp-amount xp-zero">Revisão — XP já contabilizado</span>
           </div>
         ) : (
-          <div className="xp-gained">
+          <div className="xp-gained xp-animated">
             <span className="xp-star">⭐</span>
-            <span className="xp-amount">+{xp} XP</span>
+            <span className="xp-amount">+{displayXP} XP</span>
           </div>
         )}
 
@@ -69,6 +105,12 @@ export default function CompletionScreen({ result, onContinue }) {
           <div className="stat-box">
             <span className="stat-label">XP ganho</span>
             <span className="stat-value">{xp}</span>
+          </div>
+          <div className="stat-box stat-accuracy">
+            <span className="stat-label">Precisão</span>
+            <span className="stat-value stat-acc-value" style={{ color: accColor }}>
+              {accEmoji} {accuracy}%
+            </span>
           </div>
         </div>
 

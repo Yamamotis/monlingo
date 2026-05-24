@@ -25,6 +25,15 @@ function ConjugationTable({ table }) {
 
 export default function VocabPage({ mod, item, onContinue, onExit }) {
   const exerciseCount = mod.exercises?.length ?? 4
+  const [flipped, setFlipped] = useState(new Set())
+
+  const toggleFlip = (i) => {
+    setFlipped(prev => {
+      const next = new Set(prev)
+      if (next.has(i)) next.delete(i); else next.add(i)
+      return next
+    })
+  }
 
   return (
     <div className="vocab-page">
@@ -40,23 +49,37 @@ export default function VocabPage({ mod, item, onContinue, onExit }) {
         <div className="vocab-intro">
           <h2 className="vocab-title">📚 Vocabulário</h2>
           <p className="vocab-subtitle">
-            Leia com atenção antes de começar os exercícios
+            Toque nos cartões para ver a tradução
           </p>
         </div>
 
-        <div className="vocab-table">
+        {/* Flip card grid */}
+        <div className="vocab-flip-grid">
           {item.vocabulary.map((v, i) => (
-            <div key={i} className="vocab-row">
-              <div className="vocab-left">
-                <span className="vocab-num">{i + 1}</span>
-                <span className="vocab-fr">{v.fr}</span>
-                <SpeakButton text={v.fr} size="sm" />
-              </div>
-              <span className="vocab-arrow">→</span>
-              <div className="vocab-right">
-                <span className="vocab-pt">{v.pt}</span>
-                {v.sentence && <span className="vocab-sentence">"{v.sentence}"</span>}
-                {v.note && <span className="vocab-note">💡 {v.note}</span>}
+            <div
+              key={i}
+              className={`vocab-flip-card ${flipped.has(i) ? 'flipped' : ''}`}
+              onClick={() => toggleFlip(i)}
+            >
+              <div className="vocab-flip-inner">
+                {/* Front — FR */}
+                <div className="vocab-flip-front">
+                  <span className="vf-num">{i + 1}</span>
+                  <span className="vf-fr">{v.fr}</span>
+                  <div
+                    className="vf-speak"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <SpeakButton text={v.fr} size="sm" />
+                  </div>
+                  <span className="vf-tap-hint">toque ↩</span>
+                </div>
+                {/* Back — PT */}
+                <div className="vocab-flip-back">
+                  <span className="vf-pt">{v.pt}</span>
+                  {v.sentence && <span className="vf-sentence">«{v.sentence}»</span>}
+                  {v.note && <span className="vf-note">💡 {v.note}</span>}
+                </div>
               </div>
             </div>
           ))}

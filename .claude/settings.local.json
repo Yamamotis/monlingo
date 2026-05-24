@@ -12,7 +12,9 @@
       "Read(//c/Users/Mathe/Downloads/**)",
       "Bash(git push *)",
       "Bash(npx web-push *)",
-      "PowerShell(\\(Get-Content \"c:\\\\Users\\\\Mathe\\\\OneDrive\\\\Área de Trabalho\\\\monlingo\\\\src\\\\App.css\" | Measure-Object -Line\\).Lines)"
+      "PowerShell(\\(Get-Content \"c:\\\\Users\\\\Mathe\\\\OneDrive\\\\Área de Trabalho\\\\monlingo\\\\src\\\\App.css\" | Measure-Object -Line\\).Lines)",
+      "Bash(powershell -Command \"\\(Get-Content src\\\\App.css | Measure-Object -Line\\).Lines\")",
+      "Bash(powershell -Command \"\\(Get-Content src\\\\App.css\\)[-5..-1]\")"
     ]
   }
 }

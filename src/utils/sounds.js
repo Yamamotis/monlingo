@@ -30,6 +30,7 @@ export function playCorrect() {
 // Descending tone — Eb4 → G3
 export function playWrong() {
   try {
+    navigator.vibrate?.(80)   // haptic feedback em dispositivos móveis
     const ac  = ctx()
     const osc  = ac.createOscillator()
     const gain = ac.createGain()

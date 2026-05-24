@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { MODULES } from '../data/lessons'
 
 const EX_ICONS = ['✏️', '🔄', '🎧', '✍️', '🔤']
@@ -12,7 +12,33 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
     const evalDone = completed.includes(mod.evaluation.id)
     return !evalDone
   })
-  const [expanded, setExpanded] = useState(() => new Set(firstOpen ? [firstOpen.id] : []))
+  const [expanded,       setExpanded]       = useState(() => new Set(firstOpen ? [firstOpen.id] : []))
+  const [newlyUnlocked,  setNewlyUnlocked]  = useState(new Set())
+  const prevCompletedRef = useRef(null)
+
+  // Detecta módulos recém-desbloqueados ao voltar para o mapa
+  useEffect(() => {
+    if (prevCompletedRef.current === null) {
+      prevCompletedRef.current = completed
+      return
+    }
+    const prev = prevCompletedRef.current
+    if (prev.length === completed.length) { prevCompletedRef.current = completed; return }
+
+    const justUnlocked = levelModules.filter((mod, idx) => {
+      if (idx === 0) return false
+      const dep    = levelModules[idx - 1].evaluation.id
+      const wasLocked = !prev.includes(dep)
+      const nowOpen   = completed.includes(dep)
+      return wasLocked && nowOpen
+    })
+    if (justUnlocked.length) {
+      const ids = new Set(justUnlocked.map(m => m.id))
+      setNewlyUnlocked(ids)
+      setTimeout(() => setNewlyUnlocked(new Set()), 2200)
+    }
+    prevCompletedRef.current = completed
+  }, [completed])
 
   const toggleMod = (id) =>
     setExpanded(prev => {
@@ -80,7 +106,7 @@ export default function MapScreen({ level, progress, onStart, onBack }) {
           }
 
           return (
-            <div key={mod.id} className={`module-card mod-open ${modDone ? 'mod-done' : ''} ${isOpen ? 'mod-expanded' : ''}`}>
+            <div key={mod.id} className={`module-card mod-open ${modDone ? 'mod-done' : ''} ${isOpen ? 'mod-expanded' : ''} ${newlyUnlocked.has(mod.id) ? 'mod-newly-unlocked' : ''}`}>
 
               {/* ── Cabeçalho clicável ── */}
               <button className="module-toggle" onClick={() => toggleMod(mod.id)}>

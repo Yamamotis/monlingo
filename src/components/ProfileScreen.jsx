@@ -2,8 +2,65 @@ import { useState } from 'react'
 import { MODULES } from '../data/lessons'
 import { ACHIEVEMENTS, ACHIEVEMENT_CATEGORIES } from '../data/achievements'
 
+// ── Gráfico de atividade semanal ─────────────────────────────────────────────
+function WeeklyChart({ dailyXP = {} }) {
+  const days = []
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date()
+    d.setDate(d.getDate() - i)
+    const key   = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+    const label = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'][d.getDay()]
+    days.push({ key, label, xp: dailyXP[key] ?? 0, isToday: i === 0 })
+  }
+
+  const maxXP   = Math.max(...days.map(d => d.xp), 1)
+  const totalWk = days.reduce((s, d) => s + d.xp, 0)
+  const activeDays = days.filter(d => d.xp > 0).length
+
+  return (
+    <div className="weekly-chart">
+      <div className="weekly-chart-header">
+        <span className="weekly-chart-title">Atividade — 7 dias</span>
+        <span className="weekly-chart-total">⭐ {totalWk} XP esta semana</span>
+      </div>
+
+      <div className="weekly-bars">
+        {days.map((day, idx) => {
+          const pct = (day.xp / maxXP) * 100
+          return (
+            <div key={day.key} className="weekly-bar-col">
+              {day.xp > 0 && (
+                <span className="weekly-bar-xp">{day.xp}</span>
+              )}
+              <div className="weekly-bar-track">
+                <div
+                  className={`weekly-bar-fill ${day.isToday ? 'bar-today' : ''} ${day.xp > 0 ? 'bar-active' : ''}`}
+                  style={{
+                    height: `${pct}%`,
+                    animationDelay: `${idx * 60}ms`,
+                  }}
+                />
+              </div>
+              <span className={`weekly-bar-label ${day.isToday ? 'label-today' : ''}`}>
+                {day.label}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+
+      <p className="weekly-chart-sub">
+        {activeDays === 0
+          ? 'Complete uma lição para aparecer aqui!'
+          : `${activeDays} dia${activeDays !== 1 ? 's' : ''} ativo${activeDays !== 1 ? 's' : ''} nesta semana`}
+      </p>
+    </div>
+  )
+}
+
+// ── Tela de Perfil ────────────────────────────────────────────────────────────
 export default function ProfileScreen({ progress, user, isAdmin, onBack, onLogout, onOpenRedeem, onOpenAdmin }) {
-  const { completed = [], xp = 0, streak = 0, achievements: earned = [], isPremium = false } = progress
+  const { completed = [], xp = 0, streak = 0, achievements: earned = [], isPremium = false, dailyXP = {} } = progress
   const [achFilter, setAchFilter] = useState('all')
 
   const vocabDone  = completed.filter(id => id.endsWith('-vocab')).length
@@ -51,6 +108,9 @@ export default function ProfileScreen({ progress, user, isAdmin, onBack, onLogou
           </div>
         </div>
 
+        {/* ── Gráfico de atividade ── */}
+        <WeeklyChart dailyXP={dailyXP} />
+
         <div className="profile-overall">
           <div className="overall-top">
             <span className="overall-label">Progresso geral</span>
@@ -96,7 +156,6 @@ export default function ProfileScreen({ progress, user, isAdmin, onBack, onLogou
                 const cat = ACHIEVEMENT_CATEGORIES.find(c => c.key === achFilter)
                 return cat ? cat.ids.includes(a.id) : true
               })
-              // Ordenar: desbloqueadas primeiro
               .sort((a, b) => {
                 const da = earned.includes(a.id) ? 1 : 0
                 const db = earned.includes(b.id) ? 1 : 0

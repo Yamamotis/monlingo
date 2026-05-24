@@ -1,12 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
+import AccentKeyboard from '../AccentKeyboard'
 
 function normalize(text) {
   return text.trim().toLowerCase()
-    // Ligaduras latinas comuns no francês: œ→oe, æ→ae
-    // Isso faz "soeur" = "sœur", "coeur" = "cœur", etc.
-    .replace(/œ/g, 'oe')
-    .replace(/æ/g, 'ae')
-    // Remove diacríticos (acentos, cedilha, trema…): é→e, ç→c, â→a etc.
+    .replace(/œ/g, 'oe').replace(/æ/g, 'ae')
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/[''']/g, '')
     .replace(/\s+/g, ' ')
@@ -21,11 +18,9 @@ function levenshtein(a, b) {
   return dp[m][n]
 }
 
-// Tolerância proporcional ao comprimento da palavra normalizada
 function isAlmostCorrect(input, correct) {
   const a = normalize(input), b = normalize(correct)
   if (a === b) return false
-  // ≤4 letras: 1 erro  |  5-8 letras: 2 erros  |  9+ letras: 3 erros
   const tolerance = b.length <= 4 ? 1 : b.length <= 8 ? 2 : 3
   return levenshtein(a, b) <= tolerance
 }
@@ -38,17 +33,30 @@ const ENCOURAGE = [
 ]
 
 export default function TypingExercise({ exercise, answered, onSelect }) {
-  const [value,   setValue]   = useState('')
-  const [attempt, setAttempt] = useState(null) // 'correct' | 'almost' | 'wrong'
-  const inputRef = useRef(null)
+  const [value,      setValue]      = useState('')
+  const [attempt,    setAttempt]    = useState(null)  // 'correct' | 'almost' | 'wrong'
+  const [wrongCount, setWrongCount] = useState(0)
+  const [shaking,    setShaking]    = useState(false)
+  const inputRef     = useRef(null)
   const encourageRef = useRef(Math.floor(Math.random() * ENCOURAGE.length))
 
   useEffect(() => {
-    if (!answered) { setValue(''); setAttempt(null); inputRef.current?.focus() }
+    if (!answered) {
+      setValue('')
+      setAttempt(null)
+      setWrongCount(0)
+      setShaking(false)
+      inputRef.current?.focus()
+    }
   }, [answered])
 
+  const triggerShake = () => {
+    setShaking(true)
+    setTimeout(() => setShaking(false), 420)
+  }
+
   const check = () => {
-    if (!value.trim() || answered) return
+    if (!value.trim() || answered || attempt) return
     const norm    = normalize(value)
     const correct = normalize(exercise.correct)
 
@@ -57,16 +65,32 @@ export default function TypingExercise({ exercise, answered, onSelect }) {
       onSelect(true)
     } else if (isAlmostCorrect(value, exercise.correct)) {
       setAttempt('almost')
-      onSelect(true) // conta como certo mas mostra correção
+      onSelect(true)
     } else {
-      setAttempt('wrong')
-      onSelect(false)
+      const newCount = wrongCount + 1
+      setWrongCount(newCount)
+      triggerShake()
+
+      if (newCount >= 3) {
+        // 3ª tentativa errada → falha definitiva
+        setAttempt('wrong')
+        onSelect(false)
+      } else {
+        // 1ª ou 2ª tentativa → limpa o campo e permite nova tentativa
+        setTimeout(() => setValue(''), 320)
+      }
     }
   }
 
-  const wrapClass = answered
-    ? attempt === 'wrong' ? 'typing-err' : 'typing-ok'
-    : ''
+  // Dica: mostrada após a 2ª tentativa errada
+  const showHint = wrongCount >= 2 && !attempt && !answered
+
+  const wrapClass = [
+    answered
+      ? (attempt === 'wrong' ? 'typing-err' : 'typing-ok')
+      : '',
+    shaking ? 'typing-shake-anim' : '',
+  ].filter(Boolean).join(' ')
 
   return (
     <div className="typing-ex">
@@ -80,13 +104,34 @@ export default function TypingExercise({ exercise, answered, onSelect }) {
           value={value}
           onChange={e => setValue(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && check()}
-          disabled={answered}
+          disabled={answered || attempt === 'wrong'}
           placeholder="Digite em francês…"
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
         />
       </div>
+
+      {/* Mensagem suave após 1ª tentativa errada */}
+      {wrongCount === 1 && !attempt && !answered && (
+        <p className="typing-retry-msg">Não foi dessa vez! Tente novamente 💪</p>
+      )}
+
+      {/* Dica com a primeira letra após 2ª tentativa errada */}
+      {showHint && (
+        <div className="typing-hint">
+          💡 Começa com <strong>{exercise.correct[0].toUpperCase()}</strong>
+          {' '}· {exercise.correct.length} {exercise.correct.length === 1 ? 'letra' : 'letras'}
+        </div>
+      )}
+
+      {/* Teclado de acentos — visível apenas antes de responder */}
+      <AccentKeyboard
+        inputRef={inputRef}
+        value={value}
+        onChange={setValue}
+        disabled={answered || !!attempt}
+      />
 
       {answered && attempt === 'almost' && (
         <div className="typing-almost-note">
@@ -101,13 +146,13 @@ export default function TypingExercise({ exercise, answered, onSelect }) {
         </div>
       )}
 
-      {!answered && (
+      {!answered && !attempt && (
         <button
           className="btn-typing-check"
           onClick={check}
           disabled={!value.trim()}
         >
-          Verificar ✓
+          {wrongCount > 0 ? 'Tentar novamente →' : 'Verificar ✓'}
         </button>
       )}
     </div>

@@ -62,6 +62,7 @@ const EMPTY = {
   completed: [], xp: 0, streak: 0, lastStudyDate: null,
   achievements: [], wrongWords: [], weeklyXP: 0, weekStart: '',
   isPremium: false, hearts: MAX_HEARTS, heartsDate: '',
+  dailyXP: {},  // { 'YYYY-MM-DD': xpEarned }
 }
 const REVIEW_MOD = { id: 'review', number: 0, title: 'Revisão', icon: '🔄', color: '#1CB0F6' }
 
@@ -176,8 +177,8 @@ export default function App() {
     setScreen('lesson')
   }
 
-  const handleComplete = (xpGained, wordStats = { wrong: [], correct: [] }) => {
-    const { wrong = [], correct = [] } = wordStats
+  const handleComplete = (xpGained, wordStats = { wrong: [], correct: [], accuracy: 100 }) => {
+    const { wrong = [], correct = [], accuracy = 100 } = wordStats
     const today     = getToday()
     const yesterday = getYesterday()
 
@@ -203,6 +204,14 @@ export default function App() {
     const weekStart  = getWeekStart()
     const weeklyXP   = (prev.weekStart === weekStart ? prev.weeklyXP ?? 0 : 0) + xpToAdd
 
+    // XP diário (para o gráfico de atividade — guarda últimos 30 dias)
+    const prevDailyXP = { ...(prev.dailyXP ?? {}) }
+    if (xpToAdd > 0) prevDailyXP[today] = (prevDailyXP[today] ?? 0) + xpToAdd
+    // Prune entradas com mais de 30 dias
+    const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30)
+    const cutoffStr = cutoff.toISOString().slice(0, 10)
+    Object.keys(prevDailyXP).forEach(k => { if (k < cutoffStr) delete prevDailyXP[k] })
+
     const newProgress = {
       ...prev,
       completed:     newCompleted,
@@ -212,6 +221,7 @@ export default function App() {
       wrongWords:    [...prevWrong],
       weeklyXP,
       weekStart,
+      dailyXP:       prevDailyXP,
     }
 
     // Find newly unlocked achievements
@@ -244,6 +254,7 @@ export default function App() {
       setLastResult({
         xp: xpToAdd, item: activeItem, module: activeModule,
         alreadyDone,
+        accuracy,
         returnTo: activeItem.type === 'daily' ? 'levels' : 'level',
       })
       setScreen('completion')
