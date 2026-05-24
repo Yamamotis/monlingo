@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react'
-import VocabPage         from './VocabPage'
-import MultipleChoice    from './exercises/MultipleChoice'
-import ListeningExercise from './exercises/ListeningExercise'
-import TypingExercise    from './exercises/TypingExercise'
-import OrderingExercise  from './exercises/OrderingExercise'
-import BlankExercise     from './exercises/BlankExercise'
+import VocabPage          from './VocabPage'
+import MultipleChoice     from './exercises/MultipleChoice'
+import ListeningExercise  from './exercises/ListeningExercise'
+import TypingExercise     from './exercises/TypingExercise'
+import OrderingExercise   from './exercises/OrderingExercise'
+import BlankExercise      from './exercises/BlankExercise'
+import MatchingExercise   from './exercises/MatchingExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 import { speakFrench } from '../utils/speech'
 
@@ -31,24 +32,28 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
 
   const [phase, setPhase]             = useState(isVocab ? 'vocab' : 'exercise')
   const [exIdx, setExIdx]             = useState(0)
-  const [qIdx, setQIdx]               = useState(0)
   const [lives, setLives]             = useState(3)
   const [answerPhase, setAnswerPhase] = useState('idle')
   const [isCorrect, setIsCorrect]     = useState(null)
 
+  // ── Fila dinâmica de questões ────────────────────────────────────────────────
+  // Questões erradas voltam para o fim da fila; a barra só avança ao acertar.
+  const [queue,       setQueue]       = useState(() => [...(exercises[0]?.questions ?? [])])
+  const [doneCount,   setDoneCount]   = useState(0)
+  const [questionKey, setQuestionKey] = useState(0) // incrementado a cada Continue (força remount)
+
   const [sessionWrong,   setSessionWrong]   = useState(new Set())
   const [sessionCorrect, setSessionCorrect] = useState(new Set())
-  const [heartAnim,      setHeartAnim]      = useState(null) // 1-3: heart breaking index
-  const sessionStatsRef = useRef({ total: 0, right: 0 }) // accuracy tracker (ref = sem re-render)
+  const [heartAnim,      setHeartAnim]      = useState(null)
+  const sessionStatsRef = useRef({ total: 0, right: 0 })
 
   const currentEx = exercises[exIdx]
-  const currentQ  = currentEx?.questions[qIdx]
-  const totalQ    = currentEx?.questions.length ?? 0
+  const currentQ  = queue[0]                          // sempre a 1ª da fila
+  const totalQ    = currentEx?.questions.length ?? 0  // total original (imutável)
 
   const handleAnswer = (correct) => {
     const speakFr = currentQ?.speakFr
     setIsCorrect(correct)
-    // Acumula estatísticas de precisão (só conta uma vez por questão)
     sessionStatsRef.current = {
       total: sessionStatsRef.current.total + 1,
       right: sessionStatsRef.current.right + (correct ? 1 : 0),
@@ -56,57 +61,68 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
     if (correct) {
       playCorrect()
       if (speakFr) setSessionCorrect(prev => { const s = new Set(prev); s.add(speakFr); return s })
-      setAnswerPhase('feedback')
     } else {
       playWrong()
       if (speakFr) setSessionWrong(prev => new Set([...prev, speakFr]))
       onLoseHeart?.()
       const next = lives - 1
-      // Animate the heart that just broke (lives is still old value here)
       setHeartAnim(lives)
       setTimeout(() => setHeartAnim(null), 750)
       setLives(next)
-      // Premium: só falha por vidas do exercício (não por vidas globais)
       const globalOut = !isPremium && hearts - 1 <= 0
-      if (next <= 0 || globalOut) setPhase('failed')
-      else setAnswerPhase('feedback')
+      if (next <= 0 || globalOut) { setPhase('failed'); return }
     }
+    setAnswerPhase('feedback')
   }
 
   const handleContinue = () => {
-    const nextQIdx = qIdx + 1
-    if (nextQIdx >= totalQ) {
+    // Próxima fila: correto → remove da frente; errado → move para o fim
+    const nextQueue = isCorrect
+      ? queue.slice(1)
+      : [...queue.slice(1), queue[0]]
+
+    const nextDone = isCorrect ? doneCount + 1 : doneCount
+
+    // Exercício concluído (fila zerou com acerto)
+    if (nextQueue.length === 0) {
       const nextExIdx = exIdx + 1
       if (nextExIdx >= exercises.length) {
+        // Todos os exercícios finalizados
         const { total, right } = sessionStatsRef.current
         const accuracy = total > 0 ? Math.round((right / total) * 100) : 100
         onComplete(item.xpReward, { wrong: [...sessionWrong], correct: [...sessionCorrect], accuracy })
-      } else {
-        // Pré-toca o 1º áudio do próximo exercício enquanto ainda estamos no handler de clique
-        prePlayAudio(exercises[nextExIdx]?.questions?.[0])
-        setPhase('ex-done')
+        return
       }
-    } else {
-      // Pré-toca o áudio da próxima questão enquanto ainda estamos no handler de clique
-      prePlayAudio(currentEx.questions[nextQIdx])
-      setQIdx(nextQIdx)
-      setAnswerPhase('idle')
-      setIsCorrect(null)
+      // Passa para o próximo exercício
+      prePlayAudio(exercises[nextExIdx]?.questions?.[0])
+      setDoneCount(nextDone); setQueue(nextQueue)
+      setQuestionKey(k => k + 1); setAnswerPhase('idle'); setIsCorrect(null)
+      setPhase('ex-done')
+      return
     }
+
+    // Próxima questão na fila
+    prePlayAudio(nextQueue[0])
+    setDoneCount(nextDone); setQueue(nextQueue)
+    setQuestionKey(k => k + 1); setAnswerPhase('idle'); setIsCorrect(null)
   }
 
   const startNextExercise = () => {
     const nextExIdx = exIdx + 1
-    // Pré-toca o 1º áudio do próximo exercício dentro do handler de clique
-    prePlayAudio(exercises[nextExIdx]?.questions?.[0])
-    setExIdx(e => e + 1); setQIdx(0)
+    const nextEx    = exercises[nextExIdx]
+    prePlayAudio(nextEx?.questions?.[0])
+    setExIdx(nextExIdx)
+    setQueue([...nextEx.questions])
+    setDoneCount(0); setQuestionKey(0)
     setLives(3); setAnswerPhase('idle'); setIsCorrect(null)
     setPhase('exercise')
   }
 
   const handleRetry = () => {
-    setQIdx(0); setLives(3); setAnswerPhase('idle'); setIsCorrect(null)
-    sessionStatsRef.current = { total: 0, right: 0 } // reseta precisão ao tentar novamente
+    setQueue([...exercises[exIdx].questions])
+    setDoneCount(0); setQuestionKey(0)
+    setLives(3); setAnswerPhase('idle'); setIsCorrect(null)
+    sessionStatsRef.current = { total: 0, right: 0 }
     setPhase('exercise')
   }
 
@@ -205,7 +221,7 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
       <header className="player-header">
         <button className="btn-close" onClick={onExit}>✕</button>
         <div className="progress-track">
-          <div className="progress-fill" style={{ width: `${(qIdx / totalQ) * 100}%`, background: barColor, boxShadow: `0 0 10px ${barColor}bb` }} />
+          <div className="progress-fill" style={{ width: `${(doneCount / totalQ) * 100}%`, background: barColor, boxShadow: `0 0 10px ${barColor}bb` }} />
         </div>
         <div className="hearts">
           {[1, 2, 3].map(n => (
@@ -232,34 +248,41 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
           </div>
           <div className="q-counter-wrap">
             <span className="q-subtitle">{currentEx.subtitle}</span>
-            <span className="q-counter">{qIdx + 1} / {totalQ}</span>
+            <span className="q-counter">{doneCount} / {totalQ}</span>
           </div>
         </div>
 
         {currentQ?.type === 'listening' ? (
           <ListeningExercise
-            key={`${exIdx}-${qIdx}`}
+            key={`${exIdx}-${questionKey}`}
             exercise={currentQ}
             answered={answerPhase === 'feedback'}
             onSelect={handleAnswer}
           />
         ) : currentQ?.type === 'typing' ? (
           <TypingExercise
-            key={`${exIdx}-${qIdx}`}
+            key={`${exIdx}-${questionKey}`}
             exercise={currentQ}
             answered={answerPhase === 'feedback'}
             onSelect={handleAnswer}
           />
         ) : currentQ?.type === 'ordering' ? (
           <OrderingExercise
-            key={`${exIdx}-${qIdx}`}
+            key={`${exIdx}-${questionKey}`}
             exercise={currentQ}
             answered={answerPhase === 'feedback'}
             onSelect={handleAnswer}
           />
         ) : currentQ?.type === 'blank' ? (
           <BlankExercise
-            key={`${exIdx}-${qIdx}`}
+            key={`${exIdx}-${questionKey}`}
+            exercise={currentQ}
+            answered={answerPhase === 'feedback'}
+            onSelect={handleAnswer}
+          />
+        ) : currentQ?.type === 'matching' ? (
+          <MatchingExercise
+            key={`${exIdx}-${questionKey}`}
             exercise={currentQ}
             answered={answerPhase === 'feedback'}
             onSelect={handleAnswer}
@@ -285,13 +308,17 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
                   <strong>
                     {currentQ?.type === 'typing' || currentQ?.type === 'blank'
                       ? currentQ.correct
+                      : currentQ?.type === 'ordering'
+                      ? currentQ.correct?.join(' ')
                       : currentQ?.options?.[currentQ?.correct]}
                   </strong>
+                  {' — '}
+                  <span className="fb-retry-hint">volte mais tarde 🔄</span>
                 </>
             }
           </div>
           <button className="btn-continue" onClick={handleContinue}>
-            {qIdx + 1 >= totalQ ? 'Finalizar' : 'Continuar'} →
+            {queue.length === 1 && isCorrect ? 'Finalizar' : 'Continuar'} →
           </button>
         </div>
       )}

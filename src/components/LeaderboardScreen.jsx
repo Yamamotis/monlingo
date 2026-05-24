@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore'
 import { db } from '../firebase'
+import { getRank } from '../data/ranks'
 
 const MEDAL = ['🥇', '🥈', '🥉']
 
@@ -31,7 +32,10 @@ function Podium({ entries, myUid }) {
             <p className={`lb-podium-name ${isMe ? 'lb-podium-me' : ''}`}>
               {entry.displayName.split(' ')[0]}
             </p>
-            <p className="lb-podium-xp">⭐ {entry.totalXP}</p>
+            <p className="lb-podium-xp">
+              <span style={{ color: getRank(entry.totalXP).color }}>{getRank(entry.totalXP).icon}</span>
+              {' '}⭐ {entry.totalXP}
+            </p>
             <div
               className="lb-podium-step"
               style={{
@@ -49,7 +53,7 @@ function Podium({ entries, myUid }) {
   )
 }
 
-export default function LeaderboardScreen({ user, progress, onBack }) {
+export default function LeaderboardScreen({ user, progress, locked = false, onBack }) {
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
   const [error,   setError]   = useState(false)
@@ -72,6 +76,7 @@ export default function LeaderboardScreen({ user, progress, onBack }) {
   const myName    = user.displayName || user.email.split('@')[0]
   const myTotalXP = progress.xp ?? 0
   const myInTop10 = entries.some(e => e.id === user.uid)
+  const myRank    = getRank(myTotalXP)
 
   return (
     <div className="lb-screen">
@@ -81,7 +86,25 @@ export default function LeaderboardScreen({ user, progress, onBack }) {
         <span style={{ visibility: 'hidden' }}>‹ Voltar</span>
       </header>
 
-      <div className="lb-body">
+      {/* ── Tela de bloqueio ── */}
+      {locked && (
+        <div className="lb-locked-screen">
+          <span className="lb-locked-icon">🔒</span>
+          <h2 className="lb-locked-title">Ranking Bloqueado</h2>
+          <p className="lb-locked-desc">
+            Complete todas as lições de <strong>Situações</strong> para desbloquear o ranking global e competir com outros estudantes!
+          </p>
+          <div className="lb-locked-progress">
+            <span className="lb-locked-step lb-step-done">✓ Iniciante</span>
+            <span className="lb-locked-arrow">→</span>
+            <span className="lb-locked-step lb-step-done">✓ Situações</span>
+            <span className="lb-locked-arrow">→</span>
+            <span className="lb-locked-step lb-step-next">🏆 Ranking</span>
+          </div>
+        </div>
+      )}
+
+      <div className={`lb-body ${locked ? 'lb-body-hidden' : ''}`}>
         {loading && (
           <div className="lb-state">
             <span className="lb-spinner">⏳</span>
@@ -120,6 +143,9 @@ export default function LeaderboardScreen({ user, progress, onBack }) {
                           {i < 3 ? MEDAL[i] : `${i + 1}`}
                         </span>
                         <span className="lb-name">
+                          <span className="lb-rank-chip" style={{ color: getRank(entry.totalXP).color }}>
+                            {getRank(entry.totalXP).icon}
+                          </span>
                           {entry.displayName}
                           {isMe && <span className="lb-you-tag">você</span>}
                         </span>
@@ -137,6 +163,7 @@ export default function LeaderboardScreen({ user, progress, onBack }) {
                 <div className="lb-row lb-me lb-outside">
                   <span className="lb-rank">–</span>
                   <span className="lb-name">
+                    <span className="lb-rank-chip" style={{ color: myRank.color }}>{myRank.icon}</span>
                     {myName}
                     <span className="lb-you-tag">você</span>
                   </span>

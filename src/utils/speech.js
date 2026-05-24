@@ -105,6 +105,16 @@ export function getCurrentPlayText() { return currentPlayText }
 export function speakFrench(text, onStart, onEnd) {
   if (typeof window === 'undefined') return
 
+  // Respeita a configuração de som do usuário
+  try {
+    const raw = localStorage.getItem('monlingo_settings')
+    if (raw && JSON.parse(raw).soundEnabled === false) {
+      onStart?.()
+      onEnd?.()
+      return
+    }
+  } catch {}
+
   // Para qualquer audio em andamento
   if (currentAudio) {
     currentAudio.pause()

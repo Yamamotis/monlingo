@@ -4,8 +4,9 @@ import { doc }                           from 'firebase/firestore'
 import { auth, db }                     from './firebase'
 import { doc as fbDoc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { ACHIEVEMENTS }                 from './data/achievements'
-import { buildReviewItem, buildDailyItem, LEVELS, MODULES } from './data/lessons'
+import { buildReviewItem, buildDailyItem, LEVELS, MODULES, CATEGORIES } from './data/lessons'
 import { speakFrench } from './utils/speech'
+import { loadSettings }  from './utils/settings'
 import FrFlag            from './components/FrFlag'
 import LandingScreen     from './components/LandingScreen'
 import SkeletonScreen    from './components/SkeletonScreen'
@@ -14,6 +15,10 @@ import LessonPlayer      from './components/LessonPlayer'
 import AchievementToast  from './components/AchievementToast'
 import LevelUpModal      from './components/LevelUpModal'
 import BottomNav         from './components/BottomNav'
+import SettingsScreen    from './components/SettingsScreen'
+
+// Aplica tamanho de fonte e carrega configurações na inicialização
+loadSettings()
 
 const BOTTOM_NAV_SCREENS = new Set(['levels', 'leaderboard', 'profile'])
 
@@ -28,6 +33,18 @@ const AdminScreen       = lazy(() => import('./components/AdminScreen'))
 const DictionaryScreen  = lazy(() => import('./components/DictionaryScreen'))
 const FlashcardScreen   = lazy(() => import('./components/FlashcardScreen'))
 const PlacementTest     = lazy(() => import('./components/PlacementTest'))
+
+// ── Leaderboard unlock condition ──────────────────────────────────────────────
+// Unlocks when the user has completed all modules in the 'situational' category
+// (i.e. when the 'intermediate' category becomes available)
+function checkLeaderboardUnlocked(completed = []) {
+  const sitCat = CATEGORIES.find(c => c.id === 'situational')
+  if (!sitCat) return true
+  const sitMods = LEVELS
+    .filter(l => sitCat.levelIds.includes(l.id))
+    .flatMap(l => MODULES.filter(m => l.moduleIds.includes(m.id)))
+  return sitMods.length > 0 && sitMods.every(m => completed.includes(m.evaluation.id))
+}
 
 const ADMIN_EMAIL      = import.meta.env.VITE_ADMIN_EMAIL ?? ''
 const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY ?? ''
@@ -342,10 +359,12 @@ export default function App() {
           onSelectCategory={handleSelectCategory}
           onOpenProfile={() => setScreen('profile')}
           onOpenLeaderboard={() => setScreen('leaderboard')}
+          onOpenSettings={() => setScreen('settings')}
           onStartReview={handleStartReview}
           onStartDaily={handleStartDaily}
           onOpenDictionary={() => setScreen('dictionary')}
           onOpenFlashcards={() => setScreen('flashcards')}
+          leaderboardUnlocked={checkLeaderboardUnlocked(progress.completed)}
           {...shared}
         />
       )}
@@ -386,6 +405,7 @@ export default function App() {
         <LeaderboardScreen
           user={authUser}
           progress={progress}
+          locked={!checkLeaderboardUnlocked(progress.completed)}
           onBack={() => setScreen('levels')}
         />
       )}
@@ -398,8 +418,12 @@ export default function App() {
           onLogout={handleLogout}
           onOpenRedeem={() => setScreen('redeem')}
           onOpenAdmin={() => setScreen('admin')}
+          onOpenSettings={() => setScreen('settings')}
           onSaveNickname={handleSaveNickname}
         />
+      )}
+      {screen === 'settings' && (
+        <SettingsScreen onBack={() => setScreen('levels')} />
       )}
       {screen === 'redeem' && (
         <RedeemScreen
@@ -443,7 +467,11 @@ export default function App() {
 
       {/* Bottom Navigation */}
       {showBottomNav && (
-        <BottomNav current={screen} onNavigate={setScreen} />
+        <BottomNav
+          current={screen}
+          leaderboardUnlocked={checkLeaderboardUnlocked(progress.completed)}
+          onNavigate={setScreen}
+        />
       )}
       </Suspense>
     </div>

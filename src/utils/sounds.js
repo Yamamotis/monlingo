@@ -17,8 +17,13 @@ function note(ac, freq, startOffset, duration, volume = 0.28) {
   osc.stop(t + duration)
 }
 
+function _cfg() {
+  try { return JSON.parse(localStorage.getItem('monlingo_settings') ?? '{}') } catch { return {} }
+}
+
 // Ascending two-note ding — G5 → C6
 export function playCorrect() {
+  if (_cfg().soundEnabled === false) return
   try {
     const ac = ctx()
     note(ac, 784,  0,    0.5)
@@ -29,8 +34,10 @@ export function playCorrect() {
 
 // Descending tone — Eb4 → G3
 export function playWrong() {
+  const cfg = _cfg()
   try {
-    navigator.vibrate?.(80)   // haptic feedback em dispositivos móveis
+    if (cfg.vibrationEnabled !== false) navigator.vibrate?.(80)
+    if (cfg.soundEnabled === false) return
     const ac  = ctx()
     const osc  = ac.createOscillator()
     const gain = ac.createGain()

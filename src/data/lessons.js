@@ -115,25 +115,36 @@ function genBlankExercise(vocab) {
   }
 }
 
-function genExercises(vocab) {
+// ── Exercícios mistos (todos os tipos embaralhados, 2×15 questões) ────────────
+function genMixedExercises(vocab) {
+  // Gera todas as questões de todos os tipos
+  const pool = shuffle([
+    ...vocab.map(item => makeQ(vocab, item, 'fr-pt')),
+    ...vocab.map(item => makeQ(vocab, item, 'pt-fr')),
+    ...vocab.map(item => makeListeningQ(vocab, item)),
+    ...vocab.map(item => makeTypingQ(item)),
+    ...vocab.map(makeBlankQ).filter(Boolean),
+    ...vocab.map(makeOrderingQ).filter(Boolean),
+    // Questão de combinação (uma por exercício, com 5 pares aleatórios)
+    {
+      type:  'matching',
+      pairs: shuffle([...vocab]).slice(0, Math.min(5, vocab.length)).map(v => ({ fr: v.fr, pt: v.pt })),
+    },
+  ])
+
+  const perEx = 15
   return [
     {
-      number: 1,
-      title: 'Exercício 1',
-      subtitle: 'Francês → Português',
-      questions: shuffle(vocab.map(item => makeQ(vocab, item, 'fr-pt'))),
+      number:   1,
+      title:    'Exercício 1',
+      subtitle: 'Treino misto — parte 1 🎯',
+      questions: pool.slice(0, perEx),
     },
     {
-      number: 2,
-      title: 'Exercício 2',
-      subtitle: 'Português → Francês',
-      questions: shuffle(vocab.map(item => makeQ(vocab, item, 'pt-fr'))),
-    },
-    {
-      number: 3,
-      title: 'Exercício 3',
-      subtitle: 'Compreensão auditiva 🎧',
-      questions: shuffle(vocab.map(item => makeListeningQ(vocab, item))),
+      number:   2,
+      title:    'Exercício 2',
+      subtitle: 'Treino misto — parte 2 🎯',
+      questions: pool.slice(perEx, perEx * 2),
     },
   ]
 }
@@ -1547,15 +1558,7 @@ const MODULE_META = {
 export const MODULES = DEFS.map(def => {
   const vocab = VOCAB[def.vocabKey]
   const meta  = MODULE_META[def.id] ?? {}
-  const gens  = [...genExercises(vocab), genTypingExercise(vocab)]
-  if (meta.hasOrdering) {
-    const ord = genOrderingExercise(vocab)
-    if (ord.questions.length >= 3) gens.push(ord)
-  }
-  if (meta.hasBlank) {
-    const blk = genBlankExercise(vocab)
-    if (blk.questions.length >= 3) gens.push(blk)
-  }
+  const gens  = genMixedExercises(vocab)
   return {
     id:          def.id,
     number:      def.number,

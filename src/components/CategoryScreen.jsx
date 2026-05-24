@@ -31,7 +31,9 @@ function getToday() { return new Date().toISOString().slice(0, 10) }
 
 export default function CategoryScreen({
   progress, user,
-  onSelectCategory, onOpenProfile, onOpenLeaderboard, onStartReview, onStartDaily, onOpenDictionary, onOpenFlashcards,
+  onSelectCategory, onOpenProfile, onOpenLeaderboard, onOpenSettings,
+  onStartReview, onStartDaily, onOpenDictionary, onOpenFlashcards,
+  leaderboardUnlocked = true,
 }) {
   const { completed = [], xp = 0, streak = 0, wrongWords = [], lastStudyDate,
           hearts = 5, dailyMission, isPremium = false, nickname = '' } = progress
@@ -57,6 +59,9 @@ export default function CategoryScreen({
             <span>{isPremium ? '💜' : '❤️'}</span>
             <span className="streak-num">{isPremium ? '∞' : hearts}</span>
           </div>
+          <button className="header-settings-btn" onClick={onOpenSettings} title="Configurações" aria-label="Configurações">
+            ⚙️
+          </button>
           <button className="user-avatar-btn" onClick={onOpenProfile} title="Perfil">
             {displayName[0]?.toUpperCase()}
           </button>

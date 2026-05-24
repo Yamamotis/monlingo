@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { MODULES } from '../data/lessons'
 import { ACHIEVEMENTS, ACHIEVEMENT_CATEGORIES } from '../data/achievements'
+import { getRank, getNextRank } from '../data/ranks'
 
 // ── Gráfico de atividade semanal ─────────────────────────────────────────────
 function WeeklyChart({ dailyXP = {} }) {
@@ -59,8 +60,13 @@ function WeeklyChart({ dailyXP = {} }) {
 }
 
 // ── Tela de Perfil ────────────────────────────────────────────────────────────
-export default function ProfileScreen({ progress, user, isAdmin, onBack, onLogout, onOpenRedeem, onOpenAdmin, onSaveNickname }) {
+export default function ProfileScreen({ progress, user, isAdmin, onBack, onLogout, onOpenRedeem, onOpenAdmin, onOpenSettings, onSaveNickname }) {
   const { completed = [], xp = 0, streak = 0, achievements: earned = [], isPremium = false, dailyXP = {}, nickname = '' } = progress
+  const rank     = getRank(xp)
+  const nextRank = getNextRank(xp)
+  const pctToNext = nextRank
+    ? Math.round(((xp - rank.minXP) / (nextRank.minXP - rank.minXP)) * 100)
+    : 100
   const [achFilter,    setAchFilter]    = useState('all')
   const [editingName,  setEditingName]  = useState(false)
   const [nameInput,    setNameInput]    = useState(nickname)
@@ -120,6 +126,29 @@ export default function ProfileScreen({ progress, user, isAdmin, onBack, onLogou
 
         <p className="profile-email">{user.email}</p>
         {joinDate && <p className="profile-since">Estudando desde {joinDate}</p>}
+
+        {/* ── Rank badge ── */}
+        <div className="profile-rank-wrap">
+          <div className="profile-rank-badge" style={{ borderColor: rank.color + '88', background: rank.color + '18' }}>
+            <span className="profile-rank-icon">{rank.icon}</span>
+            <span className="profile-rank-label" style={{ color: rank.color }}>{rank.label}</span>
+          </div>
+          {nextRank ? (
+            <div className="profile-rank-progress">
+              <div className="profile-rank-bar">
+                <div
+                  className="profile-rank-bar-fill"
+                  style={{ width: `${pctToNext}%`, background: rank.color }}
+                />
+              </div>
+              <span className="profile-rank-hint">
+                {xp} / {nextRank.minXP} XP → {nextRank.icon} {nextRank.label}
+              </span>
+            </div>
+          ) : (
+            <span className="profile-rank-max">🏆 Rank máximo!</span>
+          )}
+        </div>
 
         <div className="profile-stats-grid">
           <div className="profile-stat flame">
@@ -220,6 +249,8 @@ export default function ProfileScreen({ progress, user, isAdmin, onBack, onLogou
           ? <div className="premium-active-badge">💎 Acesso Premium ativo</div>
           : <button className="btn-redeem-profile" onClick={onOpenRedeem}>🔓 Ativar código Premium</button>
         }
+
+        <button className="btn-settings-profile" onClick={onOpenSettings}>⚙️ Configurações</button>
 
         {isAdmin && (
           <button className="btn-admin" onClick={onOpenAdmin}>⚙️ Painel Admin</button>
