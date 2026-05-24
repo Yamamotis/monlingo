@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import VocabPage         from './VocabPage'
 import MultipleChoice    from './exercises/MultipleChoice'
 import ListeningExercise from './exercises/ListeningExercise'
