@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react'
-import SpeakButton from '../SpeakButton'
 
 function normalize(text) {
   return text.trim().toLowerCase()
@@ -65,10 +64,7 @@ export default function TypingExercise({ exercise, answered, onSelect }) {
 
   return (
     <div className="typing-ex">
-      <div className="typing-header-row">
-        <p className="typing-prompt">Como se escreve em francês?</p>
-        {exercise.speakFr && <SpeakButton text={exercise.speakFr} size="sm" />}
-      </div>
+      <p className="typing-prompt">Como se escreve em francês?</p>
       <div className="typing-pt">{exercise.pt}</div>
 
       <div className={`typing-input-wrap ${wrapClass}`}>

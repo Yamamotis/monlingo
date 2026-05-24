@@ -140,7 +140,9 @@ export default function App() {
   // Pré-toca o 1º áudio de uma lição dentro do handler de clique (iOS autoplay policy)
   function prePlayFirst(item) {
     const q = item?.exercises?.[0]?.questions?.[0] ?? item?.questions?.[0]
-    if (q?.speakFr) speakFrench(q.speakFr, undefined, undefined)
+    if (q?.speakFr && (q.type === 'listening' || q.type === 'mc')) {
+      speakFrench(q.speakFr, undefined, undefined)
+    }
   }
 
   const handleStartDaily = () => {

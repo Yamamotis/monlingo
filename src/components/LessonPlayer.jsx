@@ -8,10 +8,11 @@ import BlankExercise     from './exercises/BlankExercise'
 import { playCorrect, playWrong } from '../utils/sounds'
 import { speakFrench } from '../utils/speech'
 
-// Pré-toca o áudio de qualquer questão com speakFr dentro do event handler de clique,
-// satisfazendo a autoplay policy do iOS Safari para listening, MC e typing.
+// Pré-toca o áudio apenas para exercícios FR→PT (listening e mc).
+// PT→FR (typing, blank) não recebem áudio automático.
+const FR_TO_PT_TYPES = new Set(['listening', 'mc'])
 function prePlayAudio(q) {
-  if (q?.speakFr) {
+  if (q?.speakFr && FR_TO_PT_TYPES.has(q.type)) {
     speakFrench(q.speakFr, undefined, undefined)
   }
 }
