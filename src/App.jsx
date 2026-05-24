@@ -62,7 +62,8 @@ const EMPTY = {
   completed: [], xp: 0, streak: 0, lastStudyDate: null,
   achievements: [], wrongWords: [], weeklyXP: 0, weekStart: '',
   isPremium: false, hearts: MAX_HEARTS, heartsDate: '',
-  dailyXP: {},  // { 'YYYY-MM-DD': xpEarned }
+  dailyXP: {},    // { 'YYYY-MM-DD': xpEarned }
+  nickname: '',   // como o usuário quer ser chamado
 }
 const REVIEW_MOD = { id: 'review', number: 0, title: 'Revisão', icon: '🔄', color: '#1CB0F6' }
 
@@ -281,6 +282,10 @@ export default function App() {
     setScreen('levels')
   }
 
+  const handleSaveNickname = (name) => {
+    setProgress(prev => ({ ...prev, nickname: name.trim() }))
+  }
+
   const handlePlacementDone = (evalIds) => {
     setProgress(prev => ({
       ...prev,
@@ -393,6 +398,7 @@ export default function App() {
           onLogout={handleLogout}
           onOpenRedeem={() => setScreen('redeem')}
           onOpenAdmin={() => setScreen('admin')}
+          onSaveNickname={handleSaveNickname}
         />
       )}
       {screen === 'redeem' && (

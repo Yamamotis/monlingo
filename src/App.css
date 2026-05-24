@@ -2923,3 +2923,345 @@ input { -webkit-tap-highlight-color: transparent; }
   letter-spacing: -0.5px;
 }
 
+/* ══════════════════════════════════════════════════
+   FAILED SCREEN — CORAÇÕES ANIMADOS
+   ══════════════════════════════════════════════════ */
+.failed-hearts {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+@keyframes failed-heart-drop {
+  0%   { transform: translateY(-30px) scale(0.5); opacity: 0; }
+  55%  { transform: translateY(6px) scale(1.2); opacity: 1; }
+  75%  { transform: translateY(-4px) scale(0.95); }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.failed-heart-anim {
+  font-size: 44px;
+  display: inline-block;
+  animation: failed-heart-drop 0.55s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.failed-title {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--red);
+  margin: 0;
+}
+.failed-sub {
+  font-size: 16px;
+  color: var(--text-light);
+  font-weight: 600;
+  margin: 0;
+}
+
+/* ══════════════════════════════════════════════════
+   LISTENING EXERCISE — CARD + SOUND WAVE
+   ══════════════════════════════════════════════════ */
+.listen-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 22px;
+  padding: 24px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+.listen-card-active {
+  border-color: #1CB0F6;
+  box-shadow: 0 0 0 4px #1CB0F620;
+}
+.btn-listen-big {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  background: #1CB0F6;
+  color: #fff;
+  border: none;
+  border-radius: 18px;
+  padding: 18px 36px;
+  cursor: pointer;
+  transition: transform 0.12s, box-shadow 0.12s, background 0.2s;
+  box-shadow: 0 4px 0 #0a7ab8;
+  min-width: 180px;
+}
+.btn-listen-big:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #0a7ab8;
+}
+.btn-listen-big.speaking {
+  background: #0a9fd4;
+  animation: pulse-speak 0.9s ease infinite;
+}
+.btn-listen-big.unplayed {
+  animation: pulse-listen 1.8s ease infinite;
+}
+.btn-listen-icon { font-size: 32px; line-height: 1; }
+.btn-listen-label {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+}
+.listen-revealed {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+  animation: screen-enter 0.25s ease both;
+  letter-spacing: 0.5px;
+}
+
+/* Sound wave bars */
+.sound-wave {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 28px;
+}
+.wave-bar {
+  width: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  height: var(--base-h, 8px);
+  transition: background 0.2s;
+}
+@keyframes wave-bounce {
+  0%, 100% { transform: scaleY(0.4); }
+  50%       { transform: scaleY(1); }
+}
+.sound-wave.wave-active .wave-bar {
+  background: #1CB0F6;
+  animation: wave-bounce 0.6s ease infinite;
+}
+
+/* ══════════════════════════════════════════════════
+   EX-DONE SCREEN — REDESIGN
+   ══════════════════════════════════════════════════ */
+.ex-done-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 99px;
+  padding: 6px 16px;
+  animation: screen-enter 0.3s ease both;
+}
+.ex-done-check {
+  font-size: 52px;
+  font-weight: 900;
+  color: var(--green);
+  line-height: 1;
+  animation: bounce-in 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.ex-done-title {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--text);
+  margin: 0;
+}
+.ex-dot.dot-pending {
+  background: var(--surface-hi);
+  border: 2px solid var(--border);
+}
+.next-sub {
+  font-size: 12px;
+  color: var(--text-light);
+  font-weight: 600;
+}
+.ex-done-btn {
+  /* inherits .btn-retry base — only overrides color via inline style */
+  font-size: 17px;
+  font-weight: 800;
+}
+
+/* ══════════════════════════════════════════════════
+   VOCAB PAGE — ROW SEPARATORS + BTN-PROCEED PULSE
+   ══════════════════════════════════════════════════ */
+.vocab-row + .vocab-row {
+  border-top: 1.5px solid var(--border);
+}
+@keyframes proceed-pulse {
+  0%, 100% { box-shadow: 0 4px 0 var(--green-dark); }
+  50%       { box-shadow: 0 4px 0 var(--green-dark), 0 0 0 8px #58CC0222; }
+}
+.btn-proceed {
+  animation: proceed-pulse 2s ease infinite;
+}
+.btn-proceed:active {
+  animation: none;
+}
+
+/* ══════════════════════════════════════════════════
+   DICTIONARY SCREEN — REDESIGN
+   ══════════════════════════════════════════════════ */
+.dict-stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 24px;
+}
+.dict-stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+.dict-stat-num {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--text);
+  line-height: 1;
+}
+.dict-stat-label {
+  font-size: 12px;
+  color: var(--text-light);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.dict-stat-divider {
+  width: 1px;
+  height: 36px;
+  background: var(--border);
+  flex-shrink: 0;
+  margin: 0 12px;
+}
+.dict-search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+  line-height: 1;
+}
+/* Push text right of icon */
+.dict-search-wrap .dict-search {
+  padding-left: 42px;
+}
+/* dict-card — polished vocabulary card */
+.dict-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid;          /* color set via inline style */
+  border-radius: 14px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: screen-enter 0.18s ease both;
+}
+.dict-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* ══════════════════════════════════════════════════
+   PROFILE — NICKNAME EDITOR
+   ══════════════════════════════════════════════════ */
+.profile-nickname-wrap {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.profile-nickname-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-hi);
+  border: 1.5px dashed var(--border);
+  border-radius: 12px;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  max-width: 320px;
+}
+.profile-nickname-btn:hover {
+  border-color: #1CB0F6;
+  background: var(--surface);
+}
+.profile-nickname-text {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+}
+.profile-nickname-placeholder {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-light);
+  font-style: italic;
+}
+.profile-nickname-edit-icon {
+  font-size: 15px;
+  opacity: 0.6;
+}
+.profile-nickname-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 340px;
+  animation: screen-enter 0.18s ease both;
+}
+.profile-nickname-input {
+  flex: 1;
+  background: var(--surface-hi);
+  border: 2px solid #1CB0F6;
+  border-radius: 12px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 14px;
+  outline: none;
+  min-width: 0;
+}
+.profile-nickname-input::placeholder {
+  color: var(--text-light);
+  font-weight: 500;
+}
+.profile-nickname-save {
+  background: var(--green);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 800;
+  padding: 10px 16px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--green-dark);
+  white-space: nowrap;
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+.profile-nickname-save:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--green-dark);
+}
+.profile-nickname-cancel {
+  background: var(--surface-hi);
+  color: var(--text-light);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 13px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+.profile-nickname-cancel:active {
+  background: var(--border);
+}
+

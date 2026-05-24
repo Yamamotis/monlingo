@@ -115,21 +115,26 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
   }
 
   if (phase === 'failed') {
+    const brokenHearts = (
+      <div className="failed-hearts">
+        {[0,1,2].map(i => (
+          <span key={i} className="failed-heart-anim" style={{ animationDelay: `${i * 0.12}s` }}>💔</span>
+        ))}
+      </div>
+    )
     if (!isPremium) {
       return (
         <div className="player-screen failed-screen">
           <div className="failed-card failed-upsell">
-            <div className="failed-icon">💔</div>
+            {brokenHearts}
             <h2 className="upsell-title">Suas vidas acabaram!</h2>
             <p className="upsell-sub">Com o Premium você tem vidas ilimitadas e nunca precisa parar.</p>
-
             <ul className="upsell-perks">
               <li>💜 Vidas ilimitadas</li>
               <li>🎯 Missão do dia exclusiva</li>
               <li>🏆 Acesso a todos os 70 módulos</li>
               <li>⭐ Acesso vitalício por R$ 14,99</li>
             </ul>
-
             <button className="btn-upsell-buy" onClick={onOpenRedeem}>
               Seja Premium — R$ 14,99
             </button>
@@ -142,9 +147,9 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
     return (
       <div className="player-screen failed-screen">
         <div className="failed-card">
-          <div className="failed-icon">💔</div>
-          <h2>Sem corações!</h2>
-          <p>Não desanime — você consegue!</p>
+          {brokenHearts}
+          <h2 className="failed-title">Sem corações!</h2>
+          <p className="failed-sub">Não desanime — você consegue! 💪</p>
           <button className="btn-retry" onClick={handleRetry}>Tentar novamente</button>
           <button className="btn-exit-soft" onClick={onExit}>Sair</button>
         </div>
@@ -154,24 +159,33 @@ export default function LessonPlayer({ mod, item, onComplete, onLoseHeart, heart
 
   if (phase === 'ex-done') {
     const nextEx = exercises[exIdx + 1]
+    const doneCount = exIdx + 1
     return (
       <div className="player-screen ex-done-screen">
-        <div className="ex-done-card">
-          <div className="ex-done-icon">🎉</div>
-          <h2>{currentEx.title} concluído!</h2>
+        <div className="ex-done-card" style={{ '--mod-color': mod.color }}>
+          <div className="ex-done-badge" style={{ background: mod.color + '22', border: `2px solid ${mod.color}55`, color: mod.color }}>
+            {mod.icon} {mod.title}
+          </div>
+          <div className="ex-done-check">✓</div>
+          <h2 className="ex-done-title">{currentEx.title} concluído!</h2>
           <div className="ex-dots">
             {exercises.map((_, i) => (
-              <div key={i} className={`ex-dot ${i <= exIdx ? 'dot-done' : 'dot-pending'}`} />
+              <div
+                key={i}
+                className={`ex-dot ${i < doneCount ? 'dot-done' : 'dot-pending'}`}
+                style={i < doneCount ? { background: mod.color } : {}}
+              />
             ))}
           </div>
           {nextEx && (
             <div className="next-ex-info">
-              <span className="next-label">A seguir:</span>
-              <span className="next-title">{nextEx.title} — {nextEx.subtitle}</span>
+              <span className="next-label">A seguir</span>
+              <span className="next-title">{nextEx.title}</span>
+              <span className="next-sub">{nextEx.subtitle}</span>
             </div>
           )}
           <button
-            className="btn-retry"
+            className="btn-retry ex-done-btn"
             style={{ background: mod.color, boxShadow: `0 4px 0 ${mod.color}99` }}
             onClick={startNextExercise}
           >

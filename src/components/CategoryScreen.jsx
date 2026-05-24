@@ -34,10 +34,11 @@ export default function CategoryScreen({
   onSelectCategory, onOpenProfile, onOpenLeaderboard, onStartReview, onStartDaily, onOpenDictionary, onOpenFlashcards,
 }) {
   const { completed = [], xp = 0, streak = 0, wrongWords = [], lastStudyDate,
-          hearts = 5, dailyMission, isPremium = false } = progress
-  const today           = getToday()
-  const dailyDone       = dailyMission?.date === today && dailyMission?.completed
-  const username     = user?.email?.split('@')[0] ?? ''
+          hearts = 5, dailyMission, isPremium = false, nickname = '' } = progress
+  const today        = getToday()
+  const dailyDone    = dailyMission?.date === today && dailyMission?.completed
+  const emailName    = user?.email?.split('@')[0] ?? ''
+  const displayName  = nickname || emailName
   const streakAtRisk = streak > 0 && lastStudyDate === getYesterday()
 
   return (
@@ -57,7 +58,7 @@ export default function CategoryScreen({
             <span className="streak-num">{isPremium ? '∞' : hearts}</span>
           </div>
           <button className="user-avatar-btn" onClick={onOpenProfile} title="Perfil">
-            {username[0]?.toUpperCase()}
+            {displayName[0]?.toUpperCase()}
           </button>
         </div>
       </header>
@@ -72,7 +73,7 @@ export default function CategoryScreen({
         <div className="french-tricolor" />
         <div className="french-hero-content">
           <div className="french-hero-text">
-            <p className="hero-bonjour">Bonjour{username ? `, ${username}` : ''}!</p>
+            <p className="hero-bonjour">Bonjour{displayName ? `, ${displayName}` : ''}!</p>
             <h2 className="hero-title">Aprenda Francês</h2>
             <div className="hero-stats-row">
               <span className="hero-stat">⭐ {xp} XP</span>

@@ -59,9 +59,11 @@ function WeeklyChart({ dailyXP = {} }) {
 }
 
 // ── Tela de Perfil ────────────────────────────────────────────────────────────
-export default function ProfileScreen({ progress, user, isAdmin, onBack, onLogout, onOpenRedeem, onOpenAdmin }) {
-  const { completed = [], xp = 0, streak = 0, achievements: earned = [], isPremium = false, dailyXP = {} } = progress
-  const [achFilter, setAchFilter] = useState('all')
+export default function ProfileScreen({ progress, user, isAdmin, onBack, onLogout, onOpenRedeem, onOpenAdmin, onSaveNickname }) {
+  const { completed = [], xp = 0, streak = 0, achievements: earned = [], isPremium = false, dailyXP = {}, nickname = '' } = progress
+  const [achFilter,    setAchFilter]    = useState('all')
+  const [editingName,  setEditingName]  = useState(false)
+  const [nameInput,    setNameInput]    = useState(nickname)
 
   const vocabDone  = completed.filter(id => id.endsWith('-vocab')).length
   const evalsDone  = completed.filter(id => id.endsWith('-eval')).length
@@ -82,6 +84,40 @@ export default function ProfileScreen({ progress, user, isAdmin, onBack, onLogou
 
       <div className="profile-body">
         <div className="profile-avatar">{initial}</div>
+
+        {/* Como quer ser chamado */}
+        <div className="profile-nickname-wrap">
+          {editingName ? (
+            <div className="profile-nickname-edit">
+              <input
+                className="profile-nickname-input"
+                value={nameInput}
+                onChange={e => setNameInput(e.target.value)}
+                placeholder="Como quer ser chamado?"
+                maxLength={24}
+                autoFocus
+                onKeyDown={e => {
+                  if (e.key === 'Enter') { onSaveNickname?.(nameInput); setEditingName(false) }
+                  if (e.key === 'Escape') setEditingName(false)
+                }}
+              />
+              <button className="profile-nickname-save" onClick={() => { onSaveNickname?.(nameInput); setEditingName(false) }}>
+                Salvar
+              </button>
+              <button className="profile-nickname-cancel" onClick={() => { setNameInput(nickname); setEditingName(false) }}>
+                ✕
+              </button>
+            </div>
+          ) : (
+            <button className="profile-nickname-btn" onClick={() => setEditingName(true)}>
+              <span className="profile-nickname-text">
+                {nickname || <span className="profile-nickname-placeholder">Como quer ser chamado?</span>}
+              </span>
+              <span className="profile-nickname-edit-icon">✏️</span>
+            </button>
+          )}
+        </div>
+
         <p className="profile-email">{user.email}</p>
         {joinDate && <p className="profile-since">Estudando desde {joinDate}</p>}
 

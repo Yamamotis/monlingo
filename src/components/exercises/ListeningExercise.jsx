@@ -1,27 +1,32 @@
 import { useState, useEffect, useCallback } from 'react'
 import { speakFrench, getCurrentPlayText } from '../../utils/speech'
 
+function SoundWave({ active }) {
+  return (
+    <div className={`sound-wave ${active ? 'wave-active' : ''}`} aria-hidden="true">
+      {[1, 2, 3, 4, 5, 4, 3, 2, 1].map((h, i) => (
+        <span key={i} className="wave-bar" style={{ '--base-h': `${h * 4}px`, animationDelay: `${i * 0.07}s` }} />
+      ))}
+    </div>
+  )
+}
+
 export default function ListeningExercise({ exercise, answered, onSelect }) {
   const { options, correct, speakFr } = exercise
 
-  // Se o pai já pré-tocou este áudio (dentro do event handler de clique),
-  // começa com played/speaking=true — sem precisar de auto-play no useEffect
   const prePlayed = getCurrentPlayText() === speakFr
   const [played,   setPlayed]   = useState(prePlayed)
   const [speaking, setSpeaking] = useState(prePlayed)
   const [selected, setSelected] = useState(null)
 
   const handlePlay = useCallback(() => {
-    speakFrench(
-      speakFr,
+    speakFrench(speakFr,
       () => { setSpeaking(true); setPlayed(true) },
       () => setSpeaking(false),
     )
   }, [speakFr])
 
   useEffect(() => {
-    // Se o áudio não foi pré-tocado, reseta estado e aguarda o toque do usuário.
-    // Fallback de 3s libera as opções para não travar o exercício.
     if (getCurrentPlayText() !== speakFr) {
       setPlayed(false)
       setSpeaking(false)
@@ -30,15 +35,10 @@ export default function ListeningExercise({ exercise, answered, onSelect }) {
     }
   }, [speakFr])
 
-  // Detecta o fim do áudio pré-tocado (sem onEnd ligado) via polling leve.
-  // Limpa o estado "speaking" quando o áudio para.
   useEffect(() => {
     if (!speaking) return
     const id = setInterval(() => {
-      if (getCurrentPlayText() !== speakFr) {
-        setSpeaking(false)
-        clearInterval(id)
-      }
+      if (getCurrentPlayText() !== speakFr) { setSpeaking(false); clearInterval(id) }
     }, 200)
     return () => clearInterval(id)
   }, [speaking, speakFr])
@@ -60,16 +60,24 @@ export default function ListeningExercise({ exercise, answered, onSelect }) {
     <div className="listening-exercise">
       <p className="exercise-question">Ouça e selecione a tradução</p>
 
-      <div className="listen-center">
+      {/* Audio card */}
+      <div className={`listen-card ${speaking ? 'listen-card-active' : ''}`}>
+        <SoundWave active={speaking} />
+
         <button
-          className={`btn-listen ${speaking ? 'speaking' : ''} ${!played ? 'unplayed' : ''}`}
+          className={`btn-listen-big ${speaking ? 'speaking' : ''} ${!played ? 'unplayed' : ''}`}
           onClick={handlePlay}
           type="button"
           aria-label="Ouvir palavra em francês"
         >
-          🔊
+          <span className="btn-listen-icon">🔊</span>
+          <span className="btn-listen-label">
+            {speaking ? 'Ouvindo…' : played ? 'Ouvir novamente' : 'Toque para ouvir'}
+          </span>
         </button>
-        {!played && <p className="listen-hint">Toque para ouvir</p>}
+
+        <SoundWave active={speaking} />
+
         {answered && <p className="listen-revealed">{speakFr}</p>}
       </div>
 

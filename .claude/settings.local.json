@@ -14,7 +14,8 @@
       "Bash(npx web-push *)",
       "PowerShell(\\(Get-Content \"c:\\\\Users\\\\Mathe\\\\OneDrive\\\\Área de Trabalho\\\\monlingo\\\\src\\\\App.css\" | Measure-Object -Line\\).Lines)",
       "Bash(powershell -Command \"\\(Get-Content src\\\\App.css | Measure-Object -Line\\).Lines\")",
-      "Bash(powershell -Command \"\\(Get-Content src\\\\App.css\\)[-5..-1]\")"
+      "Bash(powershell -Command \"\\(Get-Content src\\\\App.css\\)[-5..-1]\")",
+      "Bash(powershell -Command \"\\(Get-Content src\\\\App.css\\)[-3..-1]\")"
     ]
   }
 }

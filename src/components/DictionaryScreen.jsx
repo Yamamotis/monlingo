@@ -37,17 +37,26 @@ export default function DictionaryScreen({ progress, onBack }) {
       </header>
 
       <div className="dict-body">
-        <div className="dict-stats">
-          <span className="dict-count">
-            <strong>{learnedVocab.length}</strong> palavras aprendidas
-          </span>
+        {/* Stats bar */}
+        <div className="dict-stats-bar">
+          <div className="dict-stat-item">
+            <span className="dict-stat-num">{learnedVocab.length}</span>
+            <span className="dict-stat-label">palavras</span>
+          </div>
+          <div className="dict-stat-divider" />
+          <div className="dict-stat-item">
+            <span className="dict-stat-num">{MODULES.filter(m => completed.includes(m.exercises[0]?.id)).length}</span>
+            <span className="dict-stat-label">módulos</span>
+          </div>
         </div>
 
+        {/* Search */}
         <div className="dict-search-wrap">
+          <span className="dict-search-icon">🔍</span>
           <input
             className="dict-search"
             type="text"
-            placeholder="🔍 Buscar em francês ou português…"
+            placeholder="Buscar em francês ou português…"
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
@@ -58,14 +67,20 @@ export default function DictionaryScreen({ progress, onBack }) {
 
         {filtered.length === 0 ? (
           <div className="dict-empty">
-            <span>🔍</span>
-            <p>Nenhuma palavra encontrada.</p>
+            <span>{learnedVocab.length === 0 ? '📚' : '🔍'}</span>
+            <p>{learnedVocab.length === 0
+              ? 'Complete o primeiro exercício para ver palavras aqui!'
+              : 'Nenhuma palavra encontrada.'}</p>
           </div>
         ) : (
           <div className="dict-list">
             {filtered.map((v, i) => (
-              <div key={i} className="dict-row">
-                <div className="dict-row-main">
+              <div
+                key={i}
+                className="dict-card"
+                style={{ borderLeftColor: v.modColor }}
+              >
+                <div className="dict-card-top">
                   <div className="dict-fr-wrap">
                     <span className="dict-fr">{v.fr}</span>
                     <SpeakButton text={v.fr} size="sm" />
@@ -73,7 +88,7 @@ export default function DictionaryScreen({ progress, onBack }) {
                   <span className="dict-pt">{v.pt}</span>
                 </div>
                 {v.sentence && (
-                  <p className="dict-sentence">"{v.sentence}"</p>
+                  <p className="dict-sentence">«{v.sentence}»</p>
                 )}
                 {v.note && (
                   <p className="dict-note">💡 {v.note}</p>
