@@ -135,6 +135,13 @@ export default function App() {
     setDoc(fbDoc(db, 'users', authUser.uid), { progress }, { merge: true }).catch(() => {})
   }, [progress])
 
+  // Volta ao topo sempre que troca de tela
+  useEffect(() => {
+    window.scrollTo(0, 0)
+    document.documentElement.scrollTop = 0
+    document.body.scrollTop = 0
+  }, [screen])
+
   const handleSelectCategory = (cat)   => { setActiveCategory(cat); setScreen('sublevel') }
   const handleSelectLevel    = (level) => { setActiveLevel(level); setScreen('level') }
 

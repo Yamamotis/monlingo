@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import SpeakButton from './SpeakButton'
+import { useState } from 'react'
 
 function ConjugationTable({ table }) {
   const [open, setOpen] = useState(false)
@@ -25,15 +25,6 @@ function ConjugationTable({ table }) {
 
 export default function VocabPage({ mod, item, onContinue, onExit }) {
   const exerciseCount = mod.exercises?.length ?? 4
-  const [flipped, setFlipped] = useState(new Set())
-
-  const toggleFlip = (i) => {
-    setFlipped(prev => {
-      const next = new Set(prev)
-      if (next.has(i)) next.delete(i); else next.add(i)
-      return next
-    })
-  }
 
   return (
     <div className="vocab-page">
@@ -48,44 +39,27 @@ export default function VocabPage({ mod, item, onContinue, onExit }) {
       <div className="vocab-body">
         <div className="vocab-intro">
           <h2 className="vocab-title">📚 Vocabulário</h2>
-          <p className="vocab-subtitle">
-            Toque nos cartões para ver a tradução
-          </p>
+          <p className="vocab-subtitle">Leia com atenção antes de começar os exercícios</p>
         </div>
 
-        {/* Flip card grid */}
-        <div className="vocab-flip-grid">
+        <div className="vocab-table">
           {item.vocabulary.map((v, i) => (
-            <div
-              key={i}
-              className={`vocab-flip-card ${flipped.has(i) ? 'flipped' : ''}`}
-              onClick={() => toggleFlip(i)}
-            >
-              <div className="vocab-flip-inner">
-                {/* Front — FR */}
-                <div className="vocab-flip-front">
-                  <span className="vf-num">{i + 1}</span>
-                  <span className="vf-fr">{v.fr}</span>
-                  <div
-                    className="vf-speak"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    <SpeakButton text={v.fr} size="sm" />
-                  </div>
-                  <span className="vf-tap-hint">toque ↩</span>
-                </div>
-                {/* Back — PT */}
-                <div className="vocab-flip-back">
-                  <span className="vf-pt">{v.pt}</span>
-                  {v.sentence && <span className="vf-sentence">«{v.sentence}»</span>}
-                  {v.note && <span className="vf-note">💡 {v.note}</span>}
-                </div>
+            <div key={i} className="vocab-row">
+              <div className="vocab-left">
+                <span className="vocab-num">{i + 1}</span>
+                <span className="vocab-fr">{v.fr}</span>
+                <SpeakButton text={v.fr} size="sm" />
+              </div>
+              <span className="vocab-arrow">→</span>
+              <div className="vocab-right">
+                <span className="vocab-pt">{v.pt}</span>
+                {v.sentence && <span className="vocab-sentence">"{v.sentence}"</span>}
+                {v.note && <span className="vocab-note">💡 {v.note}</span>}
               </div>
             </div>
           ))}
         </div>
 
-        {/* Grammar note */}
         {item.grammarNote && (
           <div className="grammar-note">
             <span className="grammar-note-icon">📌</span>
@@ -93,7 +67,6 @@ export default function VocabPage({ mod, item, onContinue, onExit }) {
           </div>
         )}
 
-        {/* Conjugation tables */}
         {item.conjugation?.length > 0 && (
           <div className="conjugation-section">
             <p className="conjugation-title">🔤 Tabelas de Conjugação</p>
