@@ -2,6 +2,11 @@ import { useState, useRef, useEffect } from 'react'
 
 function normalize(text) {
   return text.trim().toLowerCase()
+    // Ligaduras latinas comuns no francês: œ→oe, æ→ae
+    // Isso faz "soeur" = "sœur", "coeur" = "cœur", etc.
+    .replace(/œ/g, 'oe')
+    .replace(/æ/g, 'ae')
+    // Remove diacríticos (acentos, cedilha, trema…): é→e, ç→c, â→a etc.
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/[''']/g, '')
     .replace(/\s+/g, ' ')
@@ -16,11 +21,12 @@ function levenshtein(a, b) {
   return dp[m][n]
 }
 
-// Permite até 1 erro para palavras curtas, 2 para longas
+// Tolerância proporcional ao comprimento da palavra normalizada
 function isAlmostCorrect(input, correct) {
   const a = normalize(input), b = normalize(correct)
   if (a === b) return false
-  const tolerance = b.length <= 5 ? 1 : 2
+  // ≤4 letras: 1 erro  |  5-8 letras: 2 erros  |  9+ letras: 3 erros
+  const tolerance = b.length <= 4 ? 1 : b.length <= 8 ? 2 : 3
   return levenshtein(a, b) <= tolerance
 }
 

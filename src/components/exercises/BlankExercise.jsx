@@ -43,10 +43,16 @@ export default function BlankExercise({ exercise, answered, onSelect }) {
   // Mostra a sentença com ___ substituído pelo input
   const parts = sentence.split('___')
 
+  // Normalização idêntica ao TypingExercise: ligaduras + diacríticos + pontuação
+  const normalizeBlank = s =>
+    s.trim().toLowerCase()
+      .replace(/œ/g, 'oe').replace(/æ/g, 'ae')
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[.,!?;:'"«»''']/g, '')
+
   const submit = () => {
     if (!value.trim() || attempt) return
-    const norm = value.trim().toLowerCase().replace(/[.,!?;:'"«»]/g, '')
-    const ok   = norm === correct.toLowerCase() || norm === correct.toLowerCase().replace(/[.,!?;:'"«»]/g, '')
+    const ok = normalizeBlank(value) === normalizeBlank(correct)
     setAttempt(ok ? 'correct' : 'wrong')
     onSelect(ok)
   }
